@@ -4,7 +4,7 @@ echo "Running Nadamak unit tests"
 echo "-----------------------------------"
 echo `pwd`
 echo `ls`
-python3 src/tests/run_tests.py --environ=matlab --path=matlab-2017a --verbosity=full --suite-exclude='packages'
+python3 src/tests/run_tests.py --environ=matlab --path=matlab-2017a --verbosity=full
 if [ $? -ne 0 ]; then
   echo "------------------------------------------"
   echo "Unit tests FAILED                         "
