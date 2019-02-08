@@ -4,5 +4,7 @@ gmshgeom = mp_geom_rectangle([0,0], [2,1], struct('lc',1.0));
 meshingParams.basename ='rectangle';
 meshingParams.dim = 2;
 meshingParams.folder = mp_TEST.testdir
-[status, ~, ~] = mp_gmsh(gmshgeom, meshingParams);
+[status, stdout, stderr] = mp_gmsh(gmshgeom, meshingParams);
+disp(stdout)
+disp(stderr)
 mp_test_assert_equal(true, status)
