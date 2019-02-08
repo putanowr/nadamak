@@ -21,7 +21,7 @@ function [gmshpath] = mp_set_gmsh_path()
     if strcmp(hostname, 'jinx')
       mypath = mfilename('fullpath');
       [mydir,~,~] = fileparts(mypath);      
-      gmshpath = fullfile(mydir, '../wrappers/gmsh_jinx');
+      gmshpath = fullfile(mydir, '../../../wrappers/gmsh_jinx');
     else
       gmshpath = 'gmsh';  
     end 
