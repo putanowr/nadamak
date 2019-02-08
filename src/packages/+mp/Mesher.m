@@ -49,7 +49,7 @@ classdef Mesher < handle
       else
         meshingParam.meshall=0;
       end
-      [n,e,r,m] = mp_gmsh_generate(geomgmsh, meshingParam);
+      [n,e,r,m] = mp.gmsh.generate(geomgmsh, meshingParam);
       mesh = mp.Mesh(meshingParam.dim, n,e,r,m);
     end
     function [refmesh] = refine(obj, mesh, nrefinements)
