@@ -1,0 +1,13 @@
+line 1
+line 2
+line 3
+section_1
+line A
+line B
+line C
+end_section_1
+section_2
+line 10
+line 20
+line 30
+end_section_2

@@ -1,0 +1,13 @@
+#This file should be sourced at Jenkins executor.
+#
+echo "Running Nadamak unit tests"
+echo "-----------------------------------"
+echo `pwd`
+echo `ls`
+python3 src/tests/run_tests.py --environ=matlab --path=matlab-2017a --verbosity=full --suite-exclude='packages'
+if [ $? -ne 0 ]; then
+  echo "------------------------------------------"
+  echo "Unit tests FAILED                         "
+  echo "------------------------------------------"
+  exit 22
+fi
