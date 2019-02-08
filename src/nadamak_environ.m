@@ -25,6 +25,7 @@ function [mypathstr] = nadamak_environ()
   % Core folders
   codeFolders = {fullfile('core', 'geom');
                  fullfile('core', 'gmsh');
+		 fullfile('core', 'mesh');
 		 fullfile('core', 'setup');
 		 fullfile('core', 'logging');
 		 fullfile('core', 'utils');
