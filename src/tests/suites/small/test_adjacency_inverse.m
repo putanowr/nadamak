@@ -1,5 +1,5 @@
 mp_test_register('test_adjacency_inverse', 'Test finding inverse adjacency relation')
-[nodes, elements] = mp_gmsh_mesh_factory('meshF');
+[nodes, elements] = mp_mesh_factory('meshF');
 connectivity = mp_gmsh_elems_connectivity(elements);
 nodes2elems = mp_mesh_adjacency_inverse(connectivity);
 s = size(nodes2elems, 1);
