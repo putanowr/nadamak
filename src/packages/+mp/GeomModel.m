@@ -8,7 +8,7 @@ classdef GeomModel < handle
   properties(Constant)
     %% Directory holding templates for geometric models.
     templateDir = fullfile(fileparts(mfilename('fullpath')), '..', '..', ...
-                                      'mesher', 'gmsh', 'geomodels');
+                                      'core', 'geom', 'geomodels');
   end
   methods
     function [obj] = GeomModel(name, dim, legacyID)
