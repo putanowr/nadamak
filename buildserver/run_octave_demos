@@ -1,0 +1,14 @@
+#This file should be sourced at Jenkins executor.
+#
+echo "Publishing Nadamak demos in HTML"
+echo "--------------------------------------------"
+echo `pwd`
+echo `ls`
+cd `pwd`/src/demo
+python3 run_demos.py
+if [ $? -ne 0 ]; then
+  echo "------------------------------------------"
+  echo "Running demos FAILED                      "
+  echo "------------------------------------------"
+  exit 22
+fi
