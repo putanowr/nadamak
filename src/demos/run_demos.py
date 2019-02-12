@@ -71,7 +71,7 @@ if __name__ == '__main__' :
   
   matlab_args = get_matlab_demo_args(args)
   
-  rootDir = os.getcwd()
+  rootDir = os.path.dirname(os.path.abspath(__file__))
 
   if not os.path.isdir(args.rundir):
       os.mkdir(args.rundir)
