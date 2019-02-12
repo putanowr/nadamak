@@ -4,8 +4,8 @@ echo "Publishing Nadamak demos in HTML"
 echo "--------------------------------------------"
 echo `pwd`
 echo `ls`
-cd `pwd`/src/demo
-python3 run_demos.py --demodir build
+publishdir=`pwd`/buildserver/demos
+python3 src/demos/run_demos.py --publishdir=$publishdir --rundir=build
 if [ $? -ne 0 ]; then
   echo "------------------------------------------"
   echo "Running demos FAILED                      "
