@@ -15,20 +15,25 @@ function [mypathstr] = nadamak_environ()
     return
   end
   mypathstr = pth;  
+  % Path to nadamak_environ folder
+  addpath(mypathstr);
   % Essential bootstrap code
   codeFolders = {'packages';
                  'tests'
                 };
   codeFolders = strcat(mypathstr, sep, codeFolders);
   addpath(codeFolders{:})
-
+  
   % Core folders
   codeFolders = {fullfile('core', 'geom');
                  fullfile('core', 'gmsh');
-		 fullfile('core', 'mesh');
-		 fullfile('core', 'setup');
-		 fullfile('core', 'logging');
-		 fullfile('core', 'utils');
+                 fullfile('core', 'interface');
+                 fullfile('core', 'logging');
+                 fullfile('core', 'mesh');
+                 fullfile('core', 'plotting');
+                 fullfile('core', 'setup');
+                 fullfile('core', 'utils');
+                 'demos';
                  };
   codeFolders = strcat(mypathstr, sep, codeFolders);
   addpath(codeFolders{:})
@@ -37,12 +42,6 @@ function [mypathstr] = nadamak_environ()
     portingFolder = fullfile(mypathstr, 'core', 'utils', 'porting', 'octave');
     addpath(portingFolder); 
   end
-
-  % Demo folder
-  codeFolders = {'demo';
-                 };
-  codeFolders = strcat(mypathstr, sep, '..', sep, codeFolders);
-  addpath(codeFolders{:})
 
   % External folders 
   codeFolders = {fullfile('external', 'ini2struct');
