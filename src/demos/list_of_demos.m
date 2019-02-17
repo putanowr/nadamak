@@ -25,6 +25,7 @@ mp_manage_demos('print')
 % <li><a href="demo_LShapeIfaceGeom_normals.html">demo_LShapeIfaceGeom_normals</a>Normals at edges in separate regions</li>
 % <li><a href="demo_NotchedRQGeom.html">demo_NotchedRQGeom</a> Geometric doman of quarter of notched rectangle</li>
 % <li><a href="demo_SquareHoleGeom.html">demo_SquareHoleGeom</a> Square with circular hole</li>
+% <li><a href="demo_TriangleGeom.html">demo_TriangleGeom</a> Triangular domain</li>
 % <li><a href="demo_TSHGeom.html">demo_TSHGeom</a> Complex geometry and mesh handing for THS geometry</li>
 % </ul>
 % </html>

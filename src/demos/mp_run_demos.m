@@ -48,6 +48,7 @@ function mp_run_demos(options)
             'mp_view_stars', true;
             'NotchedRQGeom', true;
             'SquareHoleGeom', true;
+            'TriangleGeom', true;
             'TSHGeom', true;
             'twin_squares_mesh', true; 
             'Viewer', true;
