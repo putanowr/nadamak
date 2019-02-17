@@ -5,6 +5,7 @@ classdef Mesher < handle
     folder = tempdir();
     clean = true;
     dim = 2;
+    order = 1;
     quadsonly = false;
     transfinite = false;
     transres = [1,1];
@@ -38,6 +39,7 @@ classdef Mesher < handle
       meshingParam.dim = mp_get_option(params, 'dim', obj.dim);
       meshingParam.clean = obj.clean;
       meshingParam.lc = params.lc;
+      meshingParam.order = mp_get_option(params, 'order', obj.order);
       meshingParam.transfinite = mp_get_option(params, 'transfinite', obj.transfinite);
       meshingParam.transres = mp_get_option(params, 'transres', obj.transres);
       meshingParam.showinfo = mp_get_option(params, 'showinfo', obj.showinfo);
