@@ -12,6 +12,7 @@ function mp_run_demos(options)
   outputdir = mp_get_option(options, 'demodir', pth);
 
   demos =  {'triangles_vs_quads', true; 
+            'triangle_barycentric', true;
             'rectangle_mesh', true;
             'circ_hole_mesh', true;
             'edges_in_triangles', true;
@@ -49,6 +50,7 @@ function mp_run_demos(options)
             'NotchedRQGeom', true;
             'SquareHoleGeom', true;
             'TriangleGeom', true;
+	    'TriangleHighOrder', true;
             'TSHGeom', true;
             'twin_squares_mesh', true; 
             'Viewer', true;

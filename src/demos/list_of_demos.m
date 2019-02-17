@@ -36,6 +36,7 @@ mp_manage_demos('print')
 % <li><a href="demo_Mesher_square.html">demo_Mesher_square</a> use Mesher to generate mesh in a square</li>
 % <li><a href="demo_Mesher_globalField.html">demo_Mesher_globalField</a> mesh density control via global size field</li>
 % <li><a href="demo_Mesher_refinement.html">demo_Mesher_refinement</a> uniform mesh refinement</li>
+% <li><a href="demo_TriangleHighOrder.html">demo_TriangleHighOrder</a> Higher order trianglar elements</li>
 % </ul>
 % </html>
 %% Object oriented interface demos
@@ -54,6 +55,13 @@ mp_manage_demos('print')
 % <li><a href="demo_mp_tagging_nodes.html">demo_mp_tagging_nodes</a> Tag and visualize nodes in regions</li>
 % <li><a href="demo_mp_map_circle.html">demo_mp_map_circle</a> Use geometric transformation to map interior of an element</li>
 % <li><a href="demo_mp_GeomTrans.html">demo_mp_GeomTrans</a> Illustrate usage of GeomTrans </li>
+% </ul>
+% </html>
+%
+%% Geometric utilities demos
+% <html>
+% <ul>
+% <li><a href="demo_triangle_barycentric.html">demo_triangle_barycentric</a> Barycentric coordinates in triangle</li>
 % </ul>
 % </html>
 %
