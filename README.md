@@ -9,5 +9,5 @@ Nadamak is implemented in Matlab with some some infrastructure support in Python
 
 # Demos
 
-While documentation is being prepred one can look at [demo pages](https://putanowr.githubio.com/projects/nadamak/demos/html/list_of_demos.html). 
+While documentation is being prepared one can look at [demo pages](https://putanowr.githubio.com/projects/nadamak/demos/html/list_of_demos.html). 
 
