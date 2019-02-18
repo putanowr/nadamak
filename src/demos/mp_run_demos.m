@@ -13,6 +13,7 @@ function mp_run_demos(options)
 
   demos =  {'triangles_vs_quads', true; 
             'triangle_barycentric', true;
+	    'triangle_rand_points', true;
             'rectangle_mesh', true;
             'circ_hole_mesh', true;
             'edges_in_triangles', true;

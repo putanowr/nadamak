@@ -62,6 +62,7 @@ mp_manage_demos('print')
 % <html>
 % <ul>
 % <li><a href="demo_triangle_barycentric.html">demo_triangle_barycentric</a> Barycentric coordinates in triangle</li>
+% <li><a href="demo_triangle_rand_points.html">demo_triangle_rand_points</a> Random points in triangle</li>
 % </ul>
 % </html>
 %
