@@ -4,7 +4,7 @@
 
 # What is Nadamak
 
-Nadamak is a project to create a set of tool helping with research on computational mechanics.
+Nadamak is a project to create a set of tools helping with research on computational mechanics.
 Nadamak is implemented in Matlab with some some infrastructure support in Python.
 
 # Demos
