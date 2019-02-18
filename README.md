@@ -1,6 +1,6 @@
 ## Welcome to Nadamak
 
-**This project just started, thus many things are not setup yet.**
+**This project have just started, thus many things are not setup yet.**
 
 # What is Nadamak
 
