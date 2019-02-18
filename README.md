@@ -1,6 +1,6 @@
 ## Welcome to Nadamak
 
-** This project just started, thus many things are not setup yet **
+**This project just started, thus many things are not setup yet.**
 
 # What is Nadamak
 
@@ -9,5 +9,5 @@ Nadamak is implemented in Matlab with some some infrastructure support in Python
 
 # Demos
 
-While documentation is being prepred one can look at [demo pages](https://putanowr.githubio.com/projects/nadamak/demo/html/list_of_demos.html). 
+While documentation is being prepred one can look at [demo pages](https://putanowr.githubio.com/projects/nadamak/demos/html/list_of_demos.html). 
 
