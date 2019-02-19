@@ -39,6 +39,12 @@ mp_manage_demos('print')
 % <li><a href="demo_TriangleHighOrder.html">demo_TriangleHighOrder</a> Higher order trianglar elements</li>
 % </ul>
 % </html>
+%% Finite Element Method demos
+% <html>
+% <ul>
+% <li><a href="demo_FEM_FemType.html">demo_FEM_FemType</a> Types of finite elments</li> 
+% </ul>
+% <html>
 %% Object oriented interface demos
 % <html>
 % <ul>
