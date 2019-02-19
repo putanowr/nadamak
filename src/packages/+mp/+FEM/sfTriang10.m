@@ -1,4 +1,4 @@
-function Nb = sfTri10(refPts)
+function Nb = sfTriang10(refPts)
     % Shape functions for classical quadratic Lagrangian triangle element
     % It is assumed that reference element is in normalized coordinates.
     % Arguments:

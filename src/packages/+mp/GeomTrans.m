@@ -19,11 +19,13 @@ classdef GeomTrans < handle
         case 1
            obj.sfEvaluator = @mp.FEM.sfLine2;
         case 2
-           obj.sfEvaluator = @mp.FEM.sfTri3;
+           obj.sfEvaluator = @mp.FEM.sfTriang3;
         case 9
-           obj.sfEvaluator = @mp.FEM.sfTri6;
+           obj.sfEvaluator = @mp.FEM.sfTriang6;
         case 3
            obj.sfEvaluator = @mp.FEM.sfQuad4;  
+	case 21
+	   obj.sfEvaluator = @mp.FEM.sfTriang10;	 
         otherwise
           error('GeomTrans cannot handle element type %d', ct(1))
       end

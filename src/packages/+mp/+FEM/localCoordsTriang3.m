@@ -1,4 +1,4 @@
-function coords = localCoordsTri3(dofID)
+function coords = localCoordsTriang3(dofID)
   % Normalized coordinares in reference element corresponding to DOF location.
   % If no dofID is given return the whole array of coordinates. 
   persistent crds 

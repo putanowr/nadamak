@@ -1,4 +1,4 @@
-function dtopo = dofTopoTri10(dofID)
+function dtopo = dofTopoTriang10(dofID)
   % returns vector [dim, id] where dim id dimension of the topological entity the DOF is located on
   % and id is the local entity number.
   % If no dofID is given return the array of [dim,id] for all DOFs. 

@@ -1,4 +1,4 @@
-function Nb = sfTri6(refPoint)
+function Nb = sfTriang6(refPoint)
 % Shape functions for classical quadratic Lagrangian triangle element
 % It is assumed that reference element is in normalized coordinates.
   x = refPoint(:,1);

@@ -27,10 +27,10 @@ classdef MeshFem < handle
       end
       obj.enumerateGeneric(offset);
       return
-      if obj.femType == 'Tri3' || obj.femType == 'Quad4'
+      if obj.femType == 'Triang3' || obj.femType == 'Quad4'
         obj.enumerateClassicNodal(offset)
-      elseif obj.femType == 'Tri6'
-        obj.enumerateTri6(offset)
+      elseif obj.femType == 'Triang6'
+        obj.enumerateTriang6(offset)
       else
         error('Enumeration not supported for element %s', obj.femType)
       end

@@ -13,7 +13,7 @@ clear variables;
 %
 enumeration('mp.FEM.FemType')
 
-fem = mp.FEM.FemType.Tri6;
+fem = mp.FEM.FemType.Triang6;
 
 fprintf('Information about FEM type: %s\n', fem);
 fprintf('  GMSH element id: %d\n', fem.gmshID);

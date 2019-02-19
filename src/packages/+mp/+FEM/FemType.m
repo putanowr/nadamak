@@ -4,9 +4,9 @@ classdef FemType
     % items: gmsh_elem_type, isLagrangian, order, num_of_dofs, 
     % localCoordsCalback, dofTopoCallback
     Line2( 1,true,1, 2, @mp.FEM.localCoordsLine2, @mp.FEM.dofTopoLine2)
-    Tri3(  2,true,1, 3, @mp.FEM.localCoordsTri3,  @mp.FEM.dofTopoTri3)
-    Tri6(  9,true,2, 6, @mp.FEM.localCoordsTri6,  @mp.FEM.dofTopoTri6)
-    Tri10(21,true,3,10, @mp.FEM.localCoordsTri10, @mp.FEM.dofTopoTri10)
+    Triang3(  2,true,1, 3, @mp.FEM.localCoordsTriang3,  @mp.FEM.dofTopoTriang3)
+    Triang6(  9,true,2, 6, @mp.FEM.localCoordsTriang6,  @mp.FEM.dofTopoTriang6)
+    Triang10(21,true,3,10, @mp.FEM.localCoordsTriang10, @mp.FEM.dofTopoTriang10)
     Quad4( 3,true,1, 4, @mp.FEM.localCoordsQuad4, @mp.FEM.dofTopoQuad4)
   end
   methods
