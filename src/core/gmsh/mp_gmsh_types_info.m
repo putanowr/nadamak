@@ -143,7 +143,21 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_21.shape = 'triangle';
     gt.type_21.nnodes = 10;
     gt.type_21.description = '10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)';
-  
+    gt.type_21.edges = cellfun(@uint32, {[1,4,5,2],[2,6,7,3],[3,7,8,1]}, 'UniformOutput', false);
+    p1 = 1/3;
+    p2 = 2/3;
+    gt.type_21.nodes = ...
+           [0.0, 0.0, 0.0;
+            1.0, 0.0, 0.0;
+            0.0, 1.0, 0.0;
+	     p1, 0.0, 0.0;
+	     p2, 0.0, 0.0;
+	     p2, p1,  0.0;
+	     p1, p2,  0.0;
+	    0.0, p2,  0.0;
+	    0.0, p1,  0.0;
+            0.5, 0.5, 0.0];
+
     gt.type_22.type = 22;
     gt.type_22.dim = 2;
     gt.type_22.shape = 'triangle';
