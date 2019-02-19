@@ -44,7 +44,7 @@ mp_manage_demos('print')
 % <ul>
 % <li><a href="demo_FEM_FemType.html">demo_FEM_FemType</a> Types of finite elments</li> 
 % </ul>
-% <html>
+% </html>
 %% Object oriented interface demos
 % <html>
 % <ul>
