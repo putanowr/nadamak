@@ -43,6 +43,7 @@ mp_manage_demos('print')
 % <html>
 % <ul>
 % <li><a href="demo_FEM_FemType.html">demo_FEM_FemType</a> Types of finite elments</li> 
+% <li><a href="demo_FEM_shapeFunctions.html">demo_FEM_shapeFunctions</a> Test of shape function on nodes</li> 
 % </ul>
 % </html>
 %% Object oriented interface demos

@@ -18,6 +18,7 @@ function mp_run_demos(options)
             'circ_hole_mesh', true;
             'edges_in_triangles', true;
             'FEM_FemType', true;
+	    'FEM_shapeFunctions', true;
             'highlight_elements', true;
             'highlight_nodes', true;
             'labels', true;
