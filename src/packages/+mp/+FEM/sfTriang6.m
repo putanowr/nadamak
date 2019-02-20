@@ -4,5 +4,5 @@ function Nb = sfTriang6(refPoint)
   x = refPoint(:,1);
   y = refPoint(:,2);
   z = 1 - x - y;
-  Nb = [x.*(x-z-y), y.*(y-x-z),z.*(z-y-x),4*x.*y,4*y.*z,4*x.*z];
+  Nb = [z.*(z-y-x), x.*(x-z-y), y.*(y-x-z),4*x.*z,4*y.*x,4*y.*z];
 end
