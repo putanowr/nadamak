@@ -156,7 +156,7 @@ function [info] = mp_gmsh_types_info(varargin)
 	     p1, p2,  0.0;
 	    0.0, p2,  0.0;
 	    0.0, p1,  0.0;
-            0.5, 0.5, 0.0];
+            p1, p1, 0.0];
 
     gt.type_22.type = 22;
     gt.type_22.dim = 2;
