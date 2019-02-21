@@ -44,7 +44,8 @@ function [mypathstr] = nadamak_environ()
   end
 
   % External folders 
-  codeFolders = {fullfile('external', 'ini2struct');
+  codeFolders = {fullfile('external', 'cprintf');
+                 fullfile('external', 'ini2struct');
                  fullfile('external', 'rgb');
                  fullfile('external', 'dualmesh')
                  fullfile('external', 'calfem', 'fem');
