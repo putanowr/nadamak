@@ -9,5 +9,3 @@ for fem = enumeration('mp.FEM.FemType')'
   check = norm(N-I, 'fro');
   mp_test_assert_equal_double(0.0, check, 1e-5, details); 
 end
-
-mp_manage_demos('report', 'FEM_shapeFunctions', true);
