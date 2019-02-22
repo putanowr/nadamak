@@ -1,0 +1,10 @@
+* How to find path to the current file:
+
+  mypath = mfilename('fullpath');
+  ./nadamak_environ.m:    [pth,~,~] = fileparts(mypath);
+
+
+* Paht to Nadamak source directory:
+  pth = nadamak_environ();
+
+
