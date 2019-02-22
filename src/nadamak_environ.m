@@ -25,7 +25,8 @@ function [mypathstr] = nadamak_environ()
   addpath(codeFolders{:})
   
   % Core folders
-  codeFolders = {fullfile('core', 'geom');
+  codeFolders = {fullfile('core', 'code_generation');
+                 fullfile('core', 'geom');
                  fullfile('core', 'gmsh');
                  fullfile('core', 'interface');
                  fullfile('core', 'logging');
@@ -53,4 +54,7 @@ function [mypathstr] = nadamak_environ()
   codeFolders = strcat(mypathstr, sep, '..', sep, codeFolders);
   addpath(codeFolders{:})
 
+  % generate some source codes
+  pth = fullfile(mypathstr, 'packages', '+mp', '+FEM');
+  mp_generateShapeFunctions(pth);
 end
