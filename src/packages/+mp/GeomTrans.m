@@ -16,7 +16,6 @@ classdef GeomTrans < handle
         return
       end 
       obj.fem = mp.FEM.FemType.fromId(ct(1));
-      end
     end
     function [xyz] = transform(obj, refPoint, cellID)
       % Return real coordinates for point with reference coordinates in given element
