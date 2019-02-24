@@ -17,12 +17,13 @@ function status = mp_generateShapeFunctions(pth)
     sf(9)  = 9*y.*z.*(3*z - 1)/2;
     sf(10) =  27*x.*y.*z;
     sfDefs.Triang10.sf = sf;
-       
+
     fprintf('Generating code for shape functions in : %s\n', pth);
     for fem = enumeration('mp.FEM.FemType')'
         name = sprintf('%s', fem);
         fprintf('   Generate shape functions for : %s\n', name);
         writeSf(sfDefs.(name), name, pth);
+	writeSfDeriv(sfDefs.(name), name, pth);
     end
     status = true;
 end
@@ -44,8 +45,39 @@ function writeSf(sfDef, name, pth)
       case 2
         fs(x,y) = subs(sfDef.sf, z, 1-x-y);
         matlabFunction(fs(aa(1), aa(2)), 'file', fpath, 'var', {aa});
-      case 3  
+      case 3
         fs(x,y,z) = subs(sfDef.sf, w, 1-x-y-z);
         matlabFunction(fs(aa(1), aa(2), aa(3)), 'file', fpath, 'var', {aa});
+  end
+end
+
+function writeSfDeriv(sfDef, name, pth)
+  syms x y z w
+  fem = mp.FEM.FemType(name);
+  if length(sfDef.sf) ~= fem.numOfDofs
+      error('Number of shape functions %d not equal to number of DOFs: %d',...
+          length(sfDef), fem.numOfDofs);
+  end
+  fname = sprintf('sfDeriv%s.m', name);
+  fpath = fullfile(pth, fname);
+  aa = sym('x', [1,3]);
+  switch(fem.dim)
+      case 1
+        fs = sfDef.sf
+        fsD(x)  = diff(fs, x);
+        matlabFunction(fsD(aa(1)), 'file', fpath, 'var', {aa});
+      case 2
+        fs = subs(sfDef.sf, z, 1-x-y);
+	fsDx = diff(fs, x);
+	fsDy = diff(fs, y);
+	fsD(x,y) = [fsDx; fsDy];
+        matlabFunction(fsD(aa(1), aa(2)), 'file', fpath, 'var', {aa});
+      case 3
+	fs = subs(sfDef.sf, w, 1-x-y-z);
+	fsDx = diff(fs, x);
+	fsDy = diff(fs, y);
+	fsDz = diff(fs, z);
+	fsD(x,y,z) = [fsDx; fsDy; fsDz];
+        matlabFunction(fsD(aa(1), aa(2), aa(3)), 'file', fpath, 'var', {aa});
   end
 end
