@@ -50,6 +50,7 @@ function [mypathstr] = nadamak_environ()
                  fullfile('external', 'rgb');
                  fullfile('external', 'dualmesh')
                  fullfile('external', 'calfem', 'fem');
+		 fullfile('external', 'chebfun');
                  };
   codeFolders = strcat(mypathstr, sep, '..', sep, codeFolders);
   addpath(codeFolders{:})
