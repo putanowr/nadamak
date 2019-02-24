@@ -21,7 +21,7 @@ classdef GeomTrans < handle
       % Return real coordinates for point with reference coordinates in given element
       cellNodes = obj.cellToNodes.at(cellID);
       refXYZ = obj.mesh.nodes(cellNodes, :);
-      sf = fem.sfh(refPoint);
+      sf = obj.fem.sfh(refPoint);
       xyz = [dot(sf, refXYZ(:,1)), dot(sf, refXYZ(:,2)), dot(sf, refXYZ(:,3))]; 
     end
   end
