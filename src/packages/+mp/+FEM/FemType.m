@@ -1,7 +1,7 @@
-classdef FemType 
+classdef FemType
   % Types of Finite Elements.
   enumeration
-    % items: gmsh_elem_type, isLagrangian, order, num_of_dofs, 
+    % items: gmsh_elem_type, isLagrangian, order, num_of_dofs,
     % localCoordsCalback, dofTopoCallback
     Line2( 1,true,1,1, 2, @mp.FEM.localCoordsLine2, @mp.FEM.dofTopoLine2, @mp.FEM.sfLine2)
     Triang3(  2,true,2,1, 3, @mp.FEM.localCoordsTriang3,  @mp.FEM.dofTopoTriang3, @mp.FEM.sfTriang3)
@@ -16,7 +16,7 @@ classdef FemType
       self.isLagrangian = isLagrangian;
       self.order = order;
       self.numOfDofs = numOfDofs;
-      self.cfh = cfh; 
+      self.cfh = cfh;
       self.tfh = tfh;
       self.sfh = sfh;
     end
@@ -43,7 +43,20 @@ classdef FemType
       f = obj.tfh;
       t = f();
     end
-  end 
+  end
+  methods (Static)
+    function [type] = fromId(id)
+       persistent id2type
+       if isempty(id2type)
+	  id2type = containers.Map('KeyType', 'int32', ...
+	                           'ValueType', 'char');
+          for t = enumeration('mp.FEM.FemType')'
+             id2type(t.gmshID) = sprintf('%s',t);
+          end
+       end
+       type = mp.FEM.FemType(id2type(id));
+    end
+  end
   properties(SetAccess=immutable)
     dim
     gmshID
