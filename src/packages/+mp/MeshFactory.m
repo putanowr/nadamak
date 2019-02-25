@@ -8,7 +8,7 @@ classdef MeshFactory
       persistent meshNames
       if isempty(meshNames)
         meshNames = {'meshA', 'meshB', 'meshC', 'meshD', 'meshE', 'meshF', ...
-                     'triangle1', 'square1', 'square9', 'tritri'};
+                     'triangle1', 'square1', 'square9', 'tritri', 'pararc'};
       end
       meshes = meshNames;
     end
