@@ -22,7 +22,7 @@ classdef GeomTrans < handle
       cellNodes = obj.cellToNodes.at(cellID);
       refXYZ = obj.mesh.nodes(cellNodes, :);
       sf = obj.fem.sfh(refPoint);
-      xyz = [dot(sf, refXYZ(:,1)), dot(sf, refXYZ(:,2)), dot(sf, refXYZ(:,3))]; 
+      xyz = [sf*refXYZ(:,1), sf*refXYZ(:,2), sf*refXYZ(:,3)]; 
     end
   end
 end
