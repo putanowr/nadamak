@@ -3,22 +3,23 @@ classdef FemType
   enumeration
     % items: gmsh_elem_type, isLagrangian, order, num_of_dofs,
     % localCoordsCalback, dofTopoCallback
-    Line2( 1,true,1,1, 2, @mp.FEM.localCoordsLine2, @mp.FEM.dofTopoLine2, @mp.FEM.sfLine2)
-    Triang3(  2,true,2,1, 3, @mp.FEM.localCoordsTriang3,  @mp.FEM.dofTopoTriang3, @mp.FEM.sfTriang3)
-    Triang6(  9,true,2,2, 6, @mp.FEM.localCoordsTriang6,  @mp.FEM.dofTopoTriang6, @mp.FEM.sfTriang6)
-    Triang10(21,true,2,3,10, @mp.FEM.localCoordsTriang10, @mp.FEM.dofTopoTriang10, @mp.FEM.sfTriang10)
-    Quad4( 3,true,2,1, 4, @mp.FEM.localCoordsQuad4, @mp.FEM.dofTopoQuad4, @mp.FEM.sfQuad4)
+    Line2(    1,true,1,1, 2, 'Line2')
+    Triang3(2,true,2,1, 3, 'Triang3')
+    Triang6(9,true,2,2, 6, 'Triang6')
+    Triang10(21,true,2,3,10, 'Triang10')
+    Quad4( 3,true,2,1, 4, 'Quad4')
   end
   methods
-    function [self]=FemType(gmshID, isLagrangian, dim, order, numOfDofs, cfh, tfh, sfh)
+    function [self]=FemType(gmshID, isLagrangian, dim, order, numOfDofs, name)
       self.dim = dim;
       self.gmshID = gmshID;
       self.isLagrangian = isLagrangian;
       self.order = order;
       self.numOfDofs = numOfDofs;
-      self.cfh = cfh;
-      self.tfh = tfh;
-      self.sfh = sfh;
+      self.cfh = str2func(sprintf('mp.FEM.localCoords%s', name));
+      self.tfh = str2func(sprintf('mp.FEM.dofTopo%s', name));
+      self.sfh = str2func(sprintf('mp.FEM.sf%s', name));
+      self.sfDh = str2func(sprintf('mp.FEM.sfDeriv%s', name));
     end
     function [info]=getInfo(self)
       info = mp_gmsh_types_info(self.gmshID);
@@ -66,5 +67,6 @@ classdef FemType
     cfh
     tfh
     sfh
+    sfDh
   end
 end
