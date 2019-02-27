@@ -6,7 +6,7 @@ function coords = localCoordsQuad4(dofID)
     crds = [0.0, 0.0, 0.0;
             1.0, 0.0, 0.0;
             1.0, 1.0, 0.0;
-            0.0, 1.0, 0.0]
+            0.0, 1.0, 0.0];
   end
   if nargin < 1 
     coords = crds;

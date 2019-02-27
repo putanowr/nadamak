@@ -13,19 +13,15 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory(name)
     generators.square9 = @mp_gmsh_mesh_factory_square9;
     generators.triangle1 = @mp_gmsh_mesh_factory_triangle1;
     generators.tritri = @mp_gmsh_mesh_factory_tritri;
+    generators.pararc = @mp_gmsh_mesh_factory_pararc;
   end
   [nodes, elements, regions, nodemap] = generators.(name)();
 end
 
-function [elements] = mp_make_elements(connectivity, elementName)
-  persistent elemTypes
-  if isempty(elemTypes)
-    elemTypes.triangle = 2;
-    elemTypes.quad = 3;
-  end
+function [elements] = mp_make_elements(connectivity, fem)
   n = size(connectivity, 1);
   elements = mp.SharedCellArray(n);
-  et = elemTypes.(elementName);
+  et = fem.gmshID;
   for i=1:n
     elements{i} = int32([i, et, 2, 1, 0, connectivity(i,:)]);
   end            
@@ -41,7 +37,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_A()
   connectivity = [1, 2, 4;
                   2, 3, 5;
                   2, 5, 4];
-  elements = mp_make_elements(connectivity, 'triangle'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Triang3); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -60,7 +56,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_B()
                   6, 2, 3, 7;
                   7, 3, 4, 8;
                   8, 4, 1, 5];
-  elements = mp_make_elements(connectivity, 'quad');
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Quad4);
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -79,7 +75,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_C()
                   9, 10, 14, 13;
                   10, 11, 15,14;
                   11, 12, 16, 15];
-  elements = mp_make_elements(connectivity, 'quad'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Quad4); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -94,7 +90,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_D()
   connectivity = [1, 2, 5, 4;
                   2, 3, 6, 5;
                   4, 5, 8, 7]; 
-  elements = mp_make_elements(connectivity, 'quad'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Quad4); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -112,7 +108,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_E()
                   2, 6, 5;
                   4, 5, 7;
                   5, 8, 7];
-  elements = mp_make_elements(connectivity, 'triangle');
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Triang3);
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -150,7 +146,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_square9()
                   9, 10, 14, 13;
                   10, 11, 15,14;
                   11, 12, 16, 15]);
-  elements = mp_make_elements(connectivity, 'quad'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Quad4); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -162,7 +158,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_square1()
     nodes((1:2)+(i-1)*2, 2) = [1;1]*(i-1);
   end 
   connectivity = int32([1, 2, 4, 3]);
-  elements = mp_make_elements(connectivity, 'quad'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Quad4); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -173,7 +169,7 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_triangle1()
            1, 0, 0;
            0, 1, 0];
   connectivity = int32([1, 2, 3]);
-  elements = mp_make_elements(connectivity, 'triangle'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Triang3); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end
@@ -205,7 +201,28 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_tritri()
                          5, 3, 8;
                          6, 7, 9;
                          7, 8, 9]);
-  elements = mp_make_elements(connectivity, 'triangle'); 
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Triang3); 
+  regions = struct('dim', 2, 'id', 1, 'name', 'domain');
+  nodemap=1:size(nodes,1);
+end
+
+function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory_pararc()
+  L = 2;
+  H = 4;
+  h = 3*H/4;
+  nodes = mp.SharedArray([1]);
+  nodes.Data = [0,        0,  0;
+                L/2       0,  0;
+		L,        0,  0;
+                L/2,      h,  0;
+		0,        H,  0;
+		0,        H/2,0;
+               -L/2,      h,  0;
+	       -L,        0,  0;
+	       -L/2       0,  0];
+   connectivity = int32([1, 3, 5  2, 4, 6; 
+                         1, 5, 8, 6, 7, 9]);
+  elements = mp_make_elements(connectivity, mp.FEM.FemType.Triang6); 
   regions = struct('dim', 2, 'id', 1, 'name', 'domain');
   nodemap=1:size(nodes,1);
 end

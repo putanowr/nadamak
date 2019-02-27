@@ -9,7 +9,9 @@ function [ retval, meshpath, geopath ] = mp_gmsh(geoModel, meshingOptions)
   meshingOptions.transfinite = mp_get_option(meshingOptions, 'transfinite', 0);
   meshingOptions.transres = mp_get_option(meshingOptions, 'transres', [1,1]);
   meshingOptions.quadsonly = mp_get_option(meshingOptions, 'quadsonly', 0);
+  meshingOptions.elementOrder = mp_get_option(meshingOptions, 'order', 1);
   
+  geoModel = mp_gmsh_augment_geomodel(geoModel);
   if exist('mp_GMSH_SETUP', 'var')
     geoModel = mp_tpl_substitute(geoModel, meshingOptions);
     geopath = mp_meshingOptions_geopath(meshingOptions);

@@ -15,20 +15,26 @@ function [mypathstr] = nadamak_environ()
     return
   end
   mypathstr = pth;  
+  % Path to nadamak_environ folder
+  addpath(mypathstr);
   % Essential bootstrap code
   codeFolders = {'packages';
                  'tests'
                 };
   codeFolders = strcat(mypathstr, sep, codeFolders);
   addpath(codeFolders{:})
-
+  
   % Core folders
-  codeFolders = {fullfile('core', 'geom');
+  codeFolders = {fullfile('core', 'code_generation');
+                 fullfile('core', 'geom');
                  fullfile('core', 'gmsh');
-		 fullfile('core', 'mesh');
-		 fullfile('core', 'setup');
-		 fullfile('core', 'logging');
-		 fullfile('core', 'utils');
+                 fullfile('core', 'interface');
+                 fullfile('core', 'logging');
+                 fullfile('core', 'mesh');
+                 fullfile('core', 'plotting');
+                 fullfile('core', 'setup');
+                 fullfile('core', 'utils');
+                 'demos';
                  };
   codeFolders = strcat(mypathstr, sep, codeFolders);
   addpath(codeFolders{:})
@@ -38,19 +44,18 @@ function [mypathstr] = nadamak_environ()
     addpath(portingFolder); 
   end
 
-  % Demo folder
-  codeFolders = {'demo';
-                 };
-  codeFolders = strcat(mypathstr, sep, '..', sep, codeFolders);
-  addpath(codeFolders{:})
-
   % External folders 
-  codeFolders = {fullfile('external', 'ini2struct');
+  codeFolders = {fullfile('external', 'cprintf');
+                 fullfile('external', 'ini2struct');
                  fullfile('external', 'rgb');
                  fullfile('external', 'dualmesh')
                  fullfile('external', 'calfem', 'fem');
+		 fullfile('external', 'chebfun');
                  };
   codeFolders = strcat(mypathstr, sep, '..', sep, codeFolders);
   addpath(codeFolders{:})
 
+  % generate some source codes
+  pth = fullfile(mypathstr, 'packages', '+mp', '+FEM');
+  mp_generateShapeFunctions(pth);
 end

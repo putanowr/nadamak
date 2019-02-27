@@ -1,0 +1,17 @@
+* How to find path to the current file:
+
+  mypath = mfilename('fullpath');
+  ./nadamak_environ.m:    [pth,~,~] = fileparts(mypath);
+
+
+* Paht to Nadamak source directory:
+  pth = nadamak_environ();
+
+* How to create enumeration from string
+
+  fem = mp.FEM.FemType('Line2');
+
+* How to concatenate path in system independent way.
+
+
+

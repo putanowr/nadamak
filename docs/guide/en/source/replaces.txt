@@ -1,0 +1,9 @@
+.. |CMB| replace:: Nadamak
+.. |authors| replace:: Roman Putanowicz, Sławomir Milewski
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. |gnu| replace:: *GNU*
+.. |vtk| replace:: *VTK*
+.. |gmsh| replace:: *Gmsh*
+.. |sphinx| replace:: *Sphinx*
+.. |version| replace:: 5.0
+.. _Gmsh: http://www.geuz.org/gmsh
