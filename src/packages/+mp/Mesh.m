@@ -273,6 +273,10 @@ classdef Mesh < handle
         nodesIds = unique(nodesIds);
       end
     end
+    function [nitems] = perDimCount(obj, dim)
+      prefix = ['nodes'; 'edges'; 'faces'; 'cells'];
+      nitems = obj.([prefix(dim+1,:),'Count'])();
+    end
     function [nnodes] = nodesCount(obj)
       %% Return number of nodes in the mesh.
       nnodes = size(obj.nodes, 1);
