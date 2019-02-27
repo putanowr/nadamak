@@ -21,6 +21,7 @@ function mp_run_demos(options)
 	    'FEM_shapeFunctions', true;
             'highlight_elements', true;
             'highlight_nodes', true;
+	    'integrate', true;
             'labels', true;
             'LShapeGeom', true;
             'LShapeGeom_refinement', true;
@@ -51,6 +52,7 @@ function mp_run_demos(options)
             'mp_tag_region_nodes', true;
             'mp_view_stars', true;
             'NotchedRQGeom', true;
+	    'shake_internal_nodes', true;
             'SquareHoleGeom', true;
             'TriangleGeom', true;
 	    'TriangleHighOrder', true;

@@ -46,6 +46,12 @@ mp_manage_demos('print')
 % <li><a href="demo_FEM_shapeFunctions.html">demo_FEM_shapeFunctions</a> Test of shape function on nodes</li> 
 % </ul>
 % </html>
+%% Integration demos
+% <html>
+% <ul>
+% <li><a href="demo_integrate.html">demo_integrate</a> Simple integration</li>
+% </ul>
+% </html>
 %% Object oriented interface demos
 % <html>
 % <ul>
@@ -87,5 +93,6 @@ mp_manage_demos('print')
 % <li><a href="demo_triangles_vs_quads.html">demo_triangles_vs_quads</a> mesh in region with circular hole</li>
 % <li><a href="demo_twin_squares_mesh.html">demo_twin_squares_mesh</a> mesh of squares with non-linear common boundary</li>
 % <li><a href="demo_voids2D.html">demo_voids2D</a> mesh rectangular domain with circular voids</li>
+% <li><a href="demo_shake_internal_nodes.html">demo_shake_internal_nodes</a> randomly move non-boundary nodes</li>
 % </ul>
 % </html>
