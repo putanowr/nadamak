@@ -1,8 +1,8 @@
 classdef GeomFactory < handle 
   properties (Constant)
     aliases = {'Rectangle', {'Rectangle', 'RectangleGeom'};
-               'Square',    {'Square', 'SquareGeom'};
-	             'LShape',    {'L-Shape', 'LShapeGeom', 'LShape', 'L'};
+               'Square',    {'Square',    'SquareGeom'};
+	             'LShape',    {'L-Shape',   'LShapeGeom', 'LShape', 'L'};
 	            };   
   end
   methods(Static)
@@ -24,6 +24,16 @@ classdef GeomFactory < handle
         end
       end
       error('Geometry for label "%s" not found', alias);
+    end
+    function [mainakas] = mainAliases()
+    % Return the main aliases for names of Geom classes.
+    % The main aliases are used for instance in GUI labels.
+      nc = size(mp.GeomFactory.aliases, 1);
+      mainakas = cell(1, nc)
+      for i=1:nc
+        tags = mp.GeomFactory.aliases{i, 2:end};
+	      mainakas{i} = tags{1};
+      end
     end
   end
 end
