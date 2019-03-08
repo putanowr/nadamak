@@ -6,14 +6,16 @@ classdef Project < handle
   methods
     function [obj] = Project(fnameOrHandle)
       obj = obj@handle();
-      obj.read(fnameOrHandle)
+      if nargin > 0
+        obj.read(fnameOrHandle)
+      end
     end
   end
   methods
     function read(obj, fnameOrHandle)
       [fid, needclose] = mp_get_fid(fnameOrHandle, 'r');
       [~,~,ext] = fileparts(fopen(fid));
-      if strcmp('.cmb', ext)
+      if strcmp('.sof', ext)
         obj.readJSON(fid)
       else
         error('Do not know how to read project from file with extension: %s', ext);
