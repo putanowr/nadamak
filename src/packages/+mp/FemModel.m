@@ -1,5 +1,5 @@
 classdef FemModel < handle
-  % FemModel Is the main data structure on which the Kernel of combMESBMRS simulator works.
+  % FemModel Is the main data structure on which the Kernel of Nadamak simulator works.
   properties(SetAccess=private)
     geometry;
     problem;
