@@ -7,8 +7,16 @@ classdef FemModel < handle
   end
   methods
     function [obj] = FemModel(geometry, problem)
-      obj.geometry = geometry;
-      obj.problem = problem;
+      if isstring(geometry)
+        obj.geometry = mp.GeomFactory(geometry);
+      else
+        obj.geometry = geometry;
+      end
+      if isstring(problem)
+        obj.problem = mp.ProblemFactory(problem);
+      else
+        obj.problem = problem;
+      end
     end
     function resolveGeometry(obj)
       % Create the coarse mesh of geometry just to access
