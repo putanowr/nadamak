@@ -1,0 +1,57 @@
+{
+    "residuum": "1.0000000000000001e-05",
+    "maxiter": "200",
+    "fem_u": "FEM_QK(2,1)",
+    "fem_p": "FEM_QK(2,0)",
+    "fem_data": "FEM_QK(2,1)",
+    "integration": "IM_NC_PARALLELEPIPED(2,6)",
+    "domain":{
+      "Lx": "1.0",
+      "Ly": "1.0"
+    },
+    "problem": {
+        "type": "nonlinear"
+    },
+    "material": {
+        "law" : "Linear_Elasticity",
+        "mu": "40",
+        "lambda": "40",
+        "type": "elastic"
+    },
+    "mesh": {
+        "type": "cooks_membrane",
+        "regular": {
+            "nx": "10",
+            "ny": "10"
+        }
+    },
+    "bc": {
+      "south": {
+        "type": "sliding"
+      }, 
+      "east": {
+        "type": "free"
+      },
+      "north": {
+        "type": "traction",
+        "value": ["0.5", "-1"]
+      },
+      "west": {
+        "type": "sliding"
+      }
+    },
+    "analysis" : {
+       "probe_points" : {
+       },
+       "fields" : {
+         "u" : {
+           "type": "simple_shear",
+           "expression": "x,2",
+           "simple_shear" : {
+              "k" : "0.5"
+           }
+         }
+       }
+    }
+}
+

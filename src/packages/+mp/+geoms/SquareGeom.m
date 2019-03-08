@@ -14,6 +14,9 @@ classdef SquareGeom < mp.GeomModel
       if nargin < 3
         legacyID = 0;
       end  
+      if nargin < 2
+        params_ = struct();
+      end
       obj = obj@mp.GeomModel(name, 2, legacyID);
       if ~isempty(params_)
         obj.setup(params_);
