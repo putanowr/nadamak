@@ -6,6 +6,16 @@ classdef ProblemFactory < handle
 	            };   
   end
   methods(Static)
+    function out = kernel(name)
+      persistent kernelName;
+      if isempty(kernelName)
+        kernelName = 'nadamak';
+      end
+      if nargin
+        kernelName = name;
+      end
+      out = kernelName;
+    end
     function [problem] = produce(alias, problemName) 
     % Return problem object of a class corresponding to given alias.
     % The object name is taken from problemName argument. If not given the
@@ -15,9 +25,17 @@ classdef ProblemFactory < handle
         tags = mp.ProblemFactory.aliases(i, 2:end);
 	      idx = find(strcmpi(tags{:}, alias));
 	      if idx > 0
-	        className = [mp.ProblemFactory.aliases{i, 1}, 'Problem']
-	        problem = mp.(className)();
-	        return
+	        className = [mp.ProblemFactory.aliases{i, 1}, 'Problem'];
+          if strcmp(mp.ProblemFactory.kernel(), 'calfem')
+            fprintf('Producing problem for calfem\n');  
+	        problem = mp.kernel.calfem.(className)();
+          elseif strcmp(mp.ProblemFactory.kernel(), 'nadamak')
+            fprintf('Producing problem for nadamak\n')
+            problem = mp.kernel.nadamak.(className)();
+          else
+            error('Unknown kernel: %s', mp.ProblemFactory.kernel);
+          end
+	      return
         end
       end
       error('Problem for label "%s" not found', alias);
