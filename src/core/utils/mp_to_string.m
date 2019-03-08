@@ -4,6 +4,8 @@ function [outstr] = mp_to_string(object)
     outstr = mat2str(object);
   elseif ischar(object)
     outstr = object;
+  elseif isenum(object)
+    outstr = char(object);
   else
     error('Do not know how to transfer object to string')
   end
