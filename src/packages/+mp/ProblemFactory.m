@@ -26,7 +26,7 @@ classdef ProblemFactory < handle
     % Return the main aliases for names of Problem classes.
     % The main aliases are used for instance in GUI labels.
       nc = size(mp.ProblemFactory.aliases, 1);
-      mainakas = cell(1, nc)
+      mainakas = cell(1, nc);
       for i=1:nc
         tags = mp.ProblemFactory.aliases{i, 2:end};
 	      mainakas{i} = tags{1};
