@@ -7,13 +7,13 @@ classdef FemModel < handle
   end
   methods
     function [obj] = FemModel(geometry, problem)
-      if isstring(geometry)
-        obj.geometry = mp.GeomFactory(geometry);
+      if ischar(geometry)
+        obj.geometry = mp.GeomFactory.produce(geometry);
       else
         obj.geometry = geometry;
       end
-      if isstring(problem)
-        obj.problem = mp.ProblemFactory(problem);
+      if ischar(problem)
+        obj.problem = mp.ProblemFactory.produce(problem);
       else
         obj.problem = problem;
       end
