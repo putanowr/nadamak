@@ -17,6 +17,7 @@ classdef FemModel < handle
       else
         obj.problem = problem;
       end
+      obj.problem.setModel(obj);
     end
     function resolveGeometry(obj)
       % Create the coarse mesh of geometry just to access
