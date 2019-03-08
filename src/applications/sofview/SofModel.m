@@ -1,7 +1,6 @@
 classdef SofModel < handle
   %UNTITLED Summary of this class goes here
   %   Detailed explanation goes here
-
   properties
     project mp.Project
     model   mp.FemModel
@@ -11,6 +10,7 @@ classdef SofModel < handle
     function obj = SofModel()
       %UNTITLED Construct an instance of this class
       %   Detailed explanation goes here
+      obj.resetModel();
     end
     function resetModel(obj)
       obj.project = mp.Project();
@@ -41,7 +41,9 @@ classdef SofModel < handle
       status = true;
     end
     function status = calculate(obj, progress)
-      progress.report('Do my job', 0.5);  
+      disp(obj.model);
+      disp(obj.model.problem);
+      obj.model.problem.solve(progress);
       pause(1);
       status = true;
     end
