@@ -3,44 +3,38 @@ classdef SofModel < handle
   %   Detailed explanation goes here
 
   properties
-    config
-    geom % Geometry object
+    project mp.Project
+    model   mp.FemModel
   end
 
   methods
     function obj = SofModel()
       %UNTITLED Construct an instance of this class
       %   Detailed explanation goes here
-      obj.config = '';
     end
-
     function resetModel(obj)
-      obj.config = '';
-      obj.geom = [];
+      obj.project = mp.Project();
+      obj.model = mp.FemModel('square', 'mechanical');
     end
-    function [names] = regionNames(obj);
-      names = obj.geom.regions();
+    function [names] = regionNames(obj)
+      names = obj.model.geometry.regions();
     end
-    function [status, msg] = setGeometricModel(obj, name)
-      obj.resetModel();
-      modelname='sofgeom';
+    function [status, msg] = setModel(obj, geomName, problemName)
       status = true;
       msg = 'Geometry object created OK';
-      obj.geom = mp.GeomFactory.produce(name, modelname);
+      try
+        obj.model = mp.FemModel(geomName, problemName);
+      catch ME
+        status = false;
+        msg = ME.message;
+      end
     end
     function [status, msg] = readConfig(obj,fname)
       try
-        text = fileread(fname);
+        obj.project.read(fname)
       catch
         status = false;
         msg = 'Reading file failed';
-        return
-      end
-      try
-        obj.config = jsondecode(text);
-      catch
-        status = false;
-        msg = 'Decoding JSON failed';
         return
       end
       msg = 'File read corectly';
