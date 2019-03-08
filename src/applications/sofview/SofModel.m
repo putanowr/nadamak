@@ -40,6 +40,11 @@ classdef SofModel < handle
       msg = 'File read corectly';
       status = true;
     end
+    function status = calculate(obj, progress)
+      progress.report('Do my job', 0.5);  
+      pause(1);
+      status = true;
+    end
   end
 end
 
