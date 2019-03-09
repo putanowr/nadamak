@@ -3,7 +3,7 @@ classdef SofModel < handle
   %   Detailed explanation goes here
   properties
     project mp.Project
-    model   mp.FemModel
+    problem
   end
 
   methods
@@ -14,16 +14,18 @@ classdef SofModel < handle
     end
     function resetModel(obj)
       obj.project = mp.Project();
-      obj.model = mp.FemModel('square', 'mechanical');
+      obj.problem = mp.ProblemFactory.produce('mechanical', ...
+                    struct('geometry', 'square'));
     end
     function [names] = regionNames(obj)
-      names = obj.model.geometry.regions();
+      names = obj.problem.geometry.regions();
     end
-    function [status, msg] = setModel(obj, geomName, problemName)
+    function [status, msg] = setProblem(obj, problemName, geomName)
       status = true;
       msg = 'Geometry object created OK';
       try
-        obj.model = mp.FemModel(geomName, problemName);
+        obj.problem = mp.ProblemFactory.produce(problemName, ...
+                      struct('geometry', geomName));
       catch ME
         status = false;
         msg = ME.message;
@@ -41,9 +43,7 @@ classdef SofModel < handle
       status = true;
     end
     function status = calculate(obj, progress)
-      disp(obj.model);
-      disp(obj.model.problem);
-      obj.model.problem.solve(progress);
+      obj.problem.solve(progress);
       pause(1);
       status = true;
     end
