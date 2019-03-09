@@ -3,14 +3,21 @@ classdef Problem < handle
   properties(SetAccess=private)
     type mp.ProblemType;
     model mp.FemModel;
+    geometry;
   end
   methods
-    function [obj] = Problem(type_)
+    function [obj] = Problem(type_, geometry)
       obj.type = type_;
+      if nargin > 1 
+        obj.setGeometry(geometry);
+      end  
     end
-    function setModel(obj, model_)
-      disp('Setting model');
-      obj.model = model_;
+    function setGeometry(obj, geometry)
+      if ischar(geometry)
+        obj.geometry = mp.GeomFactory.produce(geometry);
+      else
+        obj.geometry = geometry;
+      end
     end
     function solve(obj, progress)
       obj.buildMeshes(progress);
