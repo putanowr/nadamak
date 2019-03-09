@@ -18,7 +18,7 @@ classdef GeomFactory < handle
         tags = mp.GeomFactory.aliases(i, 2:end);
 	      idx = find(strcmpi(tags{:}, alias));
 	      if idx > 0
-	        className = [mp.GeomFactory.aliases{i, 1}, 'Geom']
+	        className = [mp.GeomFactory.aliases{i, 1}, 'Geom'];
 	        geom = mp.geoms.(className)(geomName);
 	        return
         end
@@ -29,7 +29,7 @@ classdef GeomFactory < handle
     % Return the main aliases for names of Geom classes.
     % The main aliases are used for instance in GUI labels.
       nc = size(mp.GeomFactory.aliases, 1);
-      mainakas = cell(1, nc)
+      mainakas = cell(1, nc);
       for i=1:nc
         tags = mp.GeomFactory.aliases{i, 2:end};
 	      mainakas{i} = tags{1};
