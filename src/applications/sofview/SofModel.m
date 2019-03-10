@@ -43,7 +43,8 @@ classdef SofModel < handle
       status = true;
     end
     function status = calculate(obj, progress)
-      obj.problem.solve(progress);
+      obj.problem.setProgressReporter(progress);
+      obj.problem.solve();
       pause(1);
       status = true;
     end
