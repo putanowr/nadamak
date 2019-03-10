@@ -12,7 +12,7 @@ classdef Problem < handle
       if nargin > 1 
         obj.setGeometry(geometry);
       end  
-      obj.progress = Progress();
+      obj.progress = mp.Progress();
     end
     function setProgressReporter(obj, reporter)
       obj.progress = reporter;
