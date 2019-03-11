@@ -35,6 +35,9 @@ classdef Problem < handle
         info = sprintf('Error: no mesh called %s', meshName);
       end
     end
+    function [mesh] = getMesh(obj, meshName)
+      mesh = obj.model.meshes.get(meshName);
+    end
     function registerMesh(obj, mesh, meshName)
       msg = sprintf('Registering mesh as: %s', meshName);
       obj.progress.report(obj.progress.fraction, msg);
