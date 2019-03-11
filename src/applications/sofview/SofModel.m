@@ -59,6 +59,12 @@ classdef SofModel < handle
       end
       info = obj.problem.meshInfo(meshName);
     end
+    function [mesh] = getMesh(obj, meshName)
+      if nargin < 2
+        meshName = obj.defaultMeshName;
+      end
+      mesh = obj.problem.getMesh(meshName);
+    end
     function [status, msg] = generateMesh(obj, meshParams, meshName)
       % For the geometry stored in FemModel generate mesh
       % and store it under given name. If name is not given
