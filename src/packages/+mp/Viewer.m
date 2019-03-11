@@ -25,7 +25,7 @@ classdef Viewer < handle
         obj.stacked = {};
     end
     function ax = myAX(obj)
-      if mp.Viewer.isAxis(obj.fig)
+      if mp.Viewer.isAxes(obj.fig)
         ax=obj.fig;
       else
         ax = gca;
@@ -35,7 +35,7 @@ classdef Viewer < handle
       if n > length(obj.stacked)
         error('Invalid index n=%d for stacked figure', n);
       end
-      if ~mp.Viewer.isAxis(obj.fig)
+      if ~mp.Viewer.isAxes(obj.fig)
         close(obj.fig)
       end
       obj.fig = obj.stacked{n}{1};
@@ -64,7 +64,7 @@ classdef Viewer < handle
       axis(obj.myAX(), 'equal');
     end
     function makeCurrent(obj)
-      if ~mp.Viewer.isAxis(obj.fig)
+      if ~mp.Viewer.isAxes(obj.fig)
         figure(obj.fig);
       end
     end
@@ -238,11 +238,11 @@ classdef Viewer < handle
     end
   end
   methods(Static)
-    function [status] = isAxis(handle)
+    function [status] = isAxes(handle)
       try
-        isAxes = strcmp(get(handle, 'type'), 'axes');
+        status = strcmp(get(handle, 'type'), 'axes');
       catch
-        isAxes = false;
+        status = false;
       end
     end
   end  
