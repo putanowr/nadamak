@@ -43,7 +43,7 @@ def get_matlab_demo_args(args):
   elif socket.gethostname() == 'LAP025':
     matlabCommand = 'O:/WinProgs/MATLAB/2018a/bin/matlab.exe'
   elif socket.gethostname() == 'krakus':
-    matlabCommand = 'matlab-2018a'
+    matlabCommand = 'matlab-R2018a'
   else:
     matlabCommand = 'matlab'
 
