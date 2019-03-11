@@ -9,9 +9,9 @@ classdef Problem < handle
   methods
     function [obj] = Problem(type_, geometry)
       obj.type = type_;
-      if nargin > 1 
+      if nargin > 1
         obj.setGeometry(geometry);
-      end  
+      end
       obj.progress = mp.Progress();
     end
     function setProgressReporter(obj, reporter)
@@ -23,6 +23,11 @@ classdef Problem < handle
       else
         obj.geometry = geometry;
       end
+    end
+    function registerMesh(obj, mesh, meshName)
+      msg = sprintf('Registering mesh as: %s', meshName);
+      obj.progress.report(obj.progress.fraction, msg);
+      obj.model.meshes.register(mesh, meshName);
     end
     function solve(obj)
       obj.buildMeshes();
@@ -45,6 +50,6 @@ classdef Problem < handle
     end
     function postprocess(obj)
       obj.progress.report(0.8, 'Postprocess');
-    end  
+    end
   end
 end
