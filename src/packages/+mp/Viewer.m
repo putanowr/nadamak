@@ -25,7 +25,7 @@ classdef Viewer < handle
         obj.stacked = {};
     end
     function ax = myAX(obj)
-      if isAxisHandle(obj.fig)
+      if mp.Viewer.isAxis(obj.fig)
         ax=obj.fig;
       else
         ax = gca;
@@ -35,7 +35,7 @@ classdef Viewer < handle
       if n > length(obj.stacked)
         error('Invalid index n=%d for stacked figure', n);
       end
-      if ~isAxisHandle(obj.fig)
+      if ~mp.Viewer.isAxis(obj.fig)
         close(obj.fig)
       end
       obj.fig = obj.stacked{n}{1};
@@ -64,7 +64,7 @@ classdef Viewer < handle
       axis(obj.myAX(), 'equal');
     end
     function makeCurrent(obj)
-      if ~isAxisHandle(obj.fig)
+      if ~mp.Viewer.isAxis(obj.fig)
         figure(obj.fig);
       end
     end
@@ -237,6 +237,11 @@ classdef Viewer < handle
       clf(obj.fig)
     end
   end
+  methods(Static)
+    function [status] = isAxis(handle)
+      status = strcmp(get(handle, 'type'), 'figure');
+    end
+  end  
   methods(Access=private)
     function drawStarItem(obj, mesh, itemDim, nodes, isSeed)
       obj.makeCurrent();
