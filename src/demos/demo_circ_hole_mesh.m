@@ -26,7 +26,7 @@ gmshgeom = mp_geom_circ_hole(params);
 %
 figure(1);
 clf;
-mp_plot_mesh(nodes, elements);
+mp_plot_mesh(gca, nodes, elements);
 axis('equal')
 saveas(gcf(), 'circ_hole.png');
 % Register demo status

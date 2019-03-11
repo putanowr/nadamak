@@ -100,7 +100,7 @@ iElems = mesh.findElems(struct('region', iID));
 
 fprintf('Number of elements on interface: %d\n', length(iElems));
 
-h = mp_plot_edges(mesh.nodes, mesh.elements, struct('region', 6));
+h = mp_plot_edges(gca, mesh.nodes, mesh.elements, struct('region', 6));
 set(h, 'EdgeColor', 'red', 'LineWidth', 2);
 
 edges = mesh.edgesFromElems(iElems);

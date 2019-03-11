@@ -38,7 +38,7 @@ meshingParams.lc = 0.4
 %% Visualize mesh
 figure(1);
 clf;
-mp_plot_mesh(nodes, elements); 
+mp_plot_mesh(gca, nodes, elements); 
 axis('equal')
 saveas(gcf(), 'lshape.png');
 % Report demo status

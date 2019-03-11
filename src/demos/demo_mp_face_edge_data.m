@@ -65,7 +65,7 @@ quiver(quiverPoint(:,1), quiverPoint(:,2), tan(:,1), tan(:,2), 0.3, 'LineWidth',
 quiver(quiverPoint(:,1), quiverPoint(:,2), nor(:,1), nor(:,2), 0.3, 'LineWidth', 1, 'Color', 'blue');
 %%
 % Plot labels indicating if elemen edge is boundary edge
-mp_plot_labels(labelCoords, struct('labels', labels, 'Color', 'yellow', 'FontSize', 12));
+mp_plot_labels(gca, labelCoords, struct('labels', labels, 'Color', 'yellow', 'FontSize', 12));
 
 
 %%

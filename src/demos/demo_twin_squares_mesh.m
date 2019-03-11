@@ -32,7 +32,7 @@ gmshgeom = mp_geom_twin_squares(params);
 %% Visualize mesh
 figure(1);
 clf;
-mp_plot_mesh(nodes, elements);
+mp_plot_mesh(gca, nodes, elements);
 
 axis('equal')
 saveas(gcf(), 'twin_squares.png');

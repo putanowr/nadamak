@@ -33,7 +33,7 @@ meshingParams.quadsonly = true;
 % 
 figure(1);
 clf;
-mp_plot_mesh(nodes, elements);
+mp_plot_mesh(gca, nodes, elements);
 axis('equal')
 saveas(gcf(), 'quads_circ_hole.png');
 
@@ -46,7 +46,7 @@ meshingParams.quadsonly = false;
 % 
 figure(2);
 clf;
-mp_plot_mesh(nodes, elements); 
+mp_plot_mesh(gca, nodes, elements); 
 axis('equal')
 saveas(gcf(), 'tri_circ_hole.png');
 % Report demo status

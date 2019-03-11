@@ -51,7 +51,7 @@ hold on
 for i=1:3
   pb = subMesh.nodes(i,:);
   pe = mesh.nodes(subMesh.parentNodesMap(i),:);
-  mp_plot_spline_arc(pb, pe, -0.2, 8, 4);
+  mp_plot_spline_arc(gca, pb, pe, -0.2, 8, 4);
 end
 
 viewer.showCellEdges = true;
@@ -73,7 +73,7 @@ hold on
 for i=[1, 5, 7]
   pb = subMesh.elemsCenters(i);
   pe = mesh.elemsCenters(subMesh.parentElemsMap(i));
-  handles = mp_plot_spline_arc(pb.Data, pe.Data, -0.3, 8, 4);
+  handles = mp_plot_spline_arc(gca, pb.Data, pe.Data, -0.3, 8, 4);
   set(handles.lines, 'Color', 'red');
   set(handles.arrows, 'Color', 'red');
 end

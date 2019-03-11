@@ -29,7 +29,7 @@ gmshgeom = mp_geom_rectangle([0,0], [2,1], struct('lc', 0.15));
 % use mp_plot_mesh.
 figure(1);
 clf;
-ghandles = mp_plot_mesh(nodes, elements);
+ghandles = mp_plot_mesh(gca, nodes, elements);
 axis('equal')
 saveas(gcf, 'demo_rectangle_mesh.png');
 % Report demo status
