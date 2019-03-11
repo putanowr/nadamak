@@ -4,7 +4,7 @@
 
 figure(1);
 clf;
-ghandles = mp_plot_mesh(gac, nodes, elements);
+ghandles = mp_plot_mesh(gca, nodes, elements);
 mp_plot_labels(gca, ghandles.elements, struct('Color', 'red'));
 mp_plot_labels(gca, ghandles.nodes);
 axis('equal')
