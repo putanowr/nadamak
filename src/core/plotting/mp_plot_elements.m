@@ -1,7 +1,7 @@
 %% Plot elements of 2D mesh
 % By default this function plots 2D elements. By specifying structure
 % of parameters it is possible to force plotting of only 1D elements.
-function [handle] = mp_plot_elements(nodes, elements, varargin)
+function [handle] = mp_plot_elements(ax, nodes, elements, varargin)
   param.dim = 2;
   if ~isempty(varargin)
     param.dim = mp_get_option(varargin{1}, 'dim', param.dim);
@@ -26,11 +26,11 @@ function [handle] = mp_plot_elements(nodes, elements, varargin)
     end
   end
   if isa(nodes, 'mp.SharedArray')
-    handle = patch('Faces', faces, 'Vertices', nodes.Data, 'FaceVertexCData', colors,'FaceColor', 'flat'); 
+    handle = patch(ax, 'Faces', faces, 'Vertices', nodes.Data, 'FaceVertexCData', colors,'FaceColor', 'flat');
   else
-    handle = patch('Faces', faces, 'Vertices', nodes, 'FaceVertexCData', colors, 'FaceColor', 'flat');
+    handle = patch(ax, 'Faces', faces, 'Vertices', nodes, 'FaceVertexCData', colors, 'FaceColor', 'flat');
   end
-    set(handle, 'UserData', facesId);
+  set(handle, 'UserData', facesId);
 end
 function con = remap(C)
   if length(C) == 6
