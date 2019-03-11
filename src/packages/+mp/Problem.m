@@ -13,6 +13,7 @@ classdef Problem < handle
         obj.setGeometry(geometry);
       end
       obj.progress = mp.Progress();
+      obj.model = mp.FemModel();
     end
     function setProgressReporter(obj, reporter)
       obj.progress = reporter;
@@ -22,6 +23,16 @@ classdef Problem < handle
         obj.geometry = mp.GeomFactory.produce(geometry);
       else
         obj.geometry = geometry;
+      end
+    end
+    function [info] = meshInfo(obj, meshName)
+      if obj.model.meshes.hasMesh(meshName)
+        mh = obj.model.meshes.get(meshName);
+        nnodes = mh.nodesCount();
+        nelems = mh.perDimCount(obj.geometry.dim);
+        info = sprintf('Nodes: %d  Elements %d', nnodes, nelems);
+      else
+        info = sprintf('Error: no mesh called %s', meshName);
       end
     end
     function registerMesh(obj, mesh, meshName)
