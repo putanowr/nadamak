@@ -35,6 +35,7 @@ function [mypathstr] = nadamak_environ()
                  fullfile('core', 'setup');
                  fullfile('core', 'utils');
                  'demos';
+                 fullfile('applications', 'sofview');
                  };
   codeFolders = strcat(mypathstr, sep, codeFolders);
   addpath(codeFolders{:})
