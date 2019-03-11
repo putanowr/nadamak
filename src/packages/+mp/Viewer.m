@@ -239,7 +239,11 @@ classdef Viewer < handle
   end
   methods(Static)
     function [status] = isAxis(handle)
-      status = strcmp(get(handle, 'type'), 'figure');
+      try
+        isAxes = strcmp(get(handle, 'type'), 'axes');
+      catch
+        isAxes = false;
+      end
     end
   end  
   methods(Access=private)
