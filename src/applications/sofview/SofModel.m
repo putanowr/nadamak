@@ -5,7 +5,9 @@ classdef SofModel < handle
     project mp.Project
     problem
   end
-
+  properties(Constant)
+    defaultMeshName = 'mainmesh';
+  end
   methods
     function obj = SofModel()
       %UNTITLED Construct an instance of this class
@@ -16,6 +18,9 @@ classdef SofModel < handle
       obj.project = mp.Project();
       obj.problem = mp.ProblemFactory.produce('mechanical', ...
                     struct('geometry', 'square'));
+    end
+    function [dim] = geometryDim(obj)
+      dim = obj.problem.geometry.dim();
     end
     function [names] = regionNames(obj)
       names = obj.problem.geometry.regions();
@@ -48,21 +53,30 @@ classdef SofModel < handle
       pause(1);
       status = true;
     end
+    function [info] = meshInfo(obj, meshName)
+      if nargin < 3
+        meshName = obj.defaultMeshName;
+      end
+      info = obj.problem.meshInfo(meshName);
+    end
     function [status, msg] = generateMesh(obj, meshParams, meshName)
       % For the geometry stored in FemModel generate mesh
       % and store it under given name. If name is not given
       % 'mainmesh' is used.
       if nargin < 3
-        meshName = 'mainmesh';
+        meshName = obj.defaultMeshName;
       end
       mesher = mp.Mesher();
       try
         mesh = mesher.generate(obj.problem.geometry, meshParams);
-        obj.problem.registerMesh(mesh, meshName);
       catch ME
         status = false;
         msg = ME.message;
+        return
       end
+      msg = 'Mesh generated OK';
+      status = true;
+      obj.problem.registerMesh(mesh, meshName);
     end
   end
 end
