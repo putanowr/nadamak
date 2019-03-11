@@ -1,11 +1,12 @@
 classdef MeshRegistry < handle
   % MeshRegistry Manages meshes used in FemModel.
   properties (Access=private)
-    meshes=struct() % Structure with fields being registred meshes
-                    % This structure works as C++ std::map
+    meshes struct % Structure with fields being registred meshes
+                  % This structure works as C++ std::map
   end
   methods
     function [obj] = MeshRegistry()
+      obj.meshes = struct();
     end
     function register(obj, mesh, name)
       obj.meshes.(name) = mesh;
