@@ -48,6 +48,22 @@ classdef SofModel < handle
       pause(1);
       status = true;
     end
+    function [status, msg] = generateMesh(obj, meshParams, meshName)
+      % For the geometry stored in FemModel generate mesh
+      % and store it under given name. If name is not given
+      % 'mainmesh' is used.
+      if nargin < 3
+        meshName = 'mainmesh';
+      end
+      mesher = mp.Mesher();
+      try
+        mesh = mesher.generate(obj.problem.geometry, meshParams);
+        obj.problem.registerMesh(mesh, meshName);
+      catch ME
+        status = false;
+        msg = ME.message;
+      end
+    end
   end
 end
 
