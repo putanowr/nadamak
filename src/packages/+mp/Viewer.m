@@ -50,6 +50,15 @@ classdef Viewer < handle
        obj.handles = struct();
        obj.mesh = [];
     end
+    function turnEdges(obj, how)
+      obj.turn('edges', how)
+    end
+    function turnNodes(obj, how)
+      obj.turn('nodes', how)
+    end
+    function turnFaces(obj, how)
+      obj.turn('elements', how)
+    end
     function show(obj, mesh, varargin)
       obj.makeCurrent();
       obj.mesh = mesh;
@@ -236,7 +245,24 @@ classdef Viewer < handle
     function clear(obj)
       clf(obj.fig)
     end
+    function turn(obj, what, how)
+      if ischar(how)
+        if ~find(contains({'on', 'off'}, how))
+          error('Invalid Vierer turn switch: %s', how);
+        end
+      else
+        if how
+          how = 'on';
+        else
+          how = 'off';
+        end
+      end
+      if isfield(obj.handles, what)
+        set(obj.handles.(what), 'Visible', how)
+      end
+    end   
   end
+
   methods(Static)
     function [status] = isAxes(handle)
       try
