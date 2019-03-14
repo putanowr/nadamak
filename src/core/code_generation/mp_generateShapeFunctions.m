@@ -1,5 +1,8 @@
-function status = mp_generateShapeFunctions(pth)
+function status = mp_generateShapeFunctions(pth, verbose)
 % Write *.m files with definition of shape functions for Nadamak FEMs.
+    if nargin < 2
+      verbose = false;
+    end
     syms x y z
     sfDefs.Line2.sf = [1-x, x];
     sfDefs.Quad4.sf = [(1-x).*(1-y), x.*(1-y),x.*y, y.*(1-x)];
@@ -18,17 +21,18 @@ function status = mp_generateShapeFunctions(pth)
     sf(10) =  27*x.*y.*z;
     sfDefs.Triang10.sf = sf;
 
-    fprintf('Generating code for shape functions in : %s\n', pth);
+    if verbose
+      fprintf('Generating code for shape functions in : %s\n', pth);
+    end
     for fem = enumeration('mp.FEM.FemType')'
-        name = sprintf('%s', fem);
-        fprintf('   Generate shape functions for : %s\n', name);
-        writeSf(sfDefs.(name), name, pth);
-	writeSfDeriv(sfDefs.(name), name, pth);
+        name = sprintf('%s', fem);        
+        writeSf(verbose, sfDefs.(name), name, pth);
+        writeSfDeriv(verbose, sfDefs.(name), name, pth);
     end
     status = true;
 end
 
-function writeSf(sfDef, name, pth)
+function writeSf(verbose, sfDef, name, pth)
   syms x y z w
   fem = mp.FEM.FemType(name);
   if length(sfDef.sf) ~= fem.numOfDofs
@@ -36,7 +40,13 @@ function writeSf(sfDef, name, pth)
           length(sfDef), fem.numOfDofs);
   end
   fname = sprintf('sf%s.m', name);
-  fpath = fullfile(pth, fname);
+  fpath = fullfile(pth, fname);  
+  if isfile(fpath)
+    if verbose 
+      fprintf('    Shape fuction for %s already exists ... SKIPPED\n', name);
+      return;
+    end
+  end
   aa = sym('x', [1,3]);
   switch(fem.dim)
       case 1
@@ -49,9 +59,12 @@ function writeSf(sfDef, name, pth)
         fs(x,y,z) = subs(sfDef.sf, w, 1-x-y-z);
         matlabFunction(fs(aa(1), aa(2), aa(3)), 'file', fpath, 'var', {aa});
   end
+  if verbose
+    fprintf('    Generating shape function for %s ... OK\n', name);
+  end
 end
 
-function writeSfDeriv(sfDef, name, pth)
+function writeSfDeriv(verbose, sfDef, name, pth)
   syms x y z w
   fem = mp.FEM.FemType(name);
   if length(sfDef.sf) ~= fem.numOfDofs
@@ -60,10 +73,16 @@ function writeSfDeriv(sfDef, name, pth)
   end
   fname = sprintf('sfDeriv%s.m', name);
   fpath = fullfile(pth, fname);
+  if isfile(fpath)
+    if verbose 
+      fprintf('    Shape derivatives for %s already exists ... SKIPPED\n', name);
+      return;
+    end
+  end
   aa = sym('x', [1,3]);
   switch(fem.dim)
       case 1
-        fs = sfDef.sf
+        fs = sfDef.sf;
         fsD(x)  = diff(fs, x);
         matlabFunction(fsD(aa(1)), 'file', fpath, 'var', {aa});
       case 2
@@ -79,5 +98,8 @@ function writeSfDeriv(sfDef, name, pth)
 	fsDz = diff(fs, z);
 	fsD(x,y,z) = [fsDx; fsDy; fsDz];
         matlabFunction(fsD(aa(1), aa(2), aa(3)), 'file', fpath, 'var', {aa});
+  end
+  if verbose
+    fprintf('    Generating derivatives for %s ... OK\n', name);
   end
 end
