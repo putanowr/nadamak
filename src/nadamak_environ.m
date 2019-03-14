@@ -1,4 +1,4 @@
-function [mypathstr] = nadamak_environ()
+function [mypathstr] = nadamak_environ(params)
 % nadamak_environ - set environment to make possible running tests.
 % This account to adding paths for Matlab to find required m-files
 % of Nanamak code. 
@@ -15,6 +15,10 @@ function [mypathstr] = nadamak_environ()
     return
   end
   mypathstr = pth;  
+  if nargin < 1
+    params = struct;
+  end
+ 
   % Path to nadamak_environ folder
   addpath(mypathstr);
   % Essential bootstrap code
@@ -57,6 +61,8 @@ function [mypathstr] = nadamak_environ()
   addpath(codeFolders{:})
 
   % generate some source codes
+  verbose = mp_get_option(params, 'verbose', false);
+  
   pth = fullfile(mypathstr, 'packages', '+mp', '+FEM');
-  mp_generateShapeFunctions(pth);
+  mp_generateShapeFunctions(pth, verbose);
 end
