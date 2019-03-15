@@ -7,9 +7,9 @@ classdef BcType < int32
     Insulation        (3)
     Displacement      (10)
     Fixity            (11)
-    XFixity           (12)
-    YFixity           (13)
-    ZFixity           (14)
+    FixityX           (12)
+    FixityY           (13)
+    FixityZ           (14)
     Pressure          (20)
     Traction          (21)
   end
