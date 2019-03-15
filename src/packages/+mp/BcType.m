@@ -1,6 +1,7 @@
 classdef BcType < int32
   % Numeric tags types of boundary conditions.
   enumeration
+    NotSet            (0)
     Temperature       (1)
     HeatFlux          (2)
     Insulation        (3)
