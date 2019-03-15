@@ -33,8 +33,8 @@ classdef BcFactory < handle
     end
     function [validbc] = validBcForDisplacement()
       validbc = [mp.BcType.NotSet, mp.BcType.Displacement, mp.BcType.Fixity,...
-                 mp.BcType.XFixity, mp.BcType.YFixity, mp.BcType.YFixity,...
-                 mp.BcType.ZFixity, mp.BcType.Pressure, mp.BcType.Traction];
+                 mp.BcType.FixityX, mp.BcType.FixityY, mp.BcType.FixityZ,...
+                 mp.BcType.Pressure, mp.BcType.Traction];
     end
     function [validbc] = validBcForTemperature()
       validbc = [mp.BcType.NotSet, mp.BcType.HeatFlux, mp.BcType.Insulation];
