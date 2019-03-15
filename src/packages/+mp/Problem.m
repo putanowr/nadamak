@@ -6,6 +6,9 @@ classdef Problem < handle
     geometry;
     progress mp.Progress;
   end
+  properties(Access=private)
+    bc       mp.BcRegistry;
+  end
   methods
     function [obj] = Problem(type_, geometry)
       obj.type = type_;
@@ -14,7 +17,18 @@ classdef Problem < handle
       end
       obj.progress = mp.Progress();
       obj.model = mp.FemModel();
+      obj.bc = mp.BcRegistry();
     end
+    function setBc(obj, region, bc)
+      obj.bc.register(region, bc);
+    end
+    function bc = getBc(obj, region)
+      bc = obj.bc.getBc(region);
+    end
+    function status = hasBc(obj, region)
+      status = obj.bc.hasBc(region);
+    end
+      
     function setProgressReporter(obj, reporter)
       obj.progress = reporter;
     end
