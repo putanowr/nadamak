@@ -7,7 +7,7 @@ classdef BcFactory < handle
   methods(Static)
     function [bc] = produce(bcname, varname, params)
       bcname = sprintf('%s', bcname);
-      vbc = validBc(varname);
+      vbc = mp.BcFactory.validBc(varname);
       idx = find( vbc == bcname);
       if idx > 0
         bcclass = sprintf('Bc%s', bcname);
@@ -33,7 +33,7 @@ classdef BcFactory < handle
     end
     function [validbc] = validBcForDisplacement()
       validbc = [mp.BcType.NotSet, mp.BcType.Displacement, mp.BcType.Fixity,...
-                 mp.BcType.FixityX, mp.BcType.FixityY, mp.BcType.FixityZ,...
+                 mp.BcType.FixityX, mp.BcType.Fixit mp.BcType.FixityZ,...
                  mp.BcType.Pressure, mp.BcType.Traction];
     end
     function [validbc] = validBcForTemperature()

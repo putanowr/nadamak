@@ -10,7 +10,7 @@ classdef BoundaryCondition < handle
       obj.variable  = variable;
     end
   end
-  methods(Abstact)
+  methods(Abstract)
     [status] = validate(obj, params);    
   end
 end

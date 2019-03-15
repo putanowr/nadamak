@@ -4,7 +4,7 @@ classdef BcInsulation < mp.BoundaryCondition
       obj = obj@mp.BoundaryCondition(mp.BcType.Insulation, variable, params);
     end
     function [status] = validate(obj, params)
-      return true;
+      status = true;
     end
   end
 end

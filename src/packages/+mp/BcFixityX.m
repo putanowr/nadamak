@@ -4,7 +4,7 @@ classdef BcFixityX < mp.BoundaryCondition
       obj = obj@mp.BoundaryCondition(mp.BcType.FixityX, variable, params);
     end
     function [status] = validate(obj, params)
-      return true;
+      status = true;
     end
   end
 end

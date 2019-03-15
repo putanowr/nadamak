@@ -4,7 +4,7 @@ classdef BcTraction < mp.BoundaryCondition
       obj = obj@mp.BoundaryCondition(mp.BcType.Traction, variable, params);
     end
     function [status] = validate(obj, params)
-      return true;
+      status = true;
     end
   end
 end

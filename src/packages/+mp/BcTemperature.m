@@ -4,7 +4,7 @@ classdef BcTemperature < mp.BoundaryCondition
       obj = obj@mp.BoundaryCondition(mp.BcType.Temperature, variable, params);
     end
     function [status] = validate(obj, params)
-      return true;
+      status = true;
     end
   end
 end
