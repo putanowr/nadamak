@@ -19,16 +19,21 @@ classdef Problem < handle
       obj.model = mp.FemModel();
       obj.bc = mp.BcRegistry();
     end
-    function setBc(obj, region, bc)
-      obj.bc.register(region, bc);
+    function writeBc(obj, fid)
+      obj.bc.writeBc(fid);
     end
-    function bc = getBc(obj, region)
-      bc = obj.bc.getBc(region);
+    function setBc(obj, regionName, bc)
+      obj.bc.register(regionName, bc);
     end
-    function status = hasBc(obj, region)
-      status = obj.bc.hasBc(region);
+    function bc = getBc(obj, regionName, variableName)
+      % Return boundary condition on given region for given variable.
+      % If variableName is empty or not set then it returns struct
+      % of all boundary conditions set on given region.
+      bc = obj.bc.get(regionName, variableName);
     end
-      
+    function status = hasBc(obj, region, variableName)
+      status = obj.bc.hasBc(region, variableName);
+    end
     function setProgressReporter(obj, reporter)
       obj.progress = reporter;
     end
