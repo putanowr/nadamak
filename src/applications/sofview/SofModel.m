@@ -25,6 +25,23 @@ classdef SofModel < handle
     function [names] = regionNames(obj)
       names = obj.problem.geometry.regions();
     end
+    function writeBc(obj, fid)
+      obj.problem.writeBc(fid);
+    end
+    function [status, msg] = setBc(obj, regionName, variableName, bcName, params)
+      status = true;
+      msg = sprintf('Set BC on "%s" to "%s"', regionName, bcName);
+      bc = mp.BcFactory.produce(bcName, variableName, params);
+      obj.problem.setBc(regionName, bc);
+    end
+    function[bcName] = getBcName(obj, regionName, variableName)
+      type = mp.BcType.NotSet;
+      if obj.problem.hasBc(regionName, variableName)
+        bc = obj.problem.getBc(regionName, variableName);
+        type = bc.type;
+      end
+      bcName = char(type);
+    end
     function [status, msg] = setProblem(obj, problemName, geomName)
       status = true;
       msg = 'Geometry object created OK';
