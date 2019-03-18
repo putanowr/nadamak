@@ -5,27 +5,50 @@ classdef BcRegistry < handle
                   % This structure works as C++ std::map
   end
   methods
-    function [obj] = MeshRegistry()
+    function [obj] = BcRegistry()
       obj.registry = struct();
     end
     function register(obj, region, bc)
-      obj.registry.(region) = bc;
+      variableName = bc.variable;
+      if ~isfield(obj.registry, region)
+         obj.registry.(region) = struct();
+      end
+      obj.registry.(region).(variableName) = bc;
     end
-    function [bchandle] = get(obj, region)
-      bchandle = obj.registry.(name);
+    function writeBc(obj, fid)
+      rn = fieldnames(obj.registry);
+      for regionName = rn'
+        fprintf(fid, 'Region: %s\n', regionName{:});
+        vns = fieldnames(obj.registry.(regionName{:}));
+        for vn = vns'
+          bc = obj.registry.(regionName{:}).(vn{:});
+          fprintf('  V: %s  BC: %s\n', bc.variable, char(bc.type));
+        end
+      end
     end
-    function [flag] = hasBc(obj, region)
+    function [bchandle] = get(obj, regionName, variableName)
+      if isempty(variableName)
+        bchandle = obj.registry.(regionName);
+      else
+        bchandle = obj.registry.(regionName).(variableName);
+      end
+    end
+    function [flag] = hasBc(obj, region, variableName)
       % Return true region has assigned boundary condition.
+      % If variableName is empty or not given the it checks
+      % for any active BC on region. Otherwise checks for
+      % active BC on given region for given variable.
       flag = isfield(obj.registry, region);
       if flag
-        for bc = obj.registry.(region)
-          if bc.type ~= mp.BcType.NotSet
-            flag = true;
+        vns = fieldnames(obj.registry.(region));
+        for vn = vns'
+          bc = obj.registry.(region).(vn{:});
+          flag = bc.isActive(variableName);
+          if flag
             return
           end
         end
-        flag = false;
       end
     end
-  end
+  end % methods
 end
