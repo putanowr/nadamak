@@ -29,7 +29,7 @@ classdef BcFactory < handle
           return
         end
       end
-      error('Variable "%s" has not valid BCs', alias);
+      error('Variable "%s" has not valid BCs', varname);
     end
     function [validbc] = validBcForDisplacement()
       validbc = [mp.BcType.NotSet, mp.BcType.Displacement, mp.BcType.Fixity,...
