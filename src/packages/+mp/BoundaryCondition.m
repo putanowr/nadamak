@@ -5,9 +5,20 @@ classdef BoundaryCondition < handle
     variable  
   end
   methods
-    function [obj] = BoundaryCondition(type, variable, params)
+    function [obj] = BoundaryCondition(type, variableName, params)
       obj.type = type;
-      obj.variable  = variable;
+      obj.variable  = variableName;
+    end
+    function flag = isActive(obj, variableName)
+      % Return true if BC is set for variable
+      if obj.type == mp.BcType.NotSet
+        flag = false;
+      else
+        flag = true;
+        if ~isempty(variableName)
+          flag = strcmp(obj.variable, variableName);
+        end
+      end
     end
   end
   methods(Abstract)
