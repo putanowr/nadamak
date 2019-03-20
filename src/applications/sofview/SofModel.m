@@ -101,6 +101,10 @@ classdef SofModel < handle
       status = true;
       obj.problem.registerMesh(mesh, meshName);
     end
+    function buildProject(obj)
+      obj.project = mp.Project();
+      obj.problem.exportToProject(obj.project);
+    end
   end
 end
 
