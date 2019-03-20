@@ -5,9 +5,7 @@ classdef Problem < handle
     model mp.FemModel;
     geometry;
     progress mp.Progress;
-  end
-  properties(Access=private)
-    bc       mp.BcRegistry;
+    bc mp.BcRegistry;
   end
   methods
     function [obj] = Problem(type_, geometry)
@@ -18,6 +16,11 @@ classdef Problem < handle
       obj.progress = mp.Progress();
       obj.model = mp.FemModel();
       obj.bc = mp.BcRegistry();
+    end
+    function exportToProject(obj, project)
+      project.data.GeometryType = obj.geometry.projectName;
+      project.data.ProblemType = char(obj.type);
+      obj.bc.exportToProject(project);
     end
     function writeBc(obj, fid)
       obj.bc.writeBc(fid);
