@@ -13,17 +13,22 @@ classdef GeomModel < handle
   methods
     function [obj] = GeomModel(name, dim, legacyID)
       obj.dim = dim;
-      obj.legacyID = legacyID; 
+      obj.legacyID = legacyID;
       obj.name = name;
     end
     function [geomgmsh] = as_gmsh(obj)
       tpl = fileread(fullfile(obj.templateDir, obj.templateName()));
       geomgmsh = mp_tpl_substitute(tpl, obj.params);
     end
-  end 
+    function [name] = projectName(obj)
+      cln = class(obj);
+      pth = split(cln, '.');
+      name = mp.GeomFactory.projectName(pth{end});
+    end
+  end
   methods (Abstract)
     [lc] = coarsest_lc()
     [name] = templateName()
-    [regionNames] = regions() 
+    [regionNames] = regions()
   end
 end
