@@ -15,6 +15,18 @@ classdef BcRegistry < handle
       end
       obj.registry.(region).(variableName) = bc;
     end
+    function exportToProject(obj, project)
+      project.data.BC = obj.registry;
+      rn = fieldnames(obj.registry);
+      for regionName = rn'
+        project.data.BC.(regionName{:}) = struct()
+        vns = fieldnames(obj.registry.(regionName{:}));
+        for vn = vns'
+          bc = obj.registry.(regionName{:}).(vn{:});
+          project.data.BC.(regionName{:}).(bc.variable) = char(bc.type);
+          end
+      end
+    end
     function writeBc(obj, fid)
       rn = fieldnames(obj.registry);
       for regionName = rn'
