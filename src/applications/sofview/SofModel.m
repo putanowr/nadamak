@@ -28,13 +28,19 @@ classdef SofModel < handle
     function writeBc(obj, fid)
       obj.problem.writeBc(fid);
     end
-    function [status, msg] = setBc(obj, regionName, variableName, bcName, params)
+    function [status, msg, bc] = setBc(obj, regionName, variableName, bcName, params)
       status = true;
       msg = sprintf('Set BC on "%s" to "%s"', regionName, bcName);
       bc = mp.BcFactory.produce(bcName, variableName, params);
       obj.problem.setBc(regionName, bc);
     end
-    function[bcName] = getBcName(obj, regionName, variableName)
+    function [bc] = getBc(obj, regionName, variableName)
+      bc = [];
+      if obj.problem.hasBc(regionName, variableName)
+        bc = obj.problem.getBc(regionName, variableName);
+      end
+    end
+    function [bcName] = getBcName(obj, regionName, variableName)
       type = mp.BcType.NotSet;
       if obj.problem.hasBc(regionName, variableName)
         bc = obj.problem.getBc(regionName, variableName);
