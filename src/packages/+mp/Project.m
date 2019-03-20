@@ -12,6 +12,14 @@ classdef Project < handle
     end
   end
   methods
+    function makeEmpty(obj)
+      obj.data.Meta = struct();
+      obj.data.Geometry = struct();
+      obj.data.Mesh = struct();
+      obj.data.BC = struct();
+      obj.data.Material = struct();
+      obj.data.Solver = struct();
+    end
     function read(obj, fnameOrHandle)
       [fid, needclose] = mp_get_fid(fnameOrHandle, 'r');
       [~,~,ext] = fileparts(fopen(fid));
@@ -24,8 +32,12 @@ classdef Project < handle
         fclose(fid);
       end
     end
-    function readJSON(self,fid)
-      self.data = jsondecode(fileread(fopen(fid)));
-    end    
+    function readJSON(obj,fid)
+      obj.data = jsondecode(fileread(fopen(fid)));
+    end
+    function writeJSON(obj, fid)
+      fid = fopen(fid, 'w');
+      fprintf(fid, jsonencode(obj.data));
+    end
   end
 end
