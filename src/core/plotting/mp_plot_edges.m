@@ -1,8 +1,8 @@
 %% Plot elements of 2D mesh
 %
-function [handle] = mp_plot_edges(nodes, elements, varargin)
+function [handle] = mp_plot_edges(ax, nodes, elements, varargin)
   tpd = mp_gmsh_types_per_dim();
-  if nargin > 2
+  if nargin > 3
     selector = varargin{1};
   else
     selector = struct();
@@ -30,6 +30,6 @@ function [handle] = mp_plot_edges(nodes, elements, varargin)
   end
   S.FaceColor = 'none';
   S.EdgeColor = 'green';
-  handle = patch(S); 
+  handle = patch(ax, S); 
   set(handle, 'UserData', facesId);
 end

@@ -15,7 +15,7 @@ for i=1:length(mesh_names)
   figure(i)
   clf;
   title(name);
-  mp_plot_mesh(nodes, elements);
+  mp_plot_mesh(gca, nodes, elements);
   axis('equal')
   figname = [name, '.png'];
   saveas(gcf, figname);

@@ -38,7 +38,7 @@ gmshgeom = mp_geom_voids2D(voids, params);
 %% Visualize mesh
 figure(1);
 clf;
-mp_plot_mesh(nodes, elements);
+mp_plot_mesh(gca, nodes, elements);
 
 axis('equal')
 saveas(gcf(), 'voids2D.png');

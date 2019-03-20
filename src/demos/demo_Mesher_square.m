@@ -29,7 +29,7 @@ mesh = mesher.generate(geom, struct('lc', 0.5));
 % The simplest way to visaulize mp_plot_mesh.
 figure(1);
 clf;
-ghandles = mp_plot_mesh(mesh.nodes, mesh.elements);
+ghandles = mp_plot_mesh(gca, mesh.nodes, mesh.elements);
 axis('equal')
 saveas(gcf, 'demo_square_mesh.png');
 % Report demo status

@@ -4,9 +4,9 @@
 
 figure(1);
 clf;
-ghandles = mp_plot_mesh(nodes, elements);
-mp_plot_labels(ghandles.elements, struct('Color', 'red'));
-mp_plot_labels(ghandles.nodes);
+ghandles = mp_plot_mesh(gca, nodes, elements);
+mp_plot_labels(gca, ghandles.elements, struct('Color', 'red'));
+mp_plot_labels(gca, ghandles.nodes);
 axis('equal')
 saveas(gcf, 'demo_labels.png');
 % Report demo status

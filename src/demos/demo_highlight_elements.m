@@ -14,7 +14,7 @@ gmshgeom = mp_geom_rectangle([0,0], [2,1], struct('lc', 0.15));
 % objects that represent nodes and elements.
 figure(1);
 clf;
-h = mp_plot_mesh(nodes, elements);
+h = mp_plot_mesh(gca, nodes, elements);
 axis('equal')
 
 %% Highlight elements by color

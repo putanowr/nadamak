@@ -12,7 +12,7 @@
 %      * yOffset - fraction of Y-coords span to offset labels.
 %      * labels - array of integer labels to be plotted.
 %      * Color - color of the labels.
-function [handles] = mp_plot_labels(handleOrCoords, varargin)
+function [handles] = mp_plot_labels(ax, handleOrCoords, varargin)
   if isgraphics(handleOrCoords)
     xyu = get(handleOrCoords, {'XData', 'YData', 'UserData'});
     x = xyu{1};
@@ -23,7 +23,7 @@ function [handles] = mp_plot_labels(handleOrCoords, varargin)
     y = handleOrCoords(:,2)';
     ids = 1:length(x);
   end
-  if nargin > 1
+  if nargin > 2
     color = mp_get_option(varargin{1}, 'Color', 'red');
     xOffset = mp_get_option(varargin{1}, 'xOffset', 0.0);
     yOffset = mp_get_option(varargin{1}, 'yOffset', 0.0);
@@ -50,5 +50,5 @@ function [handles] = mp_plot_labels(handleOrCoords, varargin)
   end
   x = mean(x,1)+xf;
   y = mean(y,1)+yf;
-  handles = text(x,y, s, 'Color', rgbColor, 'FontSize', fontSize, 'HorizontalAlignment', 'center');
+  handles = text(ax, x,y, s, 'Color', rgbColor, 'FontSize', fontSize, 'HorizontalAlignment', 'center');
 end

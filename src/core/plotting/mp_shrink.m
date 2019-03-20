@@ -4,7 +4,7 @@
 %                      or mp_plot_mesh()
 %   * elementNumbers - elements to be highlighted
 function mp_highlight_elements(graphicsHandle, elementNumbers, colorOrOptions)
-  if nargin < 3
+  if nargin < 4
     hcolor = 'red';
   else
     hcolor = mp_get_option(colorOrOptions, 'elementHiglightColor', 'red');

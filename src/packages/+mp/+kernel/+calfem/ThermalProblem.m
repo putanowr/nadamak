@@ -5,7 +5,7 @@ classdef ThermalProblem < mp.Problem
       obj = obj@mp.Problem(mp.ProblemType.Thermal, geometry);
     end
     function assembly(obj, progress)
-      progress.report(0.3, 'Assembly in Calfem kernel');
+      obj.progress.report(0.3, 'Assembly in Calfem kernel');
     end
   end
 end

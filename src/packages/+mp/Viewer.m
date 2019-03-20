@@ -1,8 +1,8 @@
 classdef Viewer < handle
-  % Manages mesh generation process 
+  % Manages mesh generation process
   properties(Access=private)
       mesh;
-      fig; 
+      fig;
       handles;
       stacked;
   end
@@ -15,16 +15,29 @@ classdef Viewer < handle
     pointSize = 20;
   end
   methods
-    function [obj] = Viewer()
+    function [obj] = Viewer(myaxes)
         obj.mesh = [];
-        obj.fig = figure('Name', 'Mesh Viewer');
+        if nargin < 1
+          obj.fig = figure('Name', 'Mesh Viewer');
+        else
+          obj.fig = myaxes;
+        end
         obj.stacked = {};
-    end 
+    end
+    function ax = myAX(obj)
+      if mp.Viewer.isAxes(obj.fig)
+        ax=obj.fig;
+      else
+        ax = gca;
+      end
+    end
     function unstackFigure(obj, n)
       if n > length(obj.stacked)
         error('Invalid index n=%d for stacked figure', n);
       end
-      close(obj.fig)
+      if ~mp.Viewer.isAxes(obj.fig)
+        close(obj.fig)
+      end
       obj.fig = obj.stacked{n}{1};
       obj.mesh = obj.stacked{n}{3};
       obj.handles = obj.stacked{n}{2};
@@ -37,18 +50,32 @@ classdef Viewer < handle
        obj.handles = struct();
        obj.mesh = [];
     end
+    function turnEdges(obj, how)
+      obj.turn('edges', how)
+    end
+    function turnNodes(obj, how)
+      obj.turn('nodes', how)
+    end
+    function turnFaces(obj, how)
+      obj.turn('elements', how)
+    end
     function show(obj, mesh, varargin)
-      figure(obj.fig);
+      obj.makeCurrent();
       obj.mesh = mesh;
       params = struct('dim', obj.mesh.dim, 'showNodes', obj.showNodes);
       if ~isempty(varargin)
          params.dim = mp_get_option(varargin{1}, 'dim', params.dim);
       end
-      obj.handles = mp_plot_mesh(mesh.nodes, mesh.elements, params);
-      if obj.showCellEdges 
-        obj.handles.edges = mp_plot_edges(mesh.nodes, mesh.elements);
+      obj.handles = mp_plot_mesh(obj.myAX, mesh.nodes, mesh.elements, params);
+      if obj.showCellEdges
+         obj.handles.edges = mp_plot_edges(obj.myAX(), mesh.nodes, mesh.elements);
       end
-      axis('equal');
+      axis(obj.myAX(), 'equal');
+    end
+    function makeCurrent(obj)
+      if ~mp.Viewer.isAxes(obj.fig)
+        figure(obj.fig);
+      end
     end
     function showGeometry(obj, geomObj)
       mesher = mp.Mesher();
@@ -56,16 +83,16 @@ classdef Viewer < handle
       params.dim = 1;
       locmesh = mesher.generate(geomObj, params);
       obj.showCellEdges = false;
-      figure(obj.fig);
+      obj.makeCurrent();
       obj.mesh = locmesh;
-      obj.handles.elements = mp_plot_edges(locmesh.nodes, locmesh.elements, struct('dim', obj.mesh.dim)); 
-      axis('equal')
+      obj.handles.elements = mp_plot_edges(obj.myAX, locmesh.nodes, locmesh.elements, struct('dim', obj.mesh.dim));
+      axis(obj.myAX, 'equal')
     end
     function showStar2(obj, mesh, seedsDim, seeds, starDims, starDims2, options)
       if nargin < 7
         options = struct('ShowSeeds', true);
       end
-      figure(obj.fig);
+      obj.makeCurrent();
       for sd = starDims
         adj = mesh.getAdjacency(mp.Topo(seedsDim), mp.Topo(sd));
         e2n = mesh.getAdjacency(mp.Topo(sd), mp.Topo(0));
@@ -84,15 +111,15 @@ classdef Viewer < handle
     function showStar(obj, mesh, seedsDim, seeds, starDims, options)
       if nargin < 6
         options = struct('ShowSeeds', true);
-      end      
-      figure(obj.fig);
+      end
+      obj.makeCurrent();
       for sd = starDims
         adj = mesh.getAdjacency(mp.Topo(seedsDim), mp.Topo(sd));
         e2n = mesh.getAdjacency(mp.Topo(sd), mp.Topo(0));
         for s = seeds
           for e=adj.at(s)
             nodes = e2n.at(e);
-            obj.drawStarItem(mesh, sd, nodes, false);            
+            obj.drawStarItem(mesh, sd, nodes, false);
           end
         end
       end
@@ -102,18 +129,18 @@ classdef Viewer < handle
     end
 
     function labelNodes(obj, varargin)
-      figure(obj.fig)
-      hold on
+      obj.makeCurrent()
+      hold(obj.myAX, 'on');
       if nargin > 1
         opts = varargin{1};
       else
         opts = struct();
       end
-      mp_plot_labels(obj.handles.nodes, opts);
+      mp_plot_labels(obj.myAX, obj.handles.nodes, opts);
     end
     function labelEdges(obj, varargin)
-      figure(obj.fig)
-      hold on
+      obj.makeCurrent();
+      hold(obj.myAX, 'on');
       opts = struct();
       if nargin > 1
         if isstruct(varargin{1})
@@ -133,24 +160,24 @@ classdef Viewer < handle
          nen = length(edgeNodes);
          coords(k, :) = sum(obj.mesh.nodes(edgeNodes, 1:2))/nen;
       end
-      mp_plot_labels(coords, opts);
+      mp_plot_labels(obj.myAX, coords, opts);
     end
     function labelElements(obj, varargin)
-      figure(obj.fig)
-      hold on
+      obj.makeCurrent();
+      hold(obj.myAX, 'on');
       if nargin > 1
         opts = varargin{1};
         if isfield(opts, 'asFaces') && opts.asFaces == true
           opts.labels = 1:length(get(obj.handles.elements, 'UserData'));
-        end  
+        end
       else
         opts = struct();
       end
-      mp_plot_labels(obj.handles.elements, opts);
+      mp_plot_labels(obj.myAX, obj.handles.elements, opts);
     end
     function showLine(obj, point1, point2, varargin)
-      figure(obj.fig);
-      hold on
+      obj.makeCurrent();
+      hold(obj.myAX, 'on');
       if nargin > 3
         opts = varargin{1};
       else
@@ -162,8 +189,8 @@ classdef Viewer < handle
       line(x,y, 'Color', color);
     end
     function showPointsXY(obj, x, y, varargin)
-      figure(obj.fig);
-      hold on
+      obj.makeCurrent();
+      hold(obj.myAX, 'on');
       opts = struct();
       if ~isempty(varargin)
         opts = varargin{1};
@@ -175,14 +202,14 @@ classdef Viewer < handle
       if ~isempty(data)
         set(obj.handles.points, 'UserData', data);
       end
-    end 
+    end
     function showPoints(obj, points, varargin)
       opts = struct();
       if ~isempty(varargin)
         opts = varargin{1};
       end
       obj.showPointsXY(points(:,1), points(:,2), opts);
-    end 
+    end
     function highlight_nodes(obj, selectorOrIds)
       obj.highlightNodes(selectorOrIds);
     end
@@ -205,10 +232,10 @@ classdef Viewer < handle
           regionsId = mp_gmsh_regions_find_id(obj.mesh.regions, struct('name', {selector.region}), 100);
         else
           regionsId = selector.region;
-        end  
+        end
         elemIds = mp_gmsh_elems_find(obj.mesh.elements, struct('region', regionsId));
       else
-        elemIds = selector; 
+        elemIds = selector;
       end
       mp_highlight_elements(obj.handles.elements, elemIds, hopts);
     end
@@ -218,16 +245,42 @@ classdef Viewer < handle
     function clear(obj)
       clf(obj.fig)
     end
+    function turn(obj, what, how)
+      if ischar(how)
+        if ~find(contains({'on', 'off'}, how))
+          error('Invalid Vierer turn switch: %s', how);
+        end
+      else
+        if how
+          how = 'on';
+        else
+          how = 'off';
+        end
+      end
+      if isfield(obj.handles, what)
+        set(obj.handles.(what), 'Visible', how)
+      end
+    end   
   end
+
+  methods(Static)
+    function [status] = isAxes(handle)
+      try
+        status = strcmp(get(handle, 'type'), 'axes');
+      catch
+        status = false;
+      end
+    end
+  end  
   methods(Access=private)
     function drawStarItem(obj, mesh, itemDim, nodes, isSeed)
-      figure(obj.fig);      
+      obj.makeCurrent();
       x = mesh.nodes(nodes, 1);
       y = mesh.nodes(nodes, 2);
-      hold on
+      hold(obj.myAX, 'on');
       if isSeed
         colors = {'red', 'red', 'red'};
-      else  
+      else
         colors = {'blue', 'yello', 'green'};
       end
       switch itemDim
@@ -239,20 +292,20 @@ classdef Viewer < handle
           uistack(h, 'top');
         case 2
           fill(x,y, colors{3});
-       end    
+       end
     end
-    function drawSeeds(obj, mesh, seedsDim, seeds) 
+    function drawSeeds(obj, mesh, seedsDim, seeds)
       if seedsDim == 0
         for s = seeds
           obj.drawStarItem(mesh, 0, s, true);
         end
-      else 
+      else
         seedsAdj = mesh.getAdjacency(mp.Topo(seedsDim), mp.Topo(0));
         for s = seeds
           nodes = seedsAdj.at(s);
           obj.drawStarItem(mesh, seedsDim, nodes, true);
         end
       end
-    end  
+    end
   end
 end

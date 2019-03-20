@@ -44,7 +44,7 @@ disp(int32(dt))
 enumeration mp.FEM.FemType
 
 %% Enums for boundary condition types
-enumeration mp.FEM.BcType
+enumeration mp.BcType
 
 %% Check if value is an enum or object of given class
 dt = DofType('temp');

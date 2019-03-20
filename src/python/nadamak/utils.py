@@ -17,7 +17,7 @@ def echo_file(fname):
 def get_interpreter_path(args):
   """Return path to Matlab or Octave binaries
   """
-  binaries = {'matlab' : {'jinx' : 'matlab-2017a'},
+  binaries = {'matlab' : {'jinx' : 'matlab-2017a', 'krakus' : 'matlab-R2018a'},
               'octave' : {'Lap025' : r'O:\WinProg\Octave-4.2.1\bin\octave-cli.exe'}
              } 
   defaultbinaries = {'matlab' : 'matlab', 

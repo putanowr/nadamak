@@ -20,6 +20,10 @@ classdef Mesh < handle
     adjacencies;
     simplical = -1;
   end
+  properties (Constant)
+    readFormats = {'msh'};
+    writeFormats = {'msh'};
+  end
   methods
     function [obj] = Mesh(dim, nodes, elements, regions, nodemap)
       % Consctruct new mesh

@@ -30,7 +30,7 @@ opts.labels = bottomNodes(:,1);
 opts.relative = false;
 opts.xOffset = -0.2;
 opts.yOffset = -0.1;
-mp_plot_labels(bottomCoords, opts);
+mp_plot_labels(gca, bottomCoords, opts);
 
 %%
 %
