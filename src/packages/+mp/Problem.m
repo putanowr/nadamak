@@ -1,11 +1,15 @@
 classdef Problem < handle
   % Problem Base class for various physical problems.
-  properties(SetAccess=private)
+  properties(SetAccess=protected)
     type mp.ProblemType;
     model mp.FemModel;
     geometry;
     progress mp.Progress;
     bc mp.BcRegistry;
+    variables;
+  end
+  methods(Abstract)
+    setupVariables(obj);
   end
   methods
     function [obj] = Problem(type_, geometry)
@@ -16,11 +20,15 @@ classdef Problem < handle
       obj.progress = mp.Progress();
       obj.model = mp.FemModel();
       obj.bc = mp.BcRegistry();
+      obj.setupVariables();
     end
     function exportToProject(obj, project)
       project.data.GeometryType = obj.geometry.projectName;
       project.data.ProblemType = char(obj.type);
       obj.bc.exportToProject(project);
+    end
+    function vars = variableNames(obj)
+      vars= fieldnames(obj.variables)';
     end
     function writeBc(obj, fid)
       obj.bc.writeBc(fid);
