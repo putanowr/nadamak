@@ -20,6 +20,9 @@ classdef MeshFem < handle
         error('Non Lagrangian finite elements are not supported yet')
       end
     end
+    function [n] = numOfDofs(obj)
+      return numel(obj.dofs);
+    end
     function enumerateDofs(obj, offset)
       dim = obj.mesh.dim;
       if dim ~= 2
