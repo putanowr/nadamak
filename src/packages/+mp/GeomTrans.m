@@ -1,6 +1,6 @@
 classdef GeomTrans < handle
   %GeomTrans - performs geometric transformation from reference to real element.
-  properties (Access=private)
+  properties (SetAccess=private)
     mesh
     fem
     cellToNodes
