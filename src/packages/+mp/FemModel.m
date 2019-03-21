@@ -1,10 +1,27 @@
 classdef FemModel < handle
   % FemModel Is the main data structure on which the Kernel of Nadamak simulator works.
   properties(SetAccess=private)
-    meshes = mp.MeshRegistry();
+    meshes mp.MeshRegistry;
+    fems struct; % structure holding name -> MeshFem.
   end
   methods
     function [obj] = FemModel()
+      obj.meshes = mp.MeshRegistry;
+      obj.fems = struct();
+    end
+    function addFem(obj, name, meshName, regionName, femType, qdim)
+      mesh = obj.meshes.get(meshName);
+      fem = mp.MeshFem(mesh, regionName, femType, qdim);
+      obj.fems.(name) = fem;
+    end
+    function fem = getFem(obj, name)
+      fem = obj.fems.(name);
+    end
+    function addIsoparametricFem(obj, name, meshName, qdim);
+      mesh = obj.meshe.get(meshName);
+      femType = mesh.geomTrans.fem;
+      retionName = 'all';
+      obj.addFem(name, meshName, regionName, femType, qdim);
     end
     function resolveGeometry(obj, geometry)
       % Create the coarse mesh of geometry just to access
