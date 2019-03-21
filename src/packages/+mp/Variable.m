@@ -1,21 +1,21 @@
 classdef Variable
   % Stores data to describe a variable in problem formulation
   properties(SetAccess=private)
-    size
+    qdim
     rank
     numOfComponents
     name
-    type 
+    type
   end
   methods
-    function [obj] = Variable(name, size, type)
-      if length(size) == 1 && size(1) == 1
+    function [obj] = Variable(name, qdim, type)
+      if length(qdim) == 1 && qdim(1) == 1
         obj.rank = 0;
       else
-        obj.rank = length(size)
+        obj.rank = length(qdim)
       end
-      obj.numOfComponents = prod(size);
-      obj.size = size;
+      obj.numOfComponents = prod(qdim);
+      obj.qdim = qdim;
       obj.type = type;
       obj.name = name;
     end
