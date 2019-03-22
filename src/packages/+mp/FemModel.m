@@ -3,13 +3,15 @@ classdef FemModel < handle
   properties(SetAccess=private)
     meshes mp.MeshRegistry;
     fems struct; % structure holding name -> MeshFem.
+    variables mp.VariableRegistry;
   end
   methods
     function [obj] = FemModel()
       obj.meshes = mp.MeshRegistry;
       obj.fems = struct();
+      obj.variables = mp.VariableRegistry();
     end
-    function addFem(obj, name, meshName, regionName, femType, qdim)
+    function [fem] = addFem(obj, name, meshName, regionName, femType, qdim)
       mesh = obj.meshes.get(meshName);
       fem = mp.MeshFem(mesh, regionName, femType, qdim);
       obj.fems.(name) = fem;
@@ -17,11 +19,11 @@ classdef FemModel < handle
     function fem = getFem(obj, name)
       fem = obj.fems.(name);
     end
-    function addIsoparametricFem(obj, name, meshName, qdim);
-      mesh = obj.meshe.get(meshName);
+    function [fem] = addIsoparametricFem(obj, name, meshName, qdim)
+      mesh = obj.meshes.get(meshName);
       femType = mesh.geomTrans.fem;
-      retionName = 'all';
-      obj.addFem(name, meshName, regionName, femType, qdim);
+      regionName = 'all';
+      fem = obj.addFem(name, meshName, regionName, femType, qdim);
     end
     function resolveGeometry(obj, geometry)
       % Create the coarse mesh of geometry just to access
