@@ -70,9 +70,9 @@ classdef SofModel < handle
       msg = 'File read corectly';
       status = true;
     end
-    function status = calculate(obj, progress)
+    function status = calculate(obj, progress, options)
       obj.problem.setProgressReporter(progress);
-      obj.problem.solve();
+      obj.problem.solve(options);
       pause(1);
       status = true;
     end
