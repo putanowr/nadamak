@@ -73,15 +73,43 @@ classdef Problem < handle
       obj.progress.report(obj.progress.fraction, msg);
       obj.model.meshes.register(mesh, meshName);
     end
-    function solve(obj)
-      obj.buildMeshes();
+    function solve(obj, options)
+      obj.buildMeshes(options);
+      obj.setupApproximation(options);
       obj.preassembly();
       obj.assembly()
       obj.runSolver();
       obj.postprocess();
     end
-    function buildMeshes(obj)
-      obj.progress.report(0.1, 'Building meshes');
+    function [status, msg] = buildMeshes(obj, options)
+      rebuildMesh = mp_get_option(options, 'RebuildMesh', false);
+      msg = 'No main mesh ... building one';
+      if obj.model.meshes.hasMesh('mainmesh')
+        if ~rebuildMesh
+          status = true;
+          msg = 'Main mesh already exists, not rebuilding';
+          obj.progress.report([], msg);
+          return
+        else
+          msg = 'Rebuilding existing main mesh';
+          rebuildMesh = true;
+        end
+      else
+        rebuildMesh = true;
+      end
+      obj.progress.report([], msg);
+      if rebuildMesh
+        if ~isfield(options, 'MeshingOptions')
+          msg = 'Mesh rebuilding requested but no MeshingOptions given ... aborting';
+          error(msg);
+        end
+        mesher = mp.Mesher();
+        mesh = mesher.generate(obj.geometry, options.MeshingOptions);
+        obj.registerMesh(mesh, 'mainmesh');
+        msg = 'Mesh generated OK';
+        status = true;
+        obj.progress.report([], msg);
+      end
     end
     function preassembly(obj)
       obj.progress.report(0.2, 'Do pre-assembly');
@@ -94,6 +122,19 @@ classdef Problem < handle
     end
     function postprocess(obj)
       obj.progress.report(0.8, 'Postprocess');
+    end
+    function setupApproximation(obj, options)
+      obj.progress.report(0.2, 'Setup approximation')
+      offset = 0;
+      for vn = fieldnames(obj.variables)'
+        variableName = vn{:};
+        var = obj.variables.(variableName);
+        fem = obj.model.addIsoparametricFem(variableName, 'mainmesh', var.qdim);
+        modelVariable = mp.ModelVariable(var, struct('fem', fem));
+        obj.model.variables.addVariable(modelVariable);
+        msg = sprintf('Added model variable %s with %d DOFS', variableName, modelVariable.numOfDofs());
+        obj.progress.report([], msg);
+      end
     end
   end
 end
