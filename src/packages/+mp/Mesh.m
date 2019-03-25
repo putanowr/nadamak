@@ -68,7 +68,7 @@ classdef Mesh < handle
       coords.Data = dualNodes;
       dualElements = mp.SharedCellArray(ncp);
       for i = 1:ncp
-        de = EV(CE(CP(i,2):CP(i,3)),:); 
+        de = EV(CE(CP(i,2):CP(i,3)),:);
         n = size(de, 1);
         if n > 4
           etype = 500+n;
@@ -100,7 +100,7 @@ classdef Mesh < handle
       end
       t = -1;
       for i = 1:obj.elemsCount()
-        elem = obj.elements{i};  
+        elem = obj.elements{i};
         if ~checkAll
           if obj.dim ~= mp_gmsh_element_dim(elem)
               continue
@@ -114,7 +114,11 @@ classdef Mesh < handle
             t = 0;
             break
         end
-      end  
+      end
+    end
+    function [type] = elementGmshType(obj, elemId)
+      % Return gmsh type of given element
+      type = obj.elements{elemId}(2);
     end
     function [ct] = cellTypes(obj)
       cells = mp_gmsh_elems_find(obj.elements, struct('dim', [obj.dim]));
@@ -126,7 +130,7 @@ classdef Mesh < handle
         else
           info.(typetag) = 1;
         end
-      end 
+      end
       fn = fieldnames(info);
       ct = [];
       for name=fn'
@@ -139,7 +143,7 @@ classdef Mesh < handle
       v = obj.f2eOrient{face};
       val = v(edgeNum);
     end
-      
+
     function [adj] = getAdjacency(obj, from, to)
       % Return Adjacency object. Arguments 'from' and 'to' are dimensions of
       % topological mesh entities for which adjacency should be calculated.
@@ -150,27 +154,41 @@ classdef Mesh < handle
       end
       adj = obj.adjacencies{f,t};
     end
+    function [elemsIds] = elemsFromIds(obj, ids)
+      % Return GMSH element indices from given set if indices assuming it
+      % pertains to elements of the highest dimension present in the mesh,
+      % that is elements of dimension equal to mesh dimension.
+      checker = {@obj.elemsFromEdges,
+                 @obj.elemsFromFaces,
+                 @obj.elemsFromCells};
+      h = checker{obj.dim};
+      elemsIds = h(ids);
+    end
+    function [elemsIds] = elemsFromCells(obj, cellIds)
+      elemsIds = [];
+      error('Not implemented yet');
+    end
     function [elemsIds] = elemsFromFaces(obj, faceIds)
       % Return Id of elements corresponding to given faces
       faceIds = uint32(faceIds);
       obj.updateFaces2Elems();
-      [iv, indices] = ismember(faceIds, obj.faces2elements(:,1)); 
+      [iv, indices] = ismember(faceIds, obj.faces2elements(:,1));
       if(~iv)
         invalid = facesIds(find(iv==0));
         s = sprintf(' %d', invalid);
         error('Faces below do not correspond to an element:\n%s',s);
-      end 
+      end
       elemsIds = obj.faces2elements(indices,2)';
     end
     function [edgesIds] = edgesFromElems(obj, elemIds)
       obj.updateEdges2Elems();
       elemIds = uint32(elemIds);
-      [iv, indices] = ismember(elemIds, obj.edges2elements(:,2)); 
+      [iv, indices] = ismember(elemIds, obj.edges2elements(:,2));
       if(~iv)
         invalid = elemIds(find(iv==0));
         s = sprintf(' %d', invalid);
         error('Elements below do not correspond to an edge:\n%s',s);
-      end 
+      end
       edgesIds = obj.edges2elements(indices,1)';
     end
     function updateEdges2Elems(obj)
@@ -215,11 +233,11 @@ classdef Mesh < handle
     function [faceId] = findFaceSpannedByNodes(obj, nodesID)
       % Return Id of face spanned by nodes or 0 if no such face exists.
       faceId = obj.findEntitySpannedByNodes(nodesID, mp.Topo.Face);
-    end    
+    end
     function [edgeId] = findEdgeSpannedByNodes(obj, nodesID)
       % Return Id of edge spanned by nodes or 0 if no such edege exists.
       edgeId = obj.findEntitySpannedByNodes(nodesID, mp.Topo.Edge);
-    end    
+    end
     function [regionID] = getElemRegion(obj, elemsID)
       % Return ID of region to which elements of given IDs belong.
       regionID = cellfun(@(c) c(4), obj.elements(elemsID), 'UniformOutput', true);
@@ -237,7 +255,7 @@ classdef Mesh < handle
       % Retrun ID of regions matching given selection criteria.
       %
       % Arguments:
-      %   * selector - structure with values of search fields. 
+      %   * selector - structure with values of search fields.
       %     Supported selector fields are:
       %
       %     - dim - topological dimension
@@ -251,7 +269,7 @@ classdef Mesh < handle
       % Return ID of elements matching give selection cirteria
       %
       % Arguments:
-      %   * selector - structure with values of search fileds. 
+      %   * selector - structure with values of search fileds.
       %     Supported selector fields are:
       %
       %     - dim - element topological dimension
@@ -289,14 +307,14 @@ classdef Mesh < handle
       %% Return number of faces in the mesh
       adj = obj.getAdjacency(2,0);
       nfaces = adj.length;
-    end      
+    end
     function [nedges] = edgesCount(obj)
       %% Return number of edges in the mesh
       adj = obj.getAdjacency(1,0);
       nedges = adj.length;
-    end      
+    end
     function [nRegions] = regionsCount(obj, varargin)
-      %% Return number of regions. 
+      %% Return number of regions.
       % If no argument given then counts regions of the dimension equal
       % to the dimension of the mesh. Othervise counts regions of given
       % dimension.
@@ -308,7 +326,7 @@ classdef Mesh < handle
         regdim = obj.dim;
       else
         regdim = varargin{1};
-      end  
+      end
       nRegions = mp_gmsh_regions_count(obj.regions, struct('dim', regdim));
     end
 
@@ -318,7 +336,7 @@ classdef Mesh < handle
     end
 
     function [nElems] = elemsCount(obj, varargin)
-    %% Return number of elements. 
+    %% Return number of elements.
     % If no argument given then return total number of elements in the
     % mesh. Otherwise return number of elements mathing give selection
     % cirteria
@@ -330,9 +348,9 @@ classdef Mesh < handle
       else
         elemIds = mp_gmsh_elems_find(obj.elements, varargin{1});
         nElems = length(elemIds);
-      end  
+      end
     end
-    function [centerCoords] = elemsCenters(obj, elemsID) 
+    function [centerCoords] = elemsCenters(obj, elemsID)
       %% Return shared array of face coordinates.
       if nargin < 2
         nelems = obj.elemsCount();
@@ -348,12 +366,12 @@ classdef Mesh < handle
         centerCoords(i, :) = sum(nodeCoords, 1)/length(elemNodes);
         i = i +1;
       end
-    end 
+    end
     function [dist] = nodesDistance(obj, nodesId)
         coords = obj.nodes(nodesId, :);
         dist = norm(coords(1,:)-coords(2,:));
     end
-    function [centerCoords] = faceCenters(obj, faces) 
+    function [centerCoords] = faceCenters(obj, faces)
       %% Return shared array of face coordinates.
       if nargin < 2
         nfaces = obj.facesCount();
@@ -370,8 +388,8 @@ classdef Mesh < handle
         centerCoords(i, :) = sum(nodeCoords, 1)/length(faceNodes);
         i = i+1;
       end
-    end 
-    function [centerCoords] = edgeCenters(obj, edges) 
+    end
+    function [centerCoords] = edgeCenters(obj, edges)
       %% Return shared array of edge coordinates.
       % Caution: Current implementation works only for straight edges;
       if nargin < 2
@@ -389,7 +407,7 @@ classdef Mesh < handle
         centerCoords(i, :) = sum(nodeCoords, 1)/length(edgeNodes);
         i=i+1;
       end
-    end 
+    end
     function [localIndex] = getEdgeInFaceIndex(obj, edgeID, faceID)
       % For edge with global edgeID return its local index in givne face
       % or 0 if the edge does not belongs to the face.
@@ -425,8 +443,8 @@ classdef Mesh < handle
       if mesh.faceEdgeOrient(faceID, localIndex) < 0
         tangent = -tangent;
       end
-      normal = [tangent(2), -tangent(1)];    
-    end        
+      normal = [tangent(2), -tangent(1)];
+    end
     function write(obj, filePath)
       %% Writes mesh in GMSH format to specified file
       fid = fopen(filePath, 'w');
@@ -440,7 +458,7 @@ classdef Mesh < handle
         for reg = obj.regions
           fprintf(fid, '%d %d "%s"\n', reg.id, reg.dim, reg.name);
         end
-      end  
+      end
       fprintf(fid, '$EndPhysicalNames\n');
       fprintf(fid, '$Nodes\n');
       fprintf(fid, '%d\n', obj.nodesCount());
@@ -452,7 +470,7 @@ classdef Mesh < handle
       nelems = length(obj.elements);
       fprintf(fid, '%d\n', nelems);
       for i=1:nelems
-        e = obj.elements{i};  
+        e = obj.elements{i};
         fprintf(fid, '%d ', e(1:end-1));
         fprintf(fid, '%d\n', e(end));
       end
@@ -471,13 +489,13 @@ classdef Mesh < handle
       nelems = length(elemsIds);
       newelements = mp.SharedCellArray(nelems);
       newdim = 0;
-      for i=1:length(elemsIds) 
+      for i=1:length(elemsIds)
         elemrec = obj.elements{elemsIds(i)};
         newdim = max(newdim, mp_gmsh_element_dim(elemrec));
         nen = mp_gmsh_node_count(elemrec(2));
         elemrec(end-nen+1:end) = orig2newNode(elemrec(end-nen+1:end),1);
         elemrec(4:5) = [0,0];
-        newelements{i} = elemrec; 
+        newelements{i} = elemrec;
       end
       submesh = mp.Mesh(newdim, newnodes, newelements, struct(),[]);
       submesh.setParent(obj, nodesIds, elemsIds);
@@ -507,7 +525,7 @@ classdef Mesh < handle
       entityId = entitiesToCheck(1);
     end
     function checkSimplical(obj)
-      if obj.simplical == -1  
+      if obj.simplical == -1
         type = obj.singleElemType();
         obj.simplical = (type == 2);
       end
@@ -535,7 +553,7 @@ classdef Mesh < handle
       if isempty(obj.adjacencies{C+1,V+1})
         obj.updateAdjacency(C,V);
       end
-      obj.adjacencies{V+1, C+1} = obj.adjacencies{C+1, V+1}.inverse();      
+      obj.adjacencies{V+1, C+1} = obj.adjacencies{C+1, V+1}.inverse();
     end
     function Vertex2Cell(obj)
       error('Not implemented')
@@ -550,7 +568,7 @@ classdef Mesh < handle
       for i=1:nelem
         nnodes = mp_gmsh_node_count(obj.elements{elems1D(i)}(2));
         adj{i} = obj.elements{elems1D(i)}(end-nnodes+1:end);
-      end  
+      end
       obj.adjacencies{2,1} = mp.Adjacency(adj);
     end
     function Edge2Vertex_2D(obj)
@@ -584,7 +602,7 @@ classdef Mesh < handle
       for i = e2v.getSources()
         adjedges = uint32.empty;
         for v = e2v.at(i)
-          for adje = v2e.at(v)          
+          for adje = v2e.at(v)
             if adje ~= i
               adjedges = [adjedges, adje];
             end
@@ -600,7 +618,7 @@ classdef Mesh < handle
       end
       if obj.dim < 2
         error('Edge2Face Called for 1D mesh')
-      end 
+      end
       adj = obj.getAdjacency(2,1);
       obj.adjacencies{2,3} = adj.inverse();
       %{
@@ -639,7 +657,7 @@ classdef Mesh < handle
         for i=1:nelem
           nnodes = mp_gmsh_node_count(obj.elements{elems2D(i)}(2));
           adj{i} = obj.elements{elems2D(i)}(end-nnodes+1:end);
-        end  
+        end
         obj.adjacencies{3,1} = mp.Adjacency(adj);
       end
     end
@@ -682,7 +700,7 @@ classdef Mesh < handle
           if edgeNodes(1) == edgeVerts(1)
             edgesOrientInFace(ei) = 1;
           end
-        end        
+        end
         targets{i} = edgesInFace;
         obj.f2eOrient{i} = edgesOrientInFace;
       end
@@ -731,7 +749,7 @@ classdef Mesh < handle
     end
     function [updaters] = getAdjacencyUpdaters(obj)
       updaters = cell(4,4);
-      updaters{1,1} = @obj.Vertex2Vertex; 
+      updaters{1,1} = @obj.Vertex2Vertex;
       updaters{1,2} = @obj.Vertex2Edge;
       updaters{1,3} = @obj.Vertex2Face;
       updaters{1,4} = @obj.Vertex2Cell;
@@ -739,15 +757,15 @@ classdef Mesh < handle
         updaters{2,1} = @obj.Edge2Vertex_1D;
       else
         updaters{2,1} = @obj.Edge2Vertex_2D;
-      end 
+      end
       updaters{2,2} = @obj.Edge2Edge;
       updaters{2,3} = @obj.Edge2Face;
       updaters{2,4} = @obj.Edge2Cell;
-      updaters{3,1} = @obj.Face2Vertex; 
+      updaters{3,1} = @obj.Face2Vertex;
       updaters{3,2} = @obj.Face2Edge;
       updaters{3,3} = @obj.Face2Face;
       updaters{3,4} = @obj.Face2Cell;
-      updaters{4,1} = @obj.Cell2Vertex; 
+      updaters{4,1} = @obj.Cell2Vertex;
       updaters{4,2} = @obj.Cell2Edge;
       updaters{4,3} = @obj.Cell2Face;
       updaters{4,4} = @obj.Cell2Cell;
