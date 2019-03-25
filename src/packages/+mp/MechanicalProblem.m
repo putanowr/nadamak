@@ -6,7 +6,7 @@ classdef MechanicalProblem < mp.Problem
     end
     function setupVariables(obj)
       d = obj.geometry.dim;
-      varname = 'u';
+      varname = 'Displacement';
       obj.variables.(varname) = mp.Variable(varname, d, mp.VariableType.State); 
     end
   end
