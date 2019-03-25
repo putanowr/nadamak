@@ -4,7 +4,7 @@ classdef ThermoMechanicalProblem < mp.ThermoMechanicalProblem
     function [obj] = ThermoMechanicalProblem(geometry)
       obj = obj@mp.ThermoMechanicalProblem(geometry);
     end
-    function assembly(obj, progress)
+    function assembly(obj, options)
       obj.progress.report(0.3, 'Assembly in Nadamak kernel');
     end
   end
