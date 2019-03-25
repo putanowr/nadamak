@@ -1,6 +1,6 @@
 classdef Progress < handle
   % Prgress base class for reporting progress.
-  properties(SetAccess=private)
+  properties(SetAccess=protected)
     callbacks = struct();
     fraction double;
   end
