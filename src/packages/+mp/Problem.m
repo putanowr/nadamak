@@ -68,6 +68,12 @@ classdef Problem < handle
         info = sprintf('Error: no mesh called %s', meshName);
       end
     end
+    function [status] = hasMesh(obj, meshName)
+      if nargin < 2
+        meshName = 'mainmesh';
+      end
+      status = obj.model.meshes   .hasMesh(meshName);
+    end
     function [mesh] = getMesh(obj, meshName)
       mesh = obj.model.meshes.get(meshName);
     end
