@@ -1,7 +1,14 @@
-classdef SharedArray < handle
+classdef SharedArray < matlab.mixin.Copyable
   %SHAREDARRAY array that is accessed by a handle.
   properties(SetAccess=private)
     Data 
+  end
+  methods(Access = protected)
+    % Override copyElement method:
+    function cpObj = copyElement(obj)
+      cpObj = copyElement@matlab.mixin.Copyable(obj);
+      cpObj.Data = obj.Data;
+    end
   end
   methods
     function [obj] = SharedArray(sizevec, varargin)
