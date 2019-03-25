@@ -6,10 +6,16 @@ classdef ProgressGUI < mp.Progress
   methods
     function [obj] = ProgressGUI()
     end
+    function reportOnlyGUI(obj, fraction, message)
+      obj.fraction = fraction;
+      if ~isempty(obj.barWidget)
+        waitbar(obj.fraction, obj.barWidget, message);
+      end
+    end
     function report(obj, fraction, message)
       report@mp.Progress(obj, fraction, message);
       if ~isempty(obj.barWidget)
-        waitbar(fraction, obj.barWidget, message);
+        waitbar(obj.fraction, obj.barWidget, message);
       end
     end
     function setBar(obj, barHandle)

@@ -28,6 +28,9 @@ classdef SofModel < handle
     function writeBc(obj, fid)
       obj.problem.writeBc(fid);
     end
+    function writeDofs(obj, fid)
+      obj.problem.writeDofs(fid)
+    end
     function [status, msg, bc] = setBc(obj, regionName, variableName, bcName, params)
       status = true;
       msg = sprintf('Set BC on "%s" to "%s"', regionName, bcName);
@@ -70,9 +73,9 @@ classdef SofModel < handle
       msg = 'File read corectly';
       status = true;
     end
-    function status = calculate(obj, progress)
+    function status = calculate(obj, progress, options)
       obj.problem.setProgressReporter(progress);
-      obj.problem.solve();
+      obj.problem.solve(options);
       pause(1);
       status = true;
     end

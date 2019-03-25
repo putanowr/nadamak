@@ -25,7 +25,7 @@ classdef BoundaryCondition < handle
     function [status, msg] = setValue(obj, params)
       if isfield(params, 'value')
         if obj.validate(params)
-          obj.value = params.value;
+          obj.value = eval(params.value);
         else
           status = false;
           msg = 'BC value not valid'

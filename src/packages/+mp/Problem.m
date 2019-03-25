@@ -1,11 +1,15 @@
 classdef Problem < handle
   % Problem Base class for various physical problems.
-  properties(SetAccess=private)
+  properties(SetAccess=protected)
     type mp.ProblemType;
     model mp.FemModel;
     geometry;
     progress mp.Progress;
     bc mp.BcRegistry;
+    variables;
+  end
+  methods(Abstract)
+    setupVariables(obj);
   end
   methods
     function [obj] = Problem(type_, geometry)
@@ -16,11 +20,18 @@ classdef Problem < handle
       obj.progress = mp.Progress();
       obj.model = mp.FemModel();
       obj.bc = mp.BcRegistry();
+      obj.setupVariables();
     end
     function exportToProject(obj, project)
       project.data.GeometryType = obj.geometry.projectName;
       project.data.ProblemType = char(obj.type);
       obj.bc.exportToProject(project);
+    end
+    function vars = variableNames(obj)
+      vars= fieldnames(obj.variables)';
+    end
+    function writeDofs(obj, fid)
+      obj.model.writeDofs(fid);
     end
     function writeBc(obj, fid)
       obj.bc.writeBc(fid);
@@ -65,27 +76,68 @@ classdef Problem < handle
       obj.progress.report(obj.progress.fraction, msg);
       obj.model.meshes.register(mesh, meshName);
     end
-    function solve(obj)
-      obj.buildMeshes();
-      obj.preassembly();
-      obj.assembly()
+    function solve(obj, options)
+      obj.model.resetVariables();
+      obj.buildMeshes(options);
+      obj.setupApproximation(options);
+      obj.preassembly(options);
+      obj.assembly(options);
       obj.runSolver();
       obj.postprocess();
     end
-    function buildMeshes(obj)
-      obj.progress.report(0.1, 'Building meshes');
+    function [status, msg] = buildMeshes(obj, options)
+      rebuildMesh = mp_get_option(options, 'RebuildMesh', false);
+      msg = 'No main mesh ... building one';
+      if obj.model.meshes.hasMesh('mainmesh')
+        if ~rebuildMesh
+          status = true;
+          msg = 'Main mesh already exists, not rebuilding';
+          obj.progress.report([], msg);
+          return
+        else
+          msg = 'Rebuilding existing main mesh';
+          rebuildMesh = true;
+        end
+      else
+        rebuildMesh = true;
+      end
+      obj.progress.report([], msg);
+      if rebuildMesh
+        if ~isfield(options, 'MeshingOptions')
+          msg = 'Mesh rebuilding requested but no MeshingOptions given ... aborting';
+          error(msg);
+        end
+        mesher = mp.Mesher();
+        mesh = mesher.generate(obj.geometry, options.MeshingOptions);
+        obj.registerMesh(mesh, 'mainmesh');
+        msg = 'Mesh generated OK';
+        status = true;
+        obj.progress.report([], msg);
+      end
     end
-    function preassembly(obj)
+    function preassembly(obj, options)
       obj.progress.report(0.2, 'Do pre-assembly');
     end
-    function assembly(obj)
+    function assembly(obj, options)
       obj.progress.report(0.3, 'Assembly');
     end
-    function runSolver(obj)
+    function runSolver(obj, options)
       obj.progress.report(0.6, 'Run solver');
     end
     function postprocess(obj)
       obj.progress.report(0.8, 'Postprocess');
+    end
+    function setupApproximation(obj, options)
+      obj.progress.report(0.2, 'Setup approximation')
+      for vn = fieldnames(obj.variables)'
+        variableName = vn{:};
+        var = obj.variables.(variableName);
+        fem = obj.model.addIsoparametricFem(variableName, 'mainmesh', var.qdim);
+        modelVariable = mp.ModelVariable(var, struct('fem', fem));
+        obj.model.variables.addVariable(modelVariable);
+        msg = sprintf('Added model variable %s with %d DOFS', variableName, modelVariable.numOfDofs());
+        obj.progress.report([], msg);
+      end
     end
   end
 end

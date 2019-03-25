@@ -1,14 +1,17 @@
 classdef Progress < handle
   % Prgress base class for reporting progress.
-  properties(SetAccess=private)
+  properties(SetAccess=protected)
     callbacks = struct();
     fraction double;
   end
   methods
     function [obj] = Progress()
+      obj.fraction = 0.0;
     end
     function report(obj, fraction, message)
-      obj.fraction = fraction;
+      if ~isempty(fraction)
+        obj.fraction = fraction;
+      end
       fn = fieldnames(obj.callbacks);
       for f = fn'
           h = obj.callbacks.(f{:});
@@ -19,7 +22,7 @@ classdef Progress < handle
       obj.callbacks.(name) = handle;
     end
     function removeCallback(obj, name)
-      rmfield(obj.callbacks, name);
+      obj.callbacks = rmfield(obj.callbacks, name);
     end
   end
 end

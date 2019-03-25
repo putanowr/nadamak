@@ -15,16 +15,24 @@ classdef BcRegistry < handle
       end
       obj.registry.(region).(variableName) = bc;
     end
+    function apply(obj, callback)
+      for regName = fieldnames(obj.registry)'
+        for varName = fieldnames(obj.registry.(regName{:}))'
+           bc = obj.registry.(regName{:}).(varName{:});
+           callback(regName{:}, bc);
+        end
+      end
+    end
     function exportToProject(obj, project)
       project.data.BC = obj.registry;
       rn = fieldnames(obj.registry);
       for regionName = rn'
-        project.data.BC.(regionName{:}) = struct()
+        project.data.BC.(regionName{:}) = struct();
         vns = fieldnames(obj.registry.(regionName{:}));
         for vn = vns'
           bc = obj.registry.(regionName{:}).(vn{:});
           project.data.BC.(regionName{:}).(bc.variable) = char(bc.type);
-          end
+        end
       end
     end
     function writeBc(obj, fid)
@@ -37,6 +45,9 @@ classdef BcRegistry < handle
           fprintf('  V: %s  BC: %s\n', bc.variable, char(bc.type));
         end
       end
+    end
+    function [regNames] = regionNames(obj)
+      regNames = fieldnames(obj.registry)';
     end
     function [bchandle] = get(obj, regionName, variableName)
       if isempty(variableName)

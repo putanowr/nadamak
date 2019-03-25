@@ -1,6 +1,6 @@
 classdef MeshFem < handle
   % MeshFem holds association between mesh elements and set of approximation
-  % functions spanned over the elements. 
+  % functions spanned over the elements.
   properties (SetAccess=private)
     mesh % reference to the underlying mesh
     region % region ID of the mesh
@@ -8,6 +8,7 @@ classdef MeshFem < handle
     qdim
     femType
     dofs
+    numOfDofs
   end
   methods
     function [obj] = MeshFem(mesh, region, femType, qdim)
@@ -19,34 +20,40 @@ classdef MeshFem < handle
       if ~femType.isLagrangian
         error('Non Lagrangian finite elements are not supported yet')
       end
+      obj.numOfDofs = 0;
     end
-    function enumerateDofs(obj, offset)
-      dim = obj.mesh.dim;
-      if dim ~= 2
-        error('Enumerating DOFs implemented only for mesh dim = 2')
+    function ndof = enumerateDofs(obj)
+      if obj.numOfDofs == 0
+        dim = obj.mesh.dim;
+        if dim ~= 2
+          error('Enumerating DOFs implemented only for mesh dim = 2')
+        end
+        obj.enumerateClassicNodalC();
+        ndof = obj.numOfDofs;
       end
-      obj.enumerateGeneric(offset);
-      return
-      if obj.femType == 'Triang3' || obj.femType == 'Quad4'
-        obj.enumerateClassicNodal(offset)
-      elseif obj.femType == 'Triang6'
-        obj.enumerateTriang6(offset)
+    end
+    function n = nodeOfDof(obj, localDofID, elemID)
+      if obj.isLagrangian
+        qp = prod(obj.qdim);
+        n = floor((localDofID-1)/qp)+1;
       else
-        error('Enumeration not supported for element %s', obj.femType)
+        error('Element is not Lagranian');
       end
     end
-    function realPt = pointOfDof(obj, locDofID, elemID)
-      refPt = obj.femType.pointOfDof(locDofID);
+    function realPt = pointOfDof(obj, localDofID, elemID)
+      qp = prod(obj.qdim);
+      id = floor((localDofID-1)/qp)+1;
+      refPt = obj.femType.pointOfDof(id);
       realPt = obj.mesh.geomTrans.transform(refPt, elemID);
     end
     function locDofs = localDofsOfPoint(obj, point, elemID)
-      locDofs = []; % local degrees of freedom in element
+      locDofs = zeros(0,0, 'uint32'); % local degrees of freedom in element
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
       for i=1:dofsPerElem
         realPt = obj.pointOfDof(i, elemID);
         if norm(point-realPt) < 1e-5
           locDofs = [locDofs, i];
-        end  
+        end
       end
     end
     function id = hasDofAtPoint(obj, point, elemID, dofDim)
@@ -61,7 +68,7 @@ classdef MeshFem < handle
       if id ~= 0
         id = (dofDim-1)*obj.femType.numOfDofs+id;
       end
-    end  
+    end
     function globDofs = globalDofsOfPoint(obj, point, elemID)
       %%Return vector of dofs associated with given point
       globDofs = [];
@@ -69,72 +76,87 @@ classdef MeshFem < handle
         globDofs = obj.dofs(elemID, obj.localDofsOfPoint(point, elemID));
       end
     end
-    function d = dofDim(obj, dofID)
-      d=floor((dofID-1)/obj.femType.numOfDofs)+1;
+    function d = dimOfDof(obj, dofID, offset)
+      % Return component number of dof
+      di = dofID-offset;
+      qp = prod(obj.qdim);
+      d=rem((di-1),qp)+1;
+    end
+    function writeDofs(obj, fid)
+      i=0;
+      for edof = obj.dofs
+        i=i+1;
+        fprintf(fid, 'Elem %d dofs  ', i);
+        for dof = edof{:}
+          fprintf(fid, ' %d', dof);
+        end
+        fprintf(fid, '\n');
+      end
     end
   end
   methods(Access=private)
-    function enumerateClassicNodal(obj, offset)
+    function enumerateClassicNodalC(obj)
+      nelem = obj.mesh.elemsCount();
+      obj.dofs = cell(1,nelem);
+      nnodes = obj.mesh.nodesCount();
+      qd = prod(obj.qdim);
+      nodes2dofs = zeros(qd, nnodes, 'uint32');
+      totalDofs=0;
+      for i=1:nelem
+        nodes = obj.mesh.elemNodes(i);
+        notSet = find(~all(nodes2dofs(:, nodes)));
+        notSetNum = numel(notSet);
+        if notSetNum > 0
+          globDofs = zeros(qd, notSetNum, 'uint32');
+          numNewDofs= notSetNum*qd;
+          globDofs(:) = (1:(numNewDofs))+totalDofs;
+          totalDofs = totalDofs+numNewDofs;
+          sel = nodes(notSet);
+          nodes2dofs(:,sel) = globDofs;
+        end
+        dummy = nodes2dofs(:, nodes);
+        obj.dofs{i} = dummy(:);
+      end
+      obj.numOfDofs = totalDofs;
+    end
+    function enumerateClassicNodal(obj)
       dim = obj.mesh.dim;
       nelem = obj.mesh.elemsCount(struct('dim', dim));
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
-      obj.dofs = zeros(nelem, dofsPerElem, 'uint32');
-      c2v = obj.mesh.getAdjacency(mp.Topo.Face, mp.Topo.Vertex);
+      obj.dofs = zeros(dofsPerElem, nelem, 'uint32');
+      c2v = obj.mesh.getAdjacency(mp.Topo(dim), mp.Topo.Vertex);
       nnodes = obj.mesh.nodesCount();
+      qd = prod(obj.qdim);
+      nodes2dofs = zeros(qd, nnodes);
+      totalDofs=0;
       for i=1:nelem
-        bn = c2v.at(i);
-        cdofs = [];  
-        for q = 1:obj.qdim 
-          cdofs = [cdofs, bn+(q-1)*nnodes];
+        cellNodes = c2v.at(i);
+        % find all nodes in cell that do not have global dofs set
+        notSet = find(~all(nodes2dofs(:, cellNodes)));
+        notSetNum = numel(notSet);
+        if notSetNum > 0
+          globDofs = zeros(qd, notSetNum);
+          numNewDofs= notSetNum*qd;
+          globDofs(:) = (1:(numNewDofs))+totalDofs;
+          totalDofs = totalDofs+numNewDofs;
+          sel = cellNodes(notSet);
+          nodes2dofs(:,sel) = globDofs;
         end
-        obj.dofs(i,:) = cdofs;
+        dummy = nodes2dofs(:, cellNodes);
+        obj.dofs(:, i) = dummy(:);
       end
-      obj.dofs = obj.dofs + uint32(offset);
+      obj.numOfDofs = totalDofs;
     end
-%
-%    function enumerateGeneric(obj, offset)
-%      dim = obj.mesh.dim;
-%      nelem = obj.mesh.elemsCount(struct('dim', dim));
-%      visited = zeros(1, nelem, 'logical');
-%      dofCounter = uint32(offset);
-%      dofsPerElem = obj.femType.numOfDofs*obj.qdim;
-%      obj.dofs = zeros(nelem, dofsPerElem, 'uint32');
-%      adj = obj.mesh.getAdjacency(dim, dim);
-%      ddim = obj.dofDim(1:dofsPerElem);
-%      for elemID=1:nelem
-%        for dofID=1:dofsPerElem
-%          realPt = obj.pointOfDof(dofID, elemID);
-%          dofTopo = obj.femType.topoOfDof(
-%          neighbours = adj.at(elemID);        
-%          for n = neighbours
-%            if visited(n) == false
-%              continue
-%            end
-%            gd = obj.hasDofAtPoint(realPt, n, ddim(dofID));
-%            if gd
-%              obj.dofs(elemID, dofID) = obj.dofs(n, gd);
-%              break;
-%            end
-%          end
-%          if obj.dofs(elemID, dofID) == 0
-%            dofCounter = dofCounter + 1;
-%            obj.dofs(elemID, dofID) = dofCounter;
-%          end
-%        end
-%        visited(elemID) = true;
-%      end
-%    end
-%  
-    function enumerateGeneric(obj, offset)
+    function ndof = enumerateGeneric(obj)
       dim = obj.mesh.dim;
       nelem = obj.mesh.elemsCount(struct('dim', dim));
       dofCounter = uint32(offset);
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
-      obj.dofs = zeros(nelem, dofsPerElem, 'uint32');
-      ddim = obj.dofDim(1:dofsPerElem);
+      obj.dofs = zeros(dofsPerElem, nelem, 'uint32');
+      ddim = obj.dimOfDof(1:dofsPerElem);
       for elemID=1:nelem
         for dofID=1:dofsPerElem
-          if obj.dofs(elemID, dofID) ~= 0
+          if obj.dofs(dofID, elemID) ~= 0
             continue
           end
           realPt = obj.pointOfDof(dofID, elemID);
@@ -142,10 +164,10 @@ classdef MeshFem < handle
           baseAdj = obj.mesh.getAdjacency(dim, dofTopo(1));
           targAdj = obj.mesh.getAdjacency(dofTopo(1), dim);
           ba = baseAdj.at(elemID);
-          neighbours = targAdj.at(ba(dofTopo(2))); 
+          neighbours = targAdj.at(ba(dofTopo(2)));
           globDof = 0;
           toSet = zeros(length(neighbours),2);
-          for i=1:length(neighbours) 
+          for i=1:length(neighbours)
             n = neighbours(i);
             %if n == elemID
             %  continue
@@ -166,13 +188,13 @@ classdef MeshFem < handle
             dofCounter = dofCounter+1;
             globDof = dofCounter;
           end
-          toSet
           for i=1:size(toSet,1)
             obj.dofs(toSet(i,1), toSet(i,2)) = globDof;
           end
           %obj.dofs(elemID, dofID) = globDof;
         end % end of loop over dofs in element
       end % end of loop over elements
+      ndof = numel(obj.dofs);
     end % end of function enumerateGeneric
-  end 
+  end
 end
