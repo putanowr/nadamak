@@ -28,6 +28,9 @@ classdef SofModel < handle
     function writeBc(obj, fid)
       obj.problem.writeBc(fid);
     end
+    function writeDofs(obj, fid)
+      obj.problem.writeDofs(fid)
+    end
     function [status, msg, bc] = setBc(obj, regionName, variableName, bcName, params)
       status = true;
       msg = sprintf('Set BC on "%s" to "%s"', regionName, bcName);
