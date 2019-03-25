@@ -91,6 +91,20 @@ classdef SofModel < handle
       end
       mesh = obj.problem.getMesh(meshName);
     end
+    function status = hasMesh(obj)
+      status = obj.problem.hasMesh();
+    end
+    function [d] = getNodalDisplacement(obj)
+       varName = 'Displacement';
+       if obj.problem.model.variables.hasVariable(varName)
+         var = obj.problem.model.variables.get(varName);
+         nnodes = var.fem.mesh.nodesCount()
+         val = var.dofValues(var.fem.nodes2dofs);
+         d = reshape(val, var.variable.qdim, nnodes)'
+       else
+         d = [];
+       end
+    end
     function [status, msg] = generateMesh(obj, meshParams, meshName)
       % For the geometry stored in FemModel generate mesh
       % and store it under given name. If name is not given
