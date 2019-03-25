@@ -8,6 +8,7 @@ classdef MeshFem < handle
     qdim
     femType
     dofs
+    nodes2dofs
     numOfDofs
   end
   methods
@@ -100,11 +101,11 @@ classdef MeshFem < handle
       obj.dofs = cell(1,nelem);
       nnodes = obj.mesh.nodesCount();
       qd = prod(obj.qdim);
-      nodes2dofs = zeros(qd, nnodes, 'uint32');
+      obj.nodes2dofs = zeros(qd, nnodes, 'uint32');
       totalDofs=0;
       for i=1:nelem
         nodes = obj.mesh.elemNodes(i);
-        notSet = find(~all(nodes2dofs(:, nodes)));
+        notSet = find(~all(obj.nodes2dofs(:, nodes)));
         notSetNum = numel(notSet);
         if notSetNum > 0
           globDofs = zeros(qd, notSetNum, 'uint32');
@@ -112,9 +113,9 @@ classdef MeshFem < handle
           globDofs(:) = (1:(numNewDofs))+totalDofs;
           totalDofs = totalDofs+numNewDofs;
           sel = nodes(notSet);
-          nodes2dofs(:,sel) = globDofs;
+          obj.nodes2dofs(:,sel) = globDofs;
         end
-        dummy = nodes2dofs(:, nodes);
+        dummy = obj.nodes2dofs(:, nodes);
         obj.dofs{i} = dummy(:);
       end
       obj.numOfDofs = totalDofs;
