@@ -28,7 +28,7 @@ classdef MeshFem < handle
         if dim ~= 2
           error('Enumerating DOFs implemented only for mesh dim = 2')
         end
-        obj.enumerateClassicNodal();
+        obj.enumerateClassicNodalC();
         ndof = obj.numOfDofs;
       end
     end
@@ -47,7 +47,7 @@ classdef MeshFem < handle
       realPt = obj.mesh.geomTrans.transform(refPt, elemID);
     end
     function locDofs = localDofsOfPoint(obj, point, elemID)
-      locDofs = []; % local degrees of freedom in element
+      locDofs = zeros(0,0, 'uint32'); % local degrees of freedom in element
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
       for i=1:dofsPerElem
         realPt = obj.pointOfDof(i, elemID);
@@ -80,10 +80,45 @@ classdef MeshFem < handle
       % Return component number of dof
       di = dofID-offset;
       qp = prod(obj.qdim);
-      d=di-floor((di-1)/qp)*qp;
+      d=rem((di-1),qp)+1;
+    end
+    function writeDofs(obj, fid)
+      i=0;
+      for edof = obj.dofs
+        i=i+1;
+        fprintf(fid, 'Elem %d dofs  ', i);
+        for dof = edof{:}
+          fprintf(fid, ' %d', dof);
+        end
+        fprintf(fid, '\n');
+      end
     end
   end
   methods(Access=private)
+    function enumerateClassicNodalC(obj)
+      nelem = obj.mesh.elemsCount();
+      obj.dofs = cell(1,nelem);
+      nnodes = obj.mesh.nodesCount();
+      qd = prod(obj.qdim);
+      nodes2dofs = zeros(qd, nnodes, 'uint32');
+      totalDofs=0;
+      for i=1:nelem
+        nodes = obj.mesh.elemNodes(i);
+        notSet = find(~all(nodes2dofs(:, nodes)));
+        notSetNum = numel(notSet);
+        if notSetNum > 0
+          globDofs = zeros(qd, notSetNum, 'uint32');
+          numNewDofs= notSetNum*qd;
+          globDofs(:) = (1:(numNewDofs))+totalDofs;
+          totalDofs = totalDofs+numNewDofs;
+          sel = nodes(notSet);
+          nodes2dofs(:,sel) = globDofs;
+        end
+        dummy = nodes2dofs(:, nodes);
+        obj.dofs{i} = dummy(:);
+      end
+      obj.numOfDofs = totalDofs;
+    end
     function enumerateClassicNodal(obj)
       dim = obj.mesh.dim;
       nelem = obj.mesh.elemsCount(struct('dim', dim));
