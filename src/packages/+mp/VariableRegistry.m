@@ -2,12 +2,20 @@ classdef VariableRegistry < handle
   % Manages variables necessary for a Problem
   properties (Access=private)
     vd struct % Structure with fields corresponding to variable names.
+  end
+  properties (SetAccess=private)
     offset uint32
   end
   methods
     function [obj] = VariableRegistry()
       obj.vd = struct();
       obj.offset = 0;
+    end
+    function [varNames] = names(obj)
+      varNames = fieldnames(obj.vd)';
+    end
+    function [var] = get(obj, variableName)
+      var = obj.vd.(variableName);
     end
     function createVariable(obj, variableName, fem)
     end
