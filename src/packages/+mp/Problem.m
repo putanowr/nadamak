@@ -30,6 +30,9 @@ classdef Problem < handle
     function vars = variableNames(obj)
       vars= fieldnames(obj.variables)';
     end
+    function writeDofs(obj, fid)
+      obj.model.writeDofs(fid);
+    end
     function writeBc(obj, fid)
       obj.bc.writeBc(fid);
     end
@@ -74,10 +77,11 @@ classdef Problem < handle
       obj.model.meshes.register(mesh, meshName);
     end
     function solve(obj, options)
+      obj.model.resetVariables();
       obj.buildMeshes(options);
       obj.setupApproximation(options);
-      obj.preassembly();
-      obj.assembly()
+      obj.preassembly(options);
+      obj.assembly(options);
       obj.runSolver();
       obj.postprocess();
     end
@@ -111,13 +115,13 @@ classdef Problem < handle
         obj.progress.report([], msg);
       end
     end
-    function preassembly(obj)
+    function preassembly(obj, options)
       obj.progress.report(0.2, 'Do pre-assembly');
     end
-    function assembly(obj)
+    function assembly(obj, options)
       obj.progress.report(0.3, 'Assembly');
     end
-    function runSolver(obj)
+    function runSolver(obj, options)
       obj.progress.report(0.6, 'Run solver');
     end
     function postprocess(obj)
@@ -125,7 +129,6 @@ classdef Problem < handle
     end
     function setupApproximation(obj, options)
       obj.progress.report(0.2, 'Setup approximation')
-      offset = 0;
       for vn = fieldnames(obj.variables)'
         variableName = vn{:};
         var = obj.variables.(variableName);
