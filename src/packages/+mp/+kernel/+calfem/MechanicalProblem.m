@@ -1,8 +1,10 @@
 classdef MechanicalProblem < mp.MechanicalProblem 
   % Mechanical problem calss
   properties(Constant)
-    validFemTypes = [mp.FEM.FemType.Line2, mp.FEM.FemType.Triang3, mp.FEM.FemType.Quad4];
-    validGmshTypes = [1,2,3];
+    validFemTypes = [mp.FEM.FemType.Line2, mp.FEM.FemType.Triang3,...
+                     mp.FEM.FemType.Quad4, mp.FEM.FemType.Quad8,...
+                     mp.FEM.FemType.Hex8];
+    validGmshTypes = [1,2,3,16,5];
   end
   properties(Access=private)
     bcT
@@ -109,14 +111,19 @@ classdef MechanicalProblem < mp.MechanicalProblem
     function Ke = localStiffnessMatrix(obj, mesh, elem, femType, nodes)
        E = 210e6;
        nu = 0.2;
-       ptype = 2; % plane Strain
+       if mesh.dim == 3
+         ptype = 4;
+       else
+         ptype = 2; % plane Strain
+       end
        D = hooke(ptype, E, nu);
        n = numel(nodes)*2;
        thickness = 1;
        nGauss = 2;
        coords = mesh.nodes(nodes,:)';
-       ex = coords(1,:)
-       ey = coords(2,:)
+       ex = coords(1,:);
+       ey = coords(2,:);
+       ez = coords(3,:);
        switch femType
          case mp.FEM.FemType.Triang3
            ep = [ptype, thickness];
@@ -124,6 +131,12 @@ classdef MechanicalProblem < mp.MechanicalProblem
          case mp.FEM.FemType.Quad4
            ep = [ptype, thickness, nGauss];
            Ke = plani4e(ex,ey,ep,D);
+         case mp.FEM.FemType.Quad8
+           ep = [ptype, thickness, nGauss];
+           Ke = plani8e(ex,ey,ep,D);
+         case mp.FEM.FemType.Hex8
+           ep = nGauss;
+           Ke = soli8e(ex,ey,ez,ep,D);
          otherwise
            error('Calfem kernel does not support Fem of type: %s', femType);
        end  
