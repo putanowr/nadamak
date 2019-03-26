@@ -66,7 +66,7 @@ classdef Viewer < handle
       if ~isempty(varargin)
          params.dim = mp_get_option(varargin{1}, 'dim', params.dim);
       end
-      if isfield(varargin{1}, 'Displacement')
+      if ~isempty(varargin) && isfield(varargin{1}, 'Displacement')
         coords = copy(mesh.nodes);
         n = size(varargin{1}.Displacement,2);
         coords(:,1:n) = coords(:,1:n) + varargin{1}.Displacement;
