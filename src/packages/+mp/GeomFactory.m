@@ -3,6 +3,7 @@ classdef GeomFactory < handle
     akas = {'Rectangle', {'Rectangle', 'RectangleGeom'};
             'Square',    {'Square',    'SquareGeom'};
 	          'LShape',    {'L-Shape',   'LShapeGeom', 'LShape', 'L'};
+            'Cube',      {'Cube',      'CubeGeom'};
 	         };
   end
   methods(Static)
