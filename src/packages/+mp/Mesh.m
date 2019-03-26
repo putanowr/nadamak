@@ -6,6 +6,7 @@ classdef Mesh < handle
     elements;
     regions;
     nodemap;
+    cells2elements; % N x 2 array (columns: cells, elements)
     faces2elements; % N x 2 array (columns: faces, elements)
     edges2elements; % N x 2 array (columns: edges, elements)
     f2eOrient;
@@ -33,6 +34,7 @@ classdef Mesh < handle
       obj.regions = regions;
       obj.nodemap = nodemap;
       obj.adjacencies = cell(4,4);
+      obj.cells2elements = uint32.empty;
       obj.faces2elements = uint32.empty;
       obj.edges2elements = uint32.empty;
       obj.f2eOrient = {};
@@ -165,8 +167,16 @@ classdef Mesh < handle
       elemsIds = h(ids);
     end
     function [elemsIds] = elemsFromCells(obj, cellIds)
-      elemsIds = [];
-      error('Not implemented yet');
+      % Return Id of elements corresponding to given cell
+      cellIds = uint32(cellIds);
+      obj.updateCells2Elems();
+      [iv, indices] = ismember(cellIds, obj.cells2elements(:,1));
+      if(~iv)
+        invalid = cellIds(find(iv==0));
+        s = sprintf(' %d', invalid);
+        error('Cells below do not correspond to an element:\n%s',s);
+      end
+      elemsIds = obj.cells2elements(indices,2)';
     end
     function [elemsIds] = elemsFromFaces(obj, faceIds)
       % Return Id of elements corresponding to given faces
@@ -221,6 +231,21 @@ classdef Mesh < handle
         end
       end
     end
+    function updateCells2Elems(obj)
+      % Make sure the data member cells2elements is properly initialized
+      if isempty(obj.cells2elements)
+        elems3D = mp_gmsh_elems_find(obj.elements, struct('dim', 3));
+        nelem = length(elems3D);
+        obj.cells2elements = zeros(nelem, 2, 'uint32');
+        for i=1:nelem
+          nnodes = mp_gmsh_node_count(obj.elements{elems3D(i)}(2));
+          nodesID = obj.elements{elems3D(i)}(end-nnodes+1:end);
+          cellID = obj.findCellSpannedByNodes(nodesID);
+          obj.cells2elements(i,1) = cellID;
+          obj.cells2elements(i,2) = elems3D(i);
+        end
+      end
+    end
     function updateAdjacency(obj, from, to)
       f = mp.Topo(from)+1;
       t = mp.Topo(to)+1;
@@ -229,6 +254,9 @@ classdef Mesh < handle
         func = updaters{f, t};
         func();
       end
+    end
+    function [cellId] = findCellSpannedByNodes(obj, nodesID)
+      cellId = obj.findEntitySpannedByNodes(nodesID, mp.Topo.Cell);
     end
     function [faceId] = findFaceSpannedByNodes(obj, nodesID)
       % Return Id of face spanned by nodes or 0 if no such face exists.
@@ -312,6 +340,11 @@ classdef Mesh < handle
       %% Return number of edges in the mesh
       adj = obj.getAdjacency(1,0);
       nedges = adj.length;
+    end
+    function [ncells] = cellsCount(obj)
+      %% Return number of cells in the mesh
+      adj = obj.getAdjacency(3, 0);
+      ncells = adj.length;
     end
     function [nRegions] = regionsCount(obj, varargin)
       %% Return number of regions.
@@ -556,7 +589,16 @@ classdef Mesh < handle
       obj.adjacencies{V+1, C+1} = obj.adjacencies{C+1, V+1}.inverse();
     end
     function Vertex2Cell(obj)
-      error('Not implemented')
+      d = obj.dim;
+      if d < 3
+        error('Vertex2Cell not called for 3D mesh')
+      end
+      V = mp.Topo(0);
+      C = mp.Topo(d);
+      if isempty(obj.adjacencies{C+1,V+1})
+        obj.updateAdjacency(C,V);
+      end
+      obj.adjacencies{V+1, C+1} = obj.adjacencies{C+1, V+1}.inverse();
     end
     function Edge2Vertex_1D(obj)
       if obj.dim ~= 1
@@ -736,7 +778,17 @@ classdef Mesh < handle
       error('Not implemented')
     end
     function Cell2Vertex(obj)
-      error('Not implemented')
+      if obj.dim ~= 3
+        error('Cell2Vertex calld for mesh of dimension %d', obj.dim')
+      end
+      elems3D = mp_gmsh_elems_find(obj.elements, struct('dim', 3));
+      nelem = length(elems3D);
+      adj = cell(1, nelem);
+      for i=1:nelem
+        nnodes = mp_gmsh_node_count(obj.elements{elems3D(i)}(2));
+        adj{i} = obj.elements{elems3D(i)}(end-nnodes+1:end);
+      end
+      obj.adjacencies{4,1} = mp.Adjacency(adj);
     end
     function Cell2Edge(obj)
       error('Not implemented')
