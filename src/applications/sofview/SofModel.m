@@ -113,8 +113,11 @@ classdef SofModel < handle
         meshName = obj.defaultMeshName;
       end
       mesher = mp.Mesher();
+      mesher.showinfo = true;
       try
+        meshParams.dim = obj.problem.geometry.dim;
         mesh = mesher.generate(obj.problem.geometry, meshParams);
+        fprintf(1, 'Mesh dimension %d', mesh.dim);
       catch ME
         status = false;
         msg = ME.message;
