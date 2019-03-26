@@ -26,9 +26,6 @@ classdef MeshFem < handle
     function ndof = enumerateDofs(obj)
       if obj.numOfDofs == 0
         dim = obj.mesh.dim;
-        if dim ~= 2
-          error('Enumerating DOFs implemented only for mesh dim = 2')
-        end
         obj.enumerateClassicNodalC();
         ndof = obj.numOfDofs;
       end
