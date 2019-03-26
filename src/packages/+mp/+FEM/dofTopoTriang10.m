@@ -19,7 +19,7 @@ function dtopo = dofTopoTriang10(dofID)
   if nargin < 1 
     dtopo = dofTopo;
   else
-    r = rem(dofID-1,10)+1;
+    r = rem(dofID-1,size(dofTopo,1))+1;
     dtopo = dofTopo(r, :);
   end
 end

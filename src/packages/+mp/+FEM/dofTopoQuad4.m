@@ -8,12 +8,12 @@ function dtopo = dofTopoQuad4(dofID)
     dofTopo = [0, 1;
                0, 2;
                0, 3;
-               0, 4]
+               0, 4];
   end
   if nargin < 1 
     dtopo = dofTopo;
   else
-    r = rem(dofID-1,4)+1;
+    r = rem(dofID-1,size(dofTopo,1))+1;
     dtopo = dofTopo(r, :);
   end
 end
