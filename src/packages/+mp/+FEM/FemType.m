@@ -1,16 +1,16 @@
 classdef FemType
   % Types of Finite Elements.
   enumeration
-    % items: gmsh_elem_type, isLagrangian, order, num_of_dofs,
+    % items: gmsh_elem_type, isLagrangian, dimension, order, num_of_dofs,
     % localCoordsCalback, dofTopoCallback
     Line2(    1,true,1,1, 2, 'Line2')
     Triang3(  2,true,2,1, 3, 'Triang3')
     Triang6(  9,true,2,2, 6, 'Triang6')
     Triang10(21,true,2,3,10, 'Triang10')
-    Quad4(    3,true,2,1, 4, 'Quad4')
-    Quad8(   16,true,2,2, 8, 'Quad8')
-    Quad9(   10,true,2,2, 9, 'Quad9')
-    Hex8(     5,true,3,1, 8, 'Hex8')
+    Quad4(    3,true,2,2, 4, 'Quad4')
+    Quad8(   16,true,2,4, 8, 'Quad8')
+    Quad9(   10,true,2,4, 9, 'Quad9')
+    Hex8(     5,true,3,3, 8, 'Hex8')
   end
   methods
     function [self]=FemType(gmshID, isLagrangian, dim, order, numOfDofs, name)
