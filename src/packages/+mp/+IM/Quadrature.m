@@ -12,10 +12,10 @@ classdef Quadrature < handle
       obj.w = w;
     end
     function [n] = numOfPoints(obj)
-      return numel(w);
+      n = numel(obj.w);
     end
-    function [t] type(obj)
-      t = obj.type;
+    function [t]= type(obj)
+      t = obj.baseType;
     end
     function [n] = order(obj)
       if obj.baseType.order > 0
@@ -26,6 +26,6 @@ classdef Quadrature < handle
     end
   end
   methods (Abstract)
-    [name] = getfem_name()
+    [name] = getfem_name(obj);
   end
 end
