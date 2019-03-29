@@ -27,5 +27,6 @@ classdef ImType
   properties(SetAccess=immutable)
     dim
     gmshID
+    order
   end
 end
