@@ -8,7 +8,7 @@ function status = mp_generateShapeFunctions(pth, verbose)
     %--------------------------------------------------------------
     % Quadratic line
     pts = sym([0;1/2;1]);
-    f = [1,x,x.^2];
+    f(x) = [1,x,x.^2];
     gener = @(w) dot(formula(f)',cell2sym(f(pts))\w);
     e = sym(eye(3));
     sfDefs.Line3.sf = [gener(e(:,1)), gener(e(:,2)), gener(e(:,3))];
@@ -32,7 +32,7 @@ function status = mp_generateShapeFunctions(pth, verbose)
     sf(9)  = 9*y.*z.*(3*z - 1)/2;
     sf(10) =  27*x.*y.*z;
     sfDefs.Triang10.sf = sf;
-
+    sfDefs.Hex8.sf = Quad8ShapeFun(); % Just temporary hack FIXIT
     if verbose
       fprintf('Generating code for shape functions in : %s\n', pth);
     end
@@ -47,20 +47,21 @@ end
 function [sf] = Quad9ShapeFun()
   syms x y z
   mid=sym(1/2);
-  pts = sym([0,0;
-               1,1;
-               0,1;
-               mid,0;
-               1,mid;
-               mid, 1;
-               0, mid;
-               mid,mid]);
-   f(x,y) = [1, x, y, x.*y, x.^2, y.^2, x.*y.^2, x.^2.*y, x.^2.*y^2];
+  pts = sym([0,    0;
+             1,    0;
+             1,    1;
+             0,    1;
+             mid,  0;
+             1,  mid;
+             mid,  1;
+             0,  mid;
+             mid,mid]);
+   f(x,y) = [1, x, y, x.*y, x.^2, y.^2, x.*y.^2, x.^2.*y, x.^2.*y.^2];
    XY = cell2sym(f(pts(:,1), pts(:,2)));
    n = 9;
    sf = sym(zeros(1,n));
    for i=1:n
-      w = sum(zeros(n,1));
+      w = sym(zeros(n,1));
       w(i) = 1;
       sf(i) = dot(formula(f)', XY\w);
    end
@@ -68,19 +69,20 @@ end
 function [sf] = Quad8ShapeFun()
   syms x y z
   mid=sym(1/2);
-  pts = sym([0,0;
-               1,1;
-               0,1;
-               mid,0;
-               1,mid;
-               mid, 1;
-               0, mid]);
+  pts = sym([0,     0;
+             1,     0;
+             1,     1;
+             0,     1;
+             mid,   0;
+             1,   mid;
+             mid,   1;
+             0,   mid]);
    f(x,y) = [1, x, y, x.*y, x.^2, y.^2, x.*y.^2, x.^2.*y];
    XY = cell2sym(f(pts(:,1), pts(:,2)));
    n = 8;
    sf = sym(zeros(1,n));
    for i=1:n
-      w = sum(zeros(n,1));
+      w = sym(zeros(n,1));
       w(i) = 1;
       sf(i) = dot(formula(f)', XY\w);
    end
