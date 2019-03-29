@@ -12,6 +12,10 @@ classdef ImType
     Triangle_2(2,2,2)
     Triangle_3(2,2,3)
     Triangle_4(2,2,4)
+    Product2D(3,2,0)
+    Product3D(8,3,0)
+    GaussProduct2D(3,2,0)
+    GaussProduct3D(8,3,0)
   end
   methods
     function [self]=ImType(gmshID, dim, order)
@@ -23,6 +27,5 @@ classdef ImType
   properties(SetAccess=immutable)
     dim
     gmshID
-    order
   end
 end
