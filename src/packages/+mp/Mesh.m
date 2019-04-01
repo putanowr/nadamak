@@ -2,6 +2,7 @@ classdef Mesh < handle
   % Holds mesh data
   properties (SetAccess=private)
     dim = 0;
+    targetDim = 0;
     nodes;
     elements;
     regions;
@@ -10,7 +11,6 @@ classdef Mesh < handle
     faces2elements; % N x 2 array (columns: faces, elements)
     edges2elements; % N x 2 array (columns: edges, elements)
     f2eOrient;
-    geomTrans;
     parent;
     childrens;
     parentNodesMap;
@@ -20,6 +20,8 @@ classdef Mesh < handle
   properties (Access = private)
     adjacencies;
     simplical = -1;
+    dim2CellTypes;
+    geomTransArray cell; % Cell array of geometric transformations
   end
   properties (Constant)
     readFormats = {'msh'};
@@ -29,6 +31,7 @@ classdef Mesh < handle
     function [obj] = Mesh(dim, nodes, elements, regions, nodemap)
       % Consctruct new mesh
       obj.dim = dim;
+      obj.targetDim = 3;
       obj.nodes = nodes;
       obj.elements = elements;
       obj.regions = regions;
@@ -38,12 +41,34 @@ classdef Mesh < handle
       obj.faces2elements = uint32.empty;
       obj.edges2elements = uint32.empty;
       obj.f2eOrient = {};
-      obj.geomTrans = mp.GeomTrans(obj);
+      obj.dim2CellTypes  = cell(1, obj.dim);
       obj.parent = [];
       obj.childrens = [];
       obj.parentNodesMap = [];
       obj.parentElemsMap = [];
       obj.isDual = false;
+      obj.setupGeomTrans();
+    end
+    function setTargetDim(obj, targetDim)
+      if targetDim < obj.dim
+        error('Target dimension cannot be smaller than intrinsic dimension');
+      end
+      if targetDim > 3
+        error('Target dimension cannot be greater than 3');
+      end
+      obj.targetDim = targetDim;
+    end
+    function [gt] = geomTrans(obj, dimension)
+      if nargin < 2
+        dimension = obj.dim;
+      end
+      gt = obj.geomTransArray{dimension};
+    end
+    function [gt] = elemGeomTrans(obj, elemId)
+      % Maybe it would be faster to store geom trans indeks for each
+      % element than to map it through element type and dimension.
+      ed = mp_gmsh_elem_dim(obj.elems{elemId});
+      gt = obj.geomTransArray{ed};
     end
     function setParent(obj, parent_, nodesMap, elemsMap)
       obj.parent = parent_;
@@ -122,8 +147,22 @@ classdef Mesh < handle
       % Return gmsh type of given element
       type = obj.elements{elemId}(2);
     end
-    function [ct] = cellTypes(obj)
-      cells = mp_gmsh_elems_find(obj.elements, struct('dim', [obj.dim]));
+    function [ct] = cellTypes(obj, dimension)
+      % Return vector of cell types for mesh elements. If and argument is
+      % given it is the dimension to which the search should be restricted
+      % Example:
+      %   mesh.cellTypes() return the cell type of dimension equal to
+      %   dimension of the mesh
+      %
+      %   mesh.cellTypes(1) return the cell type of 1D elements
+      if nargin < 2 || isempty(dimension)
+        dimension = obj.dim;
+      end
+      if ~isempty(obj.dim2CellTypes{dimension})
+         ct = obj.dim2CellTypes{dimension};
+         return;
+      end
+      cells = mp_gmsh_elems_find(obj.elements, struct('dim', dimension));
       info = struct();
       for i=cells
         typetag = mp_gmsh_element_typetag(obj.elements{i});
@@ -139,6 +178,7 @@ classdef Mesh < handle
         info = mp_gmsh_types_info(name{:});
         ct = [ct, info.type];
       end
+      obj.dim2CellTypes{dimension} = ct;
     end
     function [val] = faceEdgeOrient(obj, face, edgeNum)
       obj.updateAdjacency(2, 1);
@@ -189,6 +229,18 @@ classdef Mesh < handle
         error('Faces below do not correspond to an element:\n%s',s);
       end
       elemsIds = obj.faces2elements(indices,2)';
+    end
+    function [elemsIds] = elemsFromEdges(obj, edgeIds)
+      % Return Id of elements corresponding to given edge
+      edgeIds = uint32(edgeIds);
+      obj.updateEdges2Elems();
+      [iv, indices] = ismember(edgeIds, obj.edges2elements(:,1));
+      if(~iv)
+        invalid = edgeIds(iv==0);
+        s = sprintf(' %d', invalid);
+        error('Edges below do not correspond to an element:\n%s',s);
+      end
+      elemsIds = obj.edges2elements(indices,2)';
     end
     function [edgesIds] = edgesFromElems(obj, elemIds)
       obj.updateEdges2Elems();
@@ -422,6 +474,7 @@ classdef Mesh < handle
         i = i+1;
       end
     end
+
     function [centerCoords] = edgeCenters(obj, edges)
       %% Return shared array of edge coordinates.
       % Caution: Current implementation works only for straight edges;
@@ -538,6 +591,12 @@ classdef Mesh < handle
   % Private
   %------------------------------------------------------------------------------
   methods(Access=private)
+    function setupGeomTrans(obj)
+      obj.geomTransArray = cell(1,obj.dim);
+      for dimension=1:mesh.dim
+        obj.geomTransArray{dimension} = mp.GeomTrans(obj, dimension);
+      end
+    end
     function [entityId] = findEntitySpannedByNodes(obj, nodesId, entityTopoDim)
       % Return ID of a mesh entity of given topological dimension spanned
       % by given set of nodes. If such entity does not exists return 0.
