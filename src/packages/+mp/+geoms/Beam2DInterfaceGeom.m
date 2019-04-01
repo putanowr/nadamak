@@ -5,7 +5,7 @@ classdef Beam2DInterfaceGeom < mp.GeomModel
       if nargin < 3
         legacyID = 0;
       end  
-      obj = obj@mp.GeomModel(name, 2, legacyID);
+      obj = obj@mp.GeomModel(name, 1, 2, legacyID);
     end
     function [name] = templateName(~)
       name = 'not_implemented.tpl';

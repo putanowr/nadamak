@@ -20,7 +20,7 @@ classdef LShapeGeom < mp.GeomModel
       if nargin < 2
         params = struct();
       end
-      obj = obj@mp.GeomModel(name, 2, legacyID);
+      obj = obj@mp.GeomModel(name, 2, 2, legacyID);
       if ~isempty(params)
         obj.setup(params);
       end

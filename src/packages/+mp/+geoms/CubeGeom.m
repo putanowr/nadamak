@@ -8,7 +8,7 @@ classdef CubeGeom < mp.GeomModel
       if nargin < 3
         legacyID = 0;
       end
-      obj = obj@mp.GeomModel(name, 3, legacyID);
+      obj = obj@mp.GeomModel(name, 3, 3, legacyID);
     end
     function [name] = templateName(~)
       name = 'cube.tpl';

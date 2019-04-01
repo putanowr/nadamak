@@ -1,7 +1,7 @@
 classdef Beam2DGeom < mp.GeomModel 
   % Geometric model for Beam2DGeom.
   methods
-    function [obj] = Beam2DGeom(name, params, legacyID)
+    function [obj] = Beam2DGeom(name, 1, 2, legacyID)
       if nargin < 3
         legacyID = 0;
       end  

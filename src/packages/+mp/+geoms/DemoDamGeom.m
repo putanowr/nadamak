@@ -20,7 +20,7 @@ classdef DemoDamGeom < mp.GeomModel
       if nargin < 2
         params = struct();
       end
-      obj = obj@mp.GeomModel(name, 3, legacyID);
+      obj = obj@mp.GeomModel(name, 3, 3, legacyID);
       if ~isempty(params)
         obj.setup(params);
       end
