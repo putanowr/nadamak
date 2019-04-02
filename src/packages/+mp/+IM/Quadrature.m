@@ -26,6 +26,6 @@ classdef Quadrature < handle
     end
   end
   methods (Abstract)
-    [name] = getfem_name(obj);
+    [name] = getfem_name(obj)
   end
 end
