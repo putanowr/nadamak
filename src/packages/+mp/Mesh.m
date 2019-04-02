@@ -21,7 +21,7 @@ classdef Mesh < handle
     adjacencies;
     simplical = -1;
     dim2CellTypes;
-    geomTransArray cell; % Cell array of geometric transformations
+    geomTransArray; % Cell array of geometric transformations
   end
   properties (Constant)
     readFormats = {'msh'};
@@ -40,7 +40,7 @@ classdef Mesh < handle
       obj.cells2elements = uint32.empty;
       obj.faces2elements = uint32.empty;
       obj.edges2elements = uint32.empty;
-      obj.f2eOrient = {};
+      obj.f2eOrient = cell();
       obj.dim2CellTypes  = cell(1, obj.dim);
       obj.parent = [];
       obj.childrens = [];
@@ -722,27 +722,6 @@ classdef Mesh < handle
       end
       adj = obj.getAdjacency(2,1);
       obj.adjacencies{2,3} = adj.inverse();
-      %{
-      e2v = obj.getAdjacency(1, 0);
-      v2f = obj.getAdjacency(0, 2);
-      f2v = obj.getAdjacency(2, 0);
-      nedges = e2v.length;
-      targets = cell(1, nedges);
-      for i=1:nedges
-        v = e2v.at(i);
-        faces = v2f.at(v(1));
-        ef = [];
-        for f = faces
-          fv = f2v.at(f);
-          if ismember(v(2), fv)
-            ef = [ef, f];
-          end
-        end
-        assert(length(ef) <= 2 && length(ef) > 0)
-        targets{i} = ef;
-      end
-      obj.adjacencies{2, 3} = mp.Adjacency(targets);
-      %}
     end
     function Edge2Cell(obj)
       error('Not implemented')
