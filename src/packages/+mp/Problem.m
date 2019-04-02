@@ -1,15 +1,15 @@
 classdef Problem < handle
   % Problem Base class for various physical problems.
   properties(SetAccess=protected)
-    type mp.ProblemType;
-    model mp.FemModel;
-    geometry;
-    progress mp.Progress;
-    bc mp.BcRegistry;
-    variables;
+    type mp.ProblemType
+    model mp.FemModel
+    geometry
+    progress mp.Progress
+    bc mp.BcRegistry
+    variables
   end
   methods(Abstract)
-    setupVariables(obj);
+    [] = setupVariables(obj)
   end
   methods
     function [obj] = Problem(type_, geometry)
@@ -93,7 +93,7 @@ classdef Problem < handle
     end
     function [status, msg] = buildMeshes(obj, options)
       rebuildMesh = mp_get_option(options, 'RebuildMesh', false);
-      msg = 'No main mesh ... building one';
+      msg = 'No main mesh --- building one';
       if obj.model.meshes.hasMesh('mainmesh')
         if ~rebuildMesh
           status = true;
@@ -110,7 +110,7 @@ classdef Problem < handle
       obj.progress.report([], msg);
       if rebuildMesh
         if ~isfield(options, 'MeshingOptions')
-          msg = 'Mesh rebuilding requested but no MeshingOptions given ... aborting';
+          msg = 'Mesh rebuilding requested but no MeshingOptions given --- aborting';
           error(msg);
         end
         mesher = mp.Mesher();
