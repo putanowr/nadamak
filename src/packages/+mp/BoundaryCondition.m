@@ -40,6 +40,6 @@ classdef BoundaryCondition < handle
     end
   end
   methods(Abstract)
-    [status] = validate(obj, params);
+    [status] = validate(obj, params)
   end
 end
