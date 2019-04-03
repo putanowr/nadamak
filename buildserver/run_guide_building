@@ -3,8 +3,12 @@
 echo "Build nadamak guide in HTML and publish it  "
 echo "--------------------------------------------"
 echo `pwd`
-cd `pwd`/docs/guide/en
+topdir=`pwd`
+srcdir=`pwd`/docs/guide/en
+builddir=`pwd`/docs/guide/en/build/html
+cd $srcdir
 make html
+python $topdir/external/sphinxtogithub/sphinxtogithub.py $builddir
 if [ $? -ne 0 ]; then
   echo "------------------------------------------"
   echo "Building Nadamak guid in HTML FAILED      "
