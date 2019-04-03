@@ -1,0 +1,13 @@
+#This file should be sourced at Jenkins executor.
+#
+echo "Build nadamak guide in HTML and publish it  "
+echo "--------------------------------------------"
+echo `pwd`
+cd doc/guide/en
+make html
+if [ $? -ne 0 ]; then
+  echo "------------------------------------------"
+  echo "Building Nadamak guid in HTML FAILED      "
+  echo "------------------------------------------"
+  exit 22
+fi
