@@ -3,7 +3,7 @@
 echo "Build nadamak guide in HTML and publish it  "
 echo "--------------------------------------------"
 echo `pwd`
-cd doc/guide/en
+cd `pwd`/docs/guide/en
 make html
 if [ $? -ne 0 ]; then
   echo "------------------------------------------"
