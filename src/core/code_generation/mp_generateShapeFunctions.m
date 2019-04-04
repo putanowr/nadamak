@@ -5,7 +5,19 @@ function status = mp_generateShapeFunctions(pth, verbose)
     end
     syms x y z
     sfDefs.Line2.sf = [1-x, x];
+    %--------------------------------------------------------------
+    % Quadratic line
+    pts = sym([0;1/2;1]);
+    f(x) = [1,x,x.^2];
+    gener = @(w) dot(formula(f)',cell2sym(f(pts))\w);
+    e = sym(eye(3));
+    sfDefs.Line3.sf = [gener(e(:,1)), gener(e(:,2)), gener(e(:,3))];
+    %---------------------------------------------------------------
     sfDefs.Quad4.sf = [(1-x).*(1-y), x.*(1-y),x.*y, y.*(1-x)];
+    %---------------------------------------------------------------
+    % Quadratic quad       
+    sfDefs.Quad9.sf = Quad9ShapeFun();
+    sfDefs.Quad8.sf = Quad8ShapeFun();
     sfDefs.Triang3.sf = [z, x, y];
     sfDefs.Triang6.sf = [z.*(z-y-x), x.*(x-z-y), y.*(y-x-z),4*x.*z,4*y.*x,4*y.*z];
     sf = sym('sf', [1,10]);
@@ -20,7 +32,7 @@ function status = mp_generateShapeFunctions(pth, verbose)
     sf(9)  = 9*y.*z.*(3*z - 1)/2;
     sf(10) =  27*x.*y.*z;
     sfDefs.Triang10.sf = sf;
-
+    sfDefs.Hex8.sf = Quad8ShapeFun(); % Just temporary hack FIXIT
     if verbose
       fprintf('Generating code for shape functions in : %s\n', pth);
     end
@@ -32,6 +44,49 @@ function status = mp_generateShapeFunctions(pth, verbose)
     status = true;
 end
 
+function [sf] = Quad9ShapeFun()
+  syms x y z
+  mid=sym(1/2);
+  pts = sym([0,    0;
+             1,    0;
+             1,    1;
+             0,    1;
+             mid,  0;
+             1,  mid;
+             mid,  1;
+             0,  mid;
+             mid,mid]);
+   f(x,y) = [1, x, y, x.*y, x.^2, y.^2, x.*y.^2, x.^2.*y, x.^2.*y.^2];
+   XY = cell2sym(f(pts(:,1), pts(:,2)));
+   n = 9;
+   sf = sym(zeros(1,n));
+   for i=1:n
+      w = sym(zeros(n,1));
+      w(i) = 1;
+      sf(i) = dot(formula(f)', XY\w);
+   end
+end
+function [sf] = Quad8ShapeFun()
+  syms x y z
+  mid=sym(1/2);
+  pts = sym([0,     0;
+             1,     0;
+             1,     1;
+             0,     1;
+             mid,   0;
+             1,   mid;
+             mid,   1;
+             0,   mid]);
+   f(x,y) = [1, x, y, x.*y, x.^2, y.^2, x.*y.^2, x.^2.*y];
+   XY = cell2sym(f(pts(:,1), pts(:,2)));
+   n = 8;
+   sf = sym(zeros(1,n));
+   for i=1:n
+      w = sym(zeros(n,1));
+      w(i) = 1;
+      sf(i) = dot(formula(f)', XY\w);
+   end
+end
 function writeSf(verbose, sfDef, name, pth)
   syms x y z w
   fem = mp.FEM.FemType(name);

@@ -6,6 +6,7 @@ classdef Mesher < handle
     clean = true;
     dim = 2;
     order = 1;
+    incomplete = false;
     quadsonly = false;
     transfinite = false;
     transres = [1,1];
@@ -45,14 +46,16 @@ classdef Mesher < handle
       meshingParam.showinfo = mp_get_option(params, 'showinfo', obj.showinfo);
       meshingParam.verbosity = mp_get_option(params, 'verbosity', obj.verbosity);
       meshingParam.regionsToMesh = mp_get_option(params, 'regionsToMesh', obj.regionsToMesh);
+      meshingParam.incomplete = mp_get_option(params, 'incomplete', obj.incomplete);
       if isempty(meshingParam.regionsToMesh)
         meshingParam.meshall=1;
         meshingParam.regionsToMesh='all';
       else
         meshingParam.meshall=0;
       end
-      [n,e,r,m] = mp.gmsh.generate(geomgmsh, meshingParam);
+        [n,e,r,m] = mp.gmsh.generate(geomgmsh, meshingParam);
       mesh = mp.Mesh(meshingParam.dim, n,e,r,m);
+      mesh.setTargetDim(geometry.targetDim);
     end
     function [refmesh] = refine(obj, mesh, nrefinements)
       if nargin < 3

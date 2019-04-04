@@ -3,8 +3,10 @@ classdef ModelVariable < handle
   properties(SetAccess=protected)
     variable
     fem
-    dofs
     offset
+  end
+  properties
+    dofValues
   end
   methods
     function [obj] = ModelVariable(variable, params)
@@ -16,9 +18,9 @@ classdef ModelVariable < handle
         obj.fem = [];
       end
       if ~isempty(obj.fem)
-        obj.dofs = zeros(obj.variable.numOfComponents, obj.fem.numOfDofs);
+        obj.dofValues = zeros(obj.fem.numOfDofs,1);
       else
-        obj.dofs = zeros(obj.variable.numOfComponents, 1);
+        obj.dofValues = zeros(obj.variable.numOfComponents, 1);
       end
     end
     function setOffset(obj, offset)

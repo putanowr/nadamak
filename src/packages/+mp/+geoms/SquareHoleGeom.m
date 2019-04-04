@@ -19,7 +19,7 @@ classdef SquareHoleGeom < mp.GeomModel
       if nargin < 2
 	params_ = struct();
       end
-      obj = obj@mp.GeomModel(name, 2, legacyID);
+      obj = obj@mp.GeomModel(name, 2, 2, legacyID);
       if ~isempty(params_)
 	obj.setup(params_);
       end	

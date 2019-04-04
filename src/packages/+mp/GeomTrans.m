@@ -4,13 +4,21 @@ classdef GeomTrans < handle
     mesh
     fem
     cellToNodes
+    dim
   end
   methods
-    function [obj] = GeomTrans(mesh)
+    function [obj] = GeomTrans(mesh, targetDim)
+      if nargin < 2
+        obj.dim = mesh.dim;
+      else
+        obj.dim = targetDim;
+      end
+      if (obj.dim > mesh.dim || obj.dim < 1)
+        error('Invalid GeomTrans dimension %d, expected value in range [1, %d]', obj.dim, mesh.dim)
+      end
       obj.mesh = mesh;
-      dim = mesh.dim;
       obj.cellToNodes = mesh.getAdjacency(dim, 0);
-      ct = mesh.cellTypes();
+      ct = mesh.cellTypes(dim);
       if (length(ct) > 1)
         %error('GeomTrans not cannot handle mixed element type meshes yet')
         return
@@ -24,7 +32,7 @@ classdef GeomTrans < handle
       sf = obj.fem.sfh(refPoint);
       xyz = [sf*refXYZ(:,1), sf*refXYZ(:,2), sf*refXYZ(:,3)];
     end
-    function [jmat] = jacobian(obj, refPts, cellID, displacement)
+    function [jmat] = jacobianMatrix(obj, refPts, cellID, displacement)
       % calcualte jacobian matrix of the geometric transformation at reference
       % points of given cell.
       cellNodes = obj.cellToNodes.at(cellID);
@@ -35,12 +43,28 @@ classdef GeomTrans < handle
       end
       npt = size(refPts, 1);
       d = obj.mesh.dim;
-      jmat = zeros(d, d, npt);
-      k = 1;
-      for k = 1:size(refPts, 1);
+      jmat = zeros(d, obj.dim, npt);
+      for k = 1:size(refPts, 1)
         sfD = obj.fem.sfDh(refPts(k,:));
-        jmat(:,:,k) = sfD*refXYZ(:, 1:d);
+        jmat(:,:,k) = sfD*refXYZ(:, 1:obj.dim);
       end
+    end
+    function [jac] = jacobian(obj, refPts, cellID, displacement)
+      % calcualte jacobian of the geometric transformation
+      jmat = obj.jacobianMatrix(obj, refPts, cellID, displacement)
+      n = size(jmat, 3);
+      jac = zeros(1, n);
+      for i=1:jmat
+        jac = obj.jacobian1D(jmat(:,:, i));
+      end
+    end
+  end
+  methods(Access=private)
+    function [d] = jacobian1D(jmat)
+      d = sqrt(sum(jmat.*jmat));
+    end
+    function [d] = jacobian2D(jmat)
+
     end
   end
 end

@@ -1,5 +1,5 @@
 .. |CMB| replace:: Nadamak
-.. |authors| replace:: Roman Putanowicz, Sławomir Milewski
+.. |authors| replace:: Roman Putanowicz
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |gnu| replace:: *GNU*
 .. |vtk| replace:: *VTK*

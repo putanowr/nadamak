@@ -11,6 +11,9 @@ classdef VariableRegistry < handle
       obj.vd = struct();
       obj.offset = 0;
     end
+    function [status] = hasVariable(obj, variableName)
+      status = isfield(obj.vd, variableName);
+    end
     function [varNames] = names(obj)
       varNames = fieldnames(obj.vd)';
     end

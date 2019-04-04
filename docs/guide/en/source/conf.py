@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Nadamak'
-copyright = u'2019, Roman Putanowicz, Sławomi Milewski'
+copyright = u'2019, Roman Putanowicz'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -212,7 +212,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'Nadamak.tex', u'Nadamak Documentation',
-   u'Roman Putanowicz, Sławomir Milewski', 'manual'),
+   u'Roman Putanowicz', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -243,7 +243,7 @@ latex_toplevel_sectioning = 'part'
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'nadamak', u'Nadamak Documentation',
-     [u'Roman Putanowicz, Sławomir Milewski'], 1)
+     [u'Roman Putanowicz'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -257,7 +257,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'Nadamak', u'Nadamak Documentation',
-   u'Roman Putanowicz, Sławomir Milewski', 'Nadamak', 'Computational mechanics toolkit.',
+   u'Roman Putanowicz', 'Nadamak', 'Computational mechanics toolkit.',
    'Miscellaneous'),
 ]
 

@@ -23,17 +23,23 @@ classdef BoundaryCondition < handle
       end
     end
     function [status, msg] = setValue(obj, params)
+      msg = 'OK';
+      status = true;
       if isfield(params, 'value')
-        if obj.validate(params)
-          obj.value = eval(params.value);
+        if ~ismember(obj.type, [mp.BcType.Displacement])
+          obj.value = params.value;
         else
-          status = false;
-          msg = 'BC value not valid'
+          if obj.validate(params)
+            obj.value = eval(params.value);
+          else
+            status = false;
+            msg = 'BC value not valid'
+          end
         end
       end
     end
   end
   methods(Abstract)
-    [status] = validate(obj, params);
+    [status] = validate(obj, params)
   end
 end

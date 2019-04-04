@@ -16,12 +16,10 @@ function [handle] = mp_plot_elements(ax, nodes, elements, varargin)
   facesId = cell2mat(connectivity(:,1))';
   colors = ones(nelems, 1);
   for i=1:nelems
-    n = length(connectivity{i, 2});
-    faces(i, 1:n) = connectivity{i,2};
-    if elems{i}(2) == 9
-      faces(i, 1:n) = remap(connectivity{i, 2});
-    end
-    if elems{i}(3) > 0  
+    type = mp_gmsh_element_type(elems{i});
+    rf = remap(connectivity{i, 2}, type);
+    faces(i, 1:numel(rf)) = rf;
+    if elems{i}(3) > 0
       colors(i) = elems{i}(4);
     end
   end
@@ -32,11 +30,15 @@ function [handle] = mp_plot_elements(ax, nodes, elements, varargin)
   end
   set(handle, 'UserData', facesId);
 end
-function con = remap(C)
-  if length(C) == 6
-    i = [1,4,2,5,3,6];
-    con = C(i);
-  else
-    con = C;
+function con = remap(C, elemType)
+  switch elemType
+    case 9
+      i = [1,4,2,5,3,6];
+      con = C(i);
+    case {10, 16}
+      i = [1,5,2,6,3,7,4,8];
+      con = C(i);
+    otherwise
+      con = C;
   end
 end

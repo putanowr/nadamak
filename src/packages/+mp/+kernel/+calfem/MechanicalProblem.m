@@ -1,8 +1,10 @@
 classdef MechanicalProblem < mp.MechanicalProblem 
   % Mechanical problem calss
   properties(Constant)
-    validFemTypes = [mp.FEM.FemType.Line2, mp.FEM.FemType.Triang3, mp.FEM.FemType.Quad4];
-    validGmshTypes = [1,2,3];
+    validFemTypes = [mp.FEM.FemType.Line2, mp.FEM.FemType.Triang3,...
+                     mp.FEM.FemType.Quad4, mp.FEM.FemType.Quad8,...
+                     mp.FEM.FemType.Hex8];
+    validGmshTypes = [1,2,3,16,5];
   end
   properties(Access=private)
     bcT
@@ -33,37 +35,44 @@ classdef MechanicalProblem < mp.MechanicalProblem
     function assemblyKinematicBC(obj)
       callback = @obj.kinematicBCHandler;
       obj.bc.apply(callback);
+      obj.bcT = obj.bcT(obj.bcT(:,1)~=0,:);
     end
-    function handleBcDisplacement(obj, regionName, bc)
-      fprintf('Handled %s on %s\n', bc.type, regionName);
-      variable = obj.model.variables.get(bc.variable);
+    function handleBcDisplacement(obj, regionName, variableName, bcValue, dimMask)
+      if nargin < 5
+        dimMask =[];
+      end
+      variable = obj.model.variables.get(variableName);
       fem = variable.fem; 
       mesh = fem.mesh;
       regionId = mesh.findRegions(struct('name', {{regionName}}));
       for e = mesh.findElems(struct('region', regionId))
-         fprintf(1, 'For element %d\n', e)
          elemDofs = fem.dofs{e};
-         for d = elemDofs
-           fprintf(1, ' %d', d);
-         end
-         fprintf(1, '\n');
          dofdim = fem.dimOfDof(elemDofs, variable.offset);
-         for d = dofdim
-           fprintf(1, ' %d', d);
+         if ~isempty(dimMask)
+           elemDofs = elemDofs(dofdim==dimMask);
+           dofdim = dofdim(dofdim==dimMask);
          end
-         fprintf('\n');
-         obj.bcT(elemDofs,2) = bc.value(dofdim);
+         obj.bcT(elemDofs,2) = bcValue(dofdim);
          obj.bcT(elemDofs,1) = elemDofs;
-         obj.bcT
       end
     end
     function kinematicBCHandler(obj, regionName, bc)
-       if strcmp(bc.variable, 'Displacement')
+      if strcmp(bc.variable, 'Displacement')
         switch(bc.type)
           case mp.BcType.Displacement
-            obj.handleBcDisplacement(regionName, bc);
+            obj.handleBcDisplacement(regionName, bc.variable, bc.value);
+          case mp.BcType.Fixity
+            obj.handleBcDisplacement(regionName, bc.variable, [0,0,0]);
+          case mp.BcType.FixityX
+            obj.handleBcDisplacement(regionName, bc.variable, [0,0,0], 1);
+          case mp.BcType.FixityY
+            obj.handleBcDisplacement(regionName, bc.variable, [0,0,0], 2);
+          case mp.BcType.FixityZ
+            obj.handleBcDisplacement(regionName, bc.variable, [0,0,0], 3);
+          otherwise
+            error('Invalid type of kinemantic boundary condition :%s', bc.type)
         end
-       end
+      end
     end
     function assembly(obj, options)
       mesh = obj.model.meshes.get('mainmesh');
@@ -86,7 +95,7 @@ classdef MechanicalProblem < mp.MechanicalProblem
           error('Gmsh element type %d is not supported by Calfem kernel');
         end
         nodes = c2v.at(i);
-        Ke = obj.localStiffnessMatrix(i, elem, type, nodes);
+        Ke = obj.localStiffnessMatrix(mesh, elem, fem.femType, nodes);
         dofs = fem.dofs{elem}'
         obj.model.K = assem([1,dofs], obj.model.K, Ke);
         if i/nelems> pr/progChunk
@@ -97,11 +106,51 @@ classdef MechanicalProblem < mp.MechanicalProblem
       end
       obj.progress.report(pf, 'Assembly finished');
       obj.assemblyKinematicBC();
-      obj.bcT(obj.bcT(:,1)~=0,:)
+ 
     end
-    function Ke = localStiffnessMatrix(obj, id, elem, type, nodes)
+    function Ke = localStiffnessMatrix(obj, mesh, elem, femType, nodes)
+       E = 210e6;
+       nu = 0.2;
+       if mesh.dim == 3
+         ptype = 4;
+       else
+         ptype = 2; % plane Strain
+       end
+       D = hooke(ptype, E, nu);
        n = numel(nodes)*2;
-       Ke = ones(n,n);
+       thickness = 1;
+       nGauss = 2;
+       coords = mesh.nodes(nodes,:)';
+       ex = coords(1,:);
+       ey = coords(2,:);
+       ez = coords(3,:);
+       switch femType
+         case mp.FEM.FemType.Triang3
+           ep = [ptype, thickness];
+           Ke = plante(ex,ey,ep, D);
+         case mp.FEM.FemType.Quad4
+           ep = [ptype, thickness, nGauss];
+           Ke = plani4e(ex,ey,ep,D);
+         case mp.FEM.FemType.Quad8
+           ep = [ptype, thickness, nGauss];
+           Ke = plani8e(ex,ey,ep,D);
+         case mp.FEM.FemType.Hex8
+           ep = nGauss;
+           Ke = soli8e(ex,ey,ez,ep,D);
+         otherwise
+           error('Calfem kernel does not support Fem of type: %s', femType);
+       end  
+       disp(Ke)
+     end
+    function runSolver(obj, options)
+      sol = solveq(obj.model.K, obj.model.F, obj.bcT);
+      fprintf('Running Calfem solver')
+      bt = obj.bcT
+      variable = obj.model.variables.get('Displacement');
+      nd = variable.numOfDofs();
+      of = variable.offset;
+      variable.dofValues = sol(1+of:(of+nd));
+      disp(variable.fem.mesh.nodes.Data)
     end
   end
 end

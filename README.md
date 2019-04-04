@@ -11,3 +11,9 @@ Nadamak is implemented in Matlab with some some infrastructure support in Python
 
 While documentation is being prepared one can look at [demo pages](https://putanowr.github.io/projects/nadamak/demos/html/list_of_demos.html). 
 
+# Documentation 
+
+Documentation is absolutely essential part of Nadamak, however making it is
+huge effort. Despite the fact that Nadamak guide barely scratches the surface
+of the subject you can look at [HTML version of
+it](https://putanowr.github.io/projects/nadamak/guide/html/html/index.html).
