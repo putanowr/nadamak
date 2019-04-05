@@ -17,8 +17,8 @@ classdef GeomTrans < handle
         error('Invalid GeomTrans dimension %d, expected value in range [1, %d]', obj.dim, mesh.dim)
       end
       obj.mesh = mesh;
-      obj.cellToNodes = mesh.getAdjacency(dim, 0);
-      ct = mesh.cellTypes(dim);
+      obj.cellToNodes = mesh.getAdjacency(obj.dim, 0);
+      ct = mesh.cellTypes(obj.dim);
       if (length(ct) > 1)
         %error('GeomTrans not cannot handle mixed element type meshes yet')
         return
