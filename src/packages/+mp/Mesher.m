@@ -37,7 +37,7 @@ classdef Mesher < handle
         bgf = obj.fieldsData(params);
         geomgmsh = [geomgmsh, newline, bgf];
       end
-      meshingParam.dim = mp_get_option(params, 'dim', obj.dim);
+      meshingParam.dim = mp_get_option(params, 'dim', min([obj.dim, geometry.dim]));
       meshingParam.clean = obj.clean;
       meshingParam.lc = params.lc;
       meshingParam.order = mp_get_option(params, 'order', obj.order);
