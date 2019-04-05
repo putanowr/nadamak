@@ -40,7 +40,7 @@ classdef Mesh < handle
       obj.cells2elements = uint32.empty;
       obj.faces2elements = uint32.empty;
       obj.edges2elements = uint32.empty;
-      obj.f2eOrient = cell();
+      obj.f2eOrient = {};
       obj.dim2CellTypes  = cell(1, obj.dim);
       obj.parent = [];
       obj.childrens = [];
@@ -593,7 +593,7 @@ classdef Mesh < handle
   methods(Access=private)
     function setupGeomTrans(obj)
       obj.geomTransArray = cell(1,obj.dim);
-      for dimension=1:mesh.dim
+      for dimension=1:obj.dim
         obj.geomTransArray{dimension} = mp.GeomTrans(obj, dimension);
       end
     end
