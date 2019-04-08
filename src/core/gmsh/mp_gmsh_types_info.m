@@ -71,6 +71,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_8.nnodes = 3;
     gt.type_8.description = '3-node second order line (2 nodes associated with the vertices and 1 with the edge)';
     gt.type_8.edges = {uint32([1,3,2])};
+    gt.type_8.nodes = [0,0,0;1,0,0;0.5,0,0];
 
     gt.type_9.type = 9;
     gt.type_9.dim = 2;
