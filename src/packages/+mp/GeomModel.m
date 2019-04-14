@@ -5,15 +5,16 @@ classdef GeomModel < handle
   % The geometric model is always treated as embedded in 3D space, that is
   % points always have 3 coordinates [x,y,z].
   % However it may happen that the geometric model is embedded is a
-  % subspace of R3. If it is embeded in subspace [x,0,0] the targetDim is
-  % 1. If it is embedded in subspace [x,y,0] then targetDim is 2.
-  % In any circumstances dim <= targetDim.
+  % subspace of R3. If it is embeded in subspace [x,0,0] the ambientDim is
+  % 1. If it is embedded in subspace [x,sl
+  y,0] then ambientDim is 2.
+  % In any circumstances dim <= ambientDim.
   %
-  % The introduction of targetDim is just for efficiency reason in order
+  % The introduction of ambientDim is just for efficiency reason in order
   % not to condiser mapping functions that are trivially zero.
   properties(SetAccess=protected)
     dim = 0;
-    targetDim = 0;
+    ambientDim = 0;
     legacyID = 0;
     name = 'dummy';
   end
@@ -23,10 +24,10 @@ classdef GeomModel < handle
                                       'core', 'geom', 'geomodels');
   end
   methods
-    function [obj] = GeomModel(name, dim, targetDim, legacyID)
+    function [obj] = GeomModel(name, dim, ambientDim, legacyID)
       obj.name = name;
       obj.dim = dim;
-      obj.targetDim = targetDim;
+      obj.ambientDim = ambientDim;
       obj.legacyID = legacyID;
     end
     function [geomgmsh] = as_gmsh(obj)
