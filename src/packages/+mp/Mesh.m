@@ -2,7 +2,7 @@ classdef Mesh < handle
   % Holds mesh data
   properties (SetAccess=private)
     dim = 0;
-    targetDim = 0;
+    ambientDim = 0;
     nodes;
     elements;
     regions;
@@ -31,7 +31,7 @@ classdef Mesh < handle
     function [obj] = Mesh(dim, nodes, elements, regions, nodemap)
       % Consctruct new mesh
       obj.dim = dim;
-      obj.targetDim = 3;
+      obj.ambientDim = 3;
       obj.nodes = nodes;
       obj.elements = elements;
       obj.regions = regions;
@@ -49,14 +49,14 @@ classdef Mesh < handle
       obj.isDual = false;
       obj.setupGeomTrans();
     end
-    function setTargetDim(obj, targetDim)
-      if targetDim < obj.dim
-        error('Target dimension cannot be smaller than intrinsic dimension');
+    function setAmbientDim(obj, ambientDim)
+      if ambientDim < obj.dim
+        error('Ambient dimension cannot be smaller than intrinsic dimension');
       end
-      if targetDim > 3
-        error('Target dimension cannot be greater than 3');
+      if ambientDim > 3
+        error('Ambient dimension cannot be greater than 3');
       end
-      obj.targetDim = targetDim;
+      obj.ambientDim = ambientDim;
     end
     function [gt] = geomTrans(obj, dimension)
       if nargin < 2
