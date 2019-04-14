@@ -55,7 +55,7 @@ classdef Mesher < handle
       end
         [n,e,r,m] = mp.gmsh.generate(geomgmsh, meshingParam);
       mesh = mp.Mesh(meshingParam.dim, n,e,r,m);
-      mesh.setTargetDim(geometry.targetDim);
+      mesh.setAmbientDim(geometry.ambientDim);
     end
     function [refmesh] = refine(obj, mesh, nrefinements)
       if nargin < 3
