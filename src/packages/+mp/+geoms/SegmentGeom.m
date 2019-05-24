@@ -23,7 +23,7 @@ classdef SegmentGeom < mp.GeomModel
       end
     end
     function [name] = templateName(~)
-      name = 'line.tpl';
+      name = 'segment.tpl';
     end
     function [regionNames] = regions(~)
       regionNames = {'d_domain', 'p_endpoints'};
