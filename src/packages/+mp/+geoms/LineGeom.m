@@ -1,5 +1,5 @@
-classdef LineGeom < mp.GeomModel 
-  % Geometric model of a rectangle.
+classdef SegmentGeom < mp.GeomModel 
+  % Geometric model of segment.
   properties (Access = public)
     params = struct('dL', 1.0, 'lcFactors', [1,1]);
   end
@@ -10,7 +10,7 @@ classdef LineGeom < mp.GeomModel
     end
   end
   methods
-    function [obj] = LineGeom(name, params_, legacyID)
+    function [obj] = SegmentGeom(name, params_, legacyID)
       if nargin < 3
         legacyID = 10;
       end
