@@ -7,16 +7,16 @@ classdef BcFactory < handle
   methods(Static)
     function [bc] = produce(bcname, varname, params)
       bcname = sprintf('%s', bcname);
-      vbc = mp.BcFactory.validBc(varname);
+      [vbc, trueVarName] = mp.BcFactory.validBc(varname);
       idx = find( vbc == bcname);
       if idx > 0
         bcclass = sprintf('Bc%s', bcname);
-        bc = mp.(bcclass)(varname, params);
+        bc = mp.(bcclass)(trueVarName, params);
       else
         error('Bc of type %s is not valid for variable %s', bcname, varname);
       end
     end
-    function [validbc] = validBc(varname)
+    function [validbc, trueVarName] = validBc(varname)
       helpers = {@mp.BcFactory.validBcForDisplacement;
                  @mp.BcFactory.validBcForTemperature};
       % Return vector of BC applicable to this variable type
@@ -26,6 +26,7 @@ classdef BcFactory < handle
 	      idx = find(strcmpi(tags{:}, varname));
 	      if idx > 0
 	        validbc = helpers{i}();
+          trueVarName = mp.BcFactory.aliases{i,1};
           return
         end
       end
