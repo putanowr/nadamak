@@ -67,7 +67,7 @@ classdef Mesh < handle
     function [gt] = elemGeomTrans(obj, elemId)
       % Maybe it would be faster to store geom trans indeks for each
       % element than to map it through element type and dimension.
-      ed = mp_gmsh_elem_dim(obj.elems{elemId});
+      ed = mp_gmsh_element_dim(obj.elements{elemId});
       gt = obj.geomTransArray{ed};
     end
     function setParent(obj, parent_, nodesMap, elemsMap)
