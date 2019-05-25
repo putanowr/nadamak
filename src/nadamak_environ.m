@@ -1,23 +1,37 @@
 function [mypathstr] = nadamak_environ(params)
 % nadamak_environ - set environment to make possible running tests.
 % This account to adding paths for Matlab to find required m-files
-% of Nanamak code. 
-%
-% Return the path to the folder in which source code of this 
-% function is located.
+% of Nanamak code.
+% 
+% Arguments: 
+%     params - structure with run time configuration parameters
+%              The following fields can be set:
+%        'forced'  (bool) - if true it forces reinitialization of Nadamak
+%                  environment. This can be useful if for instance changes
+%                  to routines for code generation (e.g. shape functions)
+%                  are made. 
+%        'verbose' (bool) - if ture echo some actions e.g. inform about
+%                  generation of source code 
+% Return value:
+%   Return the path to the folder in which source code of this 
+%   function is located.
   persistent pth
+  if nargin < 1
+    params = struct;
+  end
+  forced = mp_get_option(params, 'forced', false);
+  if forced
+    pth = [];
+  end
   if isempty(pth)
     sep = filesep();
     mypath = mfilename('fullpath');
     [pth,~,~] = fileparts(mypath);
   else
-    mypathstr = pth;  
+    mypathstr = pth; 
     return
   end
   mypathstr = pth;  
-  if nargin < 1
-    params = struct;
-  end
  
   % Path to nadamak_environ folder
   addpath(mypathstr);
