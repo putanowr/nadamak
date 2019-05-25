@@ -12,7 +12,7 @@ classdef Variable
       if length(qdim) == 1 && qdim(1) == 1
         obj.rank = 0;
       else
-        obj.rank = length(qdim)
+        obj.rank = length(qdim);
       end
       obj.numOfComponents = prod(qdim);
       obj.qdim = qdim;
@@ -20,13 +20,13 @@ classdef Variable
       obj.name = name;
     end
     function qst = isState(obj)
-      qst = (obj.type == mp.VariableType.State)
+      qst = (obj.type == mp.VariableType.State);
     end
     function qst = isControl(obj)
-      qst = (obj.type == mp.VariableType.Control)
+      qst = (obj.type == mp.VariableType.Control);
     end
     function qst = isDerived(obj)
-      qst = (obj.type == mp.VairableType.Derived)
+      qst = (obj.type == mp.VairableType.Derived);
     end
   end
 end
