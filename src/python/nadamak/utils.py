@@ -17,10 +17,11 @@ def echo_file(fname):
 def get_interpreter_path(args):
   """Return path to Matlab or Octave binaries
   """
-  binaries = {'matlab' : {'jinx' : 'matlab-2017a', 'krakus' : 'matlab-R2018a'},
-              'octave' : {'Lap025' : r'O:\WinProg\Octave-4.2.1\bin\octave-cli.exe'}
-             } 
-  defaultbinaries = {'matlab' : 'matlab', 
+  binaries = {'matlab' : {'jinx' : 'matlab-2017a', 'krakus' : 'matlab-R2018a',
+              'LAP025' :  r'O:\WinProgs\MATLAB\2018a\bin\matlab.exe' },
+              'octave' : {'LAP025' : r'O:\WinProg\Octave-4.2.1\bin\octave-cli.exe'}
+             }
+  defaultbinaries = {'matlab' : 'matlab',
                      'octave' : 'octave'}
   hostname = socket.gethostname()
   if args.path == 'builtin':
@@ -33,14 +34,14 @@ def get_matlab_args(args, command):
   """Return command line for running matalb.
   """
   program = get_interpreter_path(args)
-  matlab_args = [program, 
-          '-nosplash', 
-          '-nodesktop', 
+  matlab_args = [program,
+          '-nosplash',
+          '-nodesktop',
           '-minimize',
-          '-r', 
+          '-r',
           command,
           '-logfile',
-          args.logfile,  
+          args.logfile,
           '-wait',
          ]
   return matlab_args
@@ -50,7 +51,7 @@ def get_octave_args(args, command):
   """
   program = get_interpreter_path(args)
   octave_args = [program,
-                  '--quiet', 
+                  '--quiet',
                   '--eval',
                   command
                 ]
@@ -62,12 +63,12 @@ def resolve_verbosity(args):
   return verbosity
 
 def run_matlab_or_octave(args, command, timeout=300):
-  
+
   matlab_args = get_matlab_args(args, command)
   octave_args = get_octave_args(args, command)
 
   verbosity = resolve_verbosity(args)
-  
+
   if sys.version_info[1] > 4:
     if args.environ == 'matlab':
       results = run(matlab_args, stdout=PIPE, stderr=PIPE, timeout=timeout)
