@@ -1,4 +1,4 @@
-classdef GeomModel < handle
+ classdef GeomModel < handle
   % GeomModel Represents geometric model.
   % The dim property describes the intrinsic dimension. It is 1 for curves
   % 2 for surfaces and 3 for volumes.
@@ -6,8 +6,7 @@ classdef GeomModel < handle
   % points always have 3 coordinates [x,y,z].
   % However it may happen that the geometric model is embedded is a
   % subspace of R3. If it is embeded in subspace [x,0,0] the ambientDim is
-  % 1. If it is embedded in subspace [x,sl
-  y,0] then ambientDim is 2.
+  % 1. If it is embedded in subspace [x,y,0] then ambientDim is 2.
   % In any circumstances dim <= ambientDim.
   %
   % The introduction of ambientDim is just for efficiency reason in order
