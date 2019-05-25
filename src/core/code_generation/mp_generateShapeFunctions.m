@@ -7,7 +7,7 @@ function status = mp_generateShapeFunctions(pth, verbose)
     sfDefs.Line2.sf = [1-x, x];
     %--------------------------------------------------------------
     % Quadratic line
-    pts = sym([0;1/2;1]);
+    pts = sym([0;1;1/2]); % must be in agreement with gmsh element def.
     f(x) = [1,x,x.^2];
     gener = @(w) dot(formula(f)',cell2sym(f(pts))\w);
     e = sym(eye(3));
@@ -32,7 +32,7 @@ function status = mp_generateShapeFunctions(pth, verbose)
     sf(9)  = 9*y.*z.*(3*z - 1)/2;
     sf(10) =  27*x.*y.*z;
     sfDefs.Triang10.sf = sf;
-    sfDefs.Hex8.sf = Quad8ShapeFun(); % Just temporary hack FIXIT
+    sfDefs.Hex8.sf = Hex8ShapeFun();
     if verbose
       fprintf('Generating code for shape functions in : %s\n', pth);
     end
@@ -85,6 +85,26 @@ function [sf] = Quad8ShapeFun()
       w = sym(zeros(n,1));
       w(i) = 1;
       sf(i) = dot(formula(f)', XY\w);
+   end
+end
+function [sf] = Hex8ShapeFun()
+  syms x y z
+  pts = sym([0,     0,  0;
+             1,     0   0;
+             1,     1,  0;
+             0,     1,  0;
+             0,     0,  1;
+             1,     0,  1;
+             1,     1,  1;
+             0,     1,  1]);
+   f(x,y,z) = [1, x, y, z, y.*z, z.*x, x.*y, x.*y.*z];
+   XY = cell2sym(f(pts(:,1), pts(:,2), pts(:,3)))
+   n = size(pts, 1);
+   sf = sym(zeros(1,n));
+   for i=1:n
+      w = sym(zeros(n,1));
+      w(i) = 1;
+      sf(i) = dot(formula(f)', XY\w)
    end
 end
 function writeSf(verbose, sfDef, name, pth)
