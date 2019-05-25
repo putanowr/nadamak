@@ -98,9 +98,9 @@ classdef SofModel < handle
        varName = 'Displacement';
        if obj.problem.model.variables.hasVariable(varName)
          var = obj.problem.model.variables.get(varName);
-         nnodes = var.fem.mesh.nodesCount()
+         nnodes = var.fem.mesh.nodesCount();
          val = var.dofValues(var.fem.nodes2dofs);
-         d = reshape(val, var.variable.qdim, nnodes)'
+         d = reshape(val, var.variable.qdim, nnodes)';
        else
          d = [];
        end
@@ -113,11 +113,10 @@ classdef SofModel < handle
         meshName = obj.defaultMeshName;
       end
       mesher = mp.Mesher();
-      mesher.showinfo = true;
       try
         meshParams.dim = obj.problem.geometry.dim;
         mesh = mesher.generate(obj.problem.geometry, meshParams);
-        fprintf(1, 'Mesh dimension %d', mesh.dim);
+        mp_log('SofModel created Mesh of dimension %d', mesh.dim);
       catch ME
         status = false;
         msg = ME.message;
