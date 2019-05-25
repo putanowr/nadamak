@@ -12,21 +12,13 @@ function mp_run_tests(varargin)
     options.filter = '.*';
   end
 
-  if ~isfield(options, 'exitAfter')
-    options.exitAfter = false;
-  end
+  nadamakpath = nadamak_environ();
 
-  if ~isfield(options, 'filter')
-    options.filter = '.*';
-  end
-
-  if ~isfield(options, 'suite')
-    options.suite = '';
-  end
-
-  if ~isfield(options, 'suiteexclude')
-    options.suiteexclude = '.*';
-  end
+  options.exitAfter = mp_get_option(options, 'exitAfter', false);
+  options.filter = mp_get_option(options, 'filter', '.*');
+  options.suite = mp_get_option(options, 'suite', '');
+  options.suiteexclude = mp_get_option(options, 'suiteexclude', '');
+  options.logging = mp_get_option(options, 'logging', true);
 
   exitCode=0;
   try
@@ -36,18 +28,18 @@ function mp_run_tests(varargin)
     srcFolder = fullfile(pth,'..');
     addpath(srcFolder);
 
-    nadamakpath = nadamak_environ();
-    mp_setup_logging(true);
+    mp_setup_logging(options.logging);
     mp_setup_gmsh()
- 
+
+    mp_log('Nadamak path: %s', nadamakpath);
     % Initialize unit testing framework
     mp_test_initialize(options)
 
     suitePath = 'suites';
     if ~isempty(options.suite)
        suitePath = fullfile(suitePath, options.suite);
-    end 
-   
+    end
+
     tests = mp_files_recursively(fullfile(pth, suitePath), '.m');
 
     for i=1:length(tests)
@@ -55,15 +47,15 @@ function mp_run_tests(varargin)
        folder = tests(i).folder;
        if ~isempty(regexp(folder, options.suiteexclude, 'once'))
          continue
-       end 
+       end
        if isempty(regexp(testname, options.filter, 'once'))
          continue
-       end 
-       try 
+       end
+       try
          mp_test_run_shilded(tests(i).path)
-         fprintf(1, 'PASSED %s\n', testname) 
+         fprintf(1, 'PASSED %s\n', testname)
        catch exception
-         fprintf(1, 'FAILED %s\n', testname) 
+         fprintf(1, 'FAILED %s\n', testname)
          fprintf(1, '  Reason: %s\n', exception.message)
          mp_test_report_exception(1, exception)
          exitCode=2;
@@ -74,10 +66,10 @@ function mp_run_tests(varargin)
     disp(exception.message)
     exitCode=22;
   end
- 
+
   mp_test_finalize()
- 
+
   if options.exitAfter
     exit(exitCode)
-  end   
+  end
 end
