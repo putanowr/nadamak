@@ -2,7 +2,7 @@ classdef Mapper < handle
   properties(SetAccess=protected)
     F
     domainDim
-    targetDim
+    ambientDim
   end
   methods
     function obj = Mapper(f)
@@ -15,7 +15,7 @@ classdef Mapper < handle
     end
     function setMap(obj, symFun)
       obj.domainDim = numel(symvar(symFun));
-      obj.targetDim = numel(formula(symFun));
+      obj.ambientDim = numel(formula(symFun));
       obj.F = symFun;
     end
     function mapMesh(obj, mesh)
@@ -30,11 +30,11 @@ classdef Mapper < handle
           error('Mapper with more than 3 independent variables')
       end
       if iscell(val)
-        val = double([val{1:obj.targetDim}]);
+        val = double([val{1:obj.ambientDim}]);
       else
         val = double(val);
       end
-      mesh.nodes(:,1:obj.targetDim) = val;
+      mesh.nodes(:,1:obj.ambientDim) = val;
     end
     function v = vars(obj)
       v = symvar(obj.F);
@@ -54,7 +54,7 @@ classdef Mapper < handle
           error('Mapper with more than 3 independent variables')
       end
       if iscell(val)
-        val = double([val{1:obj.targetDim}]);
+        val = double([val{1:obj.ambientDim}]);
       else
         val = double(val);
       end
@@ -65,15 +65,29 @@ classdef Mapper < handle
     function status = isSurface(obj)
       status = (obj.domainDim == 2);
     end
+    function status = isVolume(obj)
+      status = (obj.domainDim == 3);
+    end
+    function status = isTransitionMap(obj)
+      % Return true if the dimension of domain and codomain are the same.
+      status = (obj.domainDim == obj.ambientDim);
+    end
     function compound = horzcat(map1, map2, varargin)
       compound = mp.Mapper();
       f = formula(map1.F);
       fn = subs(f, map1.vars, formula(map2.F));
       compound.setMap(symfun(fn, map2.vars));
     end
-    function L = arcLength(obj, a,b)
+    function L = arcLength(obj,a,b)
       if ~obj.isCurve()
         error('Mapper is not a curve');
+      end
+      if nargin < 3
+        if numel(a) ~= 2
+          error('Expecting second argument to be 2 element vector');
+        end
+        b = a(2);
+        a = a(1);
       end
       pt1 = zeros(1, obj.domainDim);
       pt1(1) = a;
@@ -84,18 +98,49 @@ classdef Mapper < handle
       vt = simplify(sqrt(sum(df.^2)));
       L = vpaintegral(vt, t, pt1, pt2);
     end
-    function S = area(obj, a,b,c,d)
+    function S = area(obj, sa,sb,ta,tb)
       if ~obj.isSurface()
         error('Mapper is not a surface');
       end
+      if nargin ~= 5 && nargin ~=3
+        error('Invalid number of arguments')
+      end
+      if nargin == 3
+        ta = sb(1);
+        tb = sb(2);
+        sb = sa(2);
+        sa = sa(1);
+      end
       st = symvar(obj.F);
-      drs = diff(obj.F, st(1))
-      drt = diff(obj.F, st(2))
+      drs = diff(obj.F, st(1));
+      drt = diff(obj.F, st(2));
       Ef = drs*drs';
       Ff = drs*drt';
       Gf = drt*drt';
       f = simplify(sqrt(Ef*Gf - Ff^2));
-      S = vpaintegral(vpaintegral(f,st(1),[a,b]),st(2),c,d);
+      S = vpaintegral(vpaintegral(f,st(1),[sa,sb]),st(2),ta,tb);
+    end
+    function S = volume(obj, sa,sb,ta,tb,ua,ub)
+      if ~obj.isVolume()
+        error('Mapper is not a volume');
+      end
+      if nargin ~= 7 && nargin ~= 4
+        error('Invalid number of arguments')
+      end
+      if nargin == 4
+        ua = ta(1)
+        ub = ta(2);
+        ta = sb(1);
+        tb = sb(2);
+        sb = sa(2);
+        sa = sa(1);
+      end
+      st = symvar(obj.F);
+      drs = diff(obj.F, st(1));
+      drt = diff(obj.F, st(2));
+      dru = diff(obj.F, st(3));
+      f = simplify(det([drs;drt;dru]));
+      S = vpaintegral(vpaintegral(vpaintegral(f,st(1),[sa,sb]),st(2),ta,tb), st(3), ua,ub);
     end
   end
 end
