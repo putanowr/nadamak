@@ -1,9 +1,9 @@
-classdef ProblemFactory < handle 
+classdef ProblemFactory < handle
   properties (Constant)
     aliases = {'Thermal' {'Thermal', 'T'};
                'Mechanical', {'Mechanical', 'M'};
 	             'ThermoMechanical', {'ThermoMechanical', 'TM'};
-	            };   
+	            };
   end
   methods(Static)
     function out = kernel(name)
@@ -16,7 +16,7 @@ classdef ProblemFactory < handle
       end
       out = kernelName;
     end
-    function [problem] = produce(alias, options) 
+    function [problem] = produce(alias, options)
     % Return problem object of a class corresponding to given alias.
     % The object name is taken from problemName argument. If not given the
     % object name is set to 'dummy'.
@@ -31,10 +31,10 @@ classdef ProblemFactory < handle
 	      if idx > 0
 	        className = [mp.ProblemFactory.aliases{i, 1}, 'Problem'];
           if strcmp(mp.ProblemFactory.kernel(), 'calfem')
-            fprintf('Producing problem for calfem\n');  
+            mp_log('Producing problem for calfem');
 	        problem = mp.kernel.calfem.(className)(geometry);
           elseif strcmp(mp.ProblemFactory.kernel(), 'nadamak')
-            fprintf('Producing problem for nadamak\n')
+            mp_log('Producing problem for nadamak')
             problem = mp.kernel.nadamak.(className)(geometry);
           else
             error('Unknown kernel: %s', mp.ProblemFactory.kernel);
