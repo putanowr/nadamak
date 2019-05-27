@@ -1,11 +1,11 @@
 classdef Beam2DGeom < mp.GeomModel 
   % Geometric model for Beam2DGeom.
   methods
-    function [obj] = Beam2DGeom(name, 1, 2, legacyID)
+    function [obj] = Beam2DGeom(name, legacyID)
       if nargin < 3
         legacyID = 0;
       end  
-      obj = obj@mp.GeomModel(name, 2, legacyID);
+      obj = obj@mp.GeomModel(name, 1, 2, legacyID);
     end
     function [name] = templateName(~)
       name = 'not_implemented.tpl';
