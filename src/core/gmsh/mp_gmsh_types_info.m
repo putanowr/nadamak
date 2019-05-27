@@ -9,13 +9,16 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_1.dim = 1;
     gt.type_1.shape = 'line';
     gt.type_1.description = '2-node line';
-    gt.type_1.edges = {[1,2]};
+    gt.type_1.faces = {};
+    gt.type_1.edges = cellfun(@uint32, {[1,2]}, 'UniformOutput', false);
+    gt.type_1.nodes = [0,0,0;1,0,0];
 
     gt.type_2.type = 2;
     gt.type_2.nnodes = 3;
     gt.type_2.dim = 2;
     gt.type_2.shape = 'triangle';
     gt.type_2.description = '3-node triangle';
+    gt.type_2.faces = cellfun(@uint32, {[1,2,3]}, 'UniformOutput', false);
     gt.type_2.edges = cellfun(@uint32, {[1,2], [2,3], [3,1]}, 'UniformOutput', false);
     gt.type_2.nodes = [0,0,0;1,0,0;0,1,0];
 
@@ -24,6 +27,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_3.shape = 'quadrangle';
     gt.type_3.nnodes = 4;
     gt.type_3.description = '4-node quadrangle';
+    gt.type_3.faces = cellfun(@uint32, {[1,2,3,4]}, 'UnifromOutput', false);
     gt.type_3.edges = cellfun(@uint32, {[1,2], [2,3], [3, 4], [4,1]}, 'UniformOutput', false);
     gt.type_3.nodes = [0,0,0;1,0,0;1,1,0;0,1,0];
 
@@ -32,8 +36,11 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_4.shape = 'tetrahedron';
     gt.type_4.nnodes = 4;
     gt.type_4.description = '4-node tetrahedron';
+    gt.type_4.faces = cellfun(@uint32, {[1,3,2],[1,4,3],[4,2,3],...
+                                        'UniformOutput', false);
     gt.type_4.edges = cellfun(@uint32, {[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]}, 'UniformOutput', false);
-
+    gt.type_4.nodes = [0,0,0; 1,0,0; 0,1,0; 0,0,1];
+ 
     gt.type_5.type = 5;
     gt.type_5.dim = 3;
     gt.type_5.shape = 'hexahedron';
@@ -70,7 +77,8 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_8.shape = 'line';
     gt.type_8.nnodes = 3;
     gt.type_8.description = '3-node second order line (2 nodes associated with the vertices and 1 with the edge)';
-    gt.type_8.edges = {uint32([1,3,2])};
+    gt.type_8.faces = {};
+    gt.type_8.edges = cellfun(@uint32, {[1,3,2]}, 'UniformOutput', false);
     gt.type_8.nodes = [0,0,0;1,0,0;0.5,0,0];
 
     gt.type_9.type = 9;
@@ -78,6 +86,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_9.shape = 'triangle';
     gt.type_9.nnodes = 6;
     gt.type_9.description = '6-node second order triangle (3 nodes associated with the vertices and 3 with the edges)';
+    gt.type_9.faces = cellfun(@uint32, {[1,4,2,5,3,6]}, 'UniformOutput', false);
     gt.type_9.edges = cellfun(@uint32, {[1,4,2],[2,5,3],[3,6,1]}, 'UniformOutput', false);
     gt.type_9.nodes = [0,0,0; 1,0,0; 0,1,0; 0.5,0,0;0.5,0.5,0;0,0.5,0];
 
@@ -86,6 +95,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_10.shape = 'quadrangle';
     gt.type_10.nnodes = 9;
     gt.type_10.description = '9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face)';
+    gt.type_10.faces = cellfun(@uint32, {[1,5,2,6,3,7,4,8]}, 'UniformOutput', false);
     gt.type_10.edges = cellfun(@uint32, {[1,5,2], [2,6,3], [3,7,4], [4,8,1]}, 'UniformOutput', false);
     gt.type_10.nodes = [0,0,0;...
                         1,0,0;...
@@ -102,6 +112,20 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_11.shape = 'tetrahedron';
     gt.type_11.nnodes = 10;
     gt.type_11.description = '10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges)';
+    gt.type_11.faces = cellfun(@uint32, {[1,5,2,6,3,7],[2,6,3,9,4,10],
+                                         [4,9,3,7,1,8],[4,8,1,5,2,10],...
+                                        'UniformOutput', false);
+    gt.type_11.edges = cellfun(@uint32, {[1,5,2],[2,6,3],[3,7,1],[1,8,4],[3,9,4],[2,10,4]}, 'UniformOutput', false);
+    gt.type_11.nodes = [0,  0  ,0;...
+                        1,  0  ,0;...
+                        0,  1  ,0;...
+                        0  ,0  ,1;...
+                        0.5,0  ,0;...
+                        0.5,0.5,0;...
+                        0.0,0.5,0;...
+                        0.0,0.0,0.5;...
+                        0.0,0.5,0.5;...
+                        0.5,0.0,0.5];
 
     gt.type_12.type = 12;
     gt.type_12.dim = 3;
@@ -133,6 +157,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_16.shape = 'quadrangle';
     gt.type_16.nnodes = 8;
     gt.type_16.description = '8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges)';
+    gt.type_16.faces = cellfun(@uint32, {[1,5,2,6,3,7,4,8]}, 'UnifromOutput', false);
     gt.type_16.edges = cellfun(@uint32, {[1,5,2], [2,6,3], [3,7,4], [4,8,1]}, 'UniformOutput', false);
     gt.type_16.nodes = [0,0,0;...
                         1,0,0;...
