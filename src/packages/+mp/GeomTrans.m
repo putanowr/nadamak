@@ -22,7 +22,7 @@ classdef GeomTrans < handle
       obj.cellToNodes = mesh.getAdjacency(obj.dim, 0);
       ct = mesh.cellTypes(obj.dim);
       if (length(ct) > 1)
-        %error('GeomTrans not cannot handle mixed element type meshes yet')
+        error('GeomTrans not cannot handle mixed element type meshes yet')
         return
       end
       obj.fem = mp.FEM.FemType.fromId(ct(1));
@@ -64,7 +64,7 @@ classdef GeomTrans < handle
     function [form] = volumeForm(obj, refPts, cellID, displacement)
       % Calculate pulback of volume form under displacement map
       % onto reference element.
-      jmat = obj.jacobianMatrix(refPts, cellID, displacement)
+      jmat = obj.jacobianMatrix(refPts, cellID, displacement);
       n = size(jmat, 3);
       form = zeros(1, n);
       for i=1:n
