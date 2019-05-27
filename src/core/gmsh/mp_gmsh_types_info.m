@@ -27,7 +27,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_3.shape = 'quadrangle';
     gt.type_3.nnodes = 4;
     gt.type_3.description = '4-node quadrangle';
-    gt.type_3.faces = cellfun(@uint32, {[1,2,3,4]}, 'UnifromOutput', false);
+    gt.type_3.faces = cellfun(@uint32, {[1,2,3,4]}, 'UniformOutput', false);
     gt.type_3.edges = cellfun(@uint32, {[1,2], [2,3], [3, 4], [4,1]}, 'UniformOutput', false);
     gt.type_3.nodes = [0,0,0;1,0,0;1,1,0;0,1,0];
 
@@ -157,7 +157,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_16.shape = 'quadrangle';
     gt.type_16.nnodes = 8;
     gt.type_16.description = '8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges)';
-    gt.type_16.faces = cellfun(@uint32, {[1,5,2,6,3,7,4,8]}, 'UnifromOutput', false);
+    gt.type_16.faces = cellfun(@uint32, {[1,5,2,6,3,7,4,8]}, 'UniformOutput', false);
     gt.type_16.edges = cellfun(@uint32, {[1,5,2], [2,6,3], [3,7,4], [4,8,1]}, 'UniformOutput', false);
     gt.type_16.nodes = [0,0,0;...
                         1,0,0;...
