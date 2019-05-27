@@ -268,17 +268,20 @@ classdef Viewer < handle
         set(obj.handles.(what), 'Visible', how)
       end
     end
-    function handle = plot_curved_elements(obj, nptsPerEdge)
+    function handle = plot_curved_elements(obj, mesh, nptsPerEdge, displacement)
+      if nargin < 4
+        displacement = [];
+      end
       param.dim = 2;
-      mapper = obj.mesh.geomTrans(param.dim);
-      obj.mesh.updateFaces2Elems();
+      mapper = mesh.geomTrans(param.dim);
+      mesh.updateFaces2Elems();
       handle = hggroup(obj.myAX());
-      nelems = obj.mesh.facesCount();
+      nelems = mesh.facesCount();
       for i=1:nelems
-        elem = obj.mesh.faces2elements(i,2);
-        type = obj.mesh.elementGmshType(elem);
+        elem = mesh.faces2elements(i,2);
+        type = mesh.elementGmshType(elem);
         refpts = mp_gmsh_all_edges_points(type, nptsPerEdge);
-        pts = mapper.transform(refpts, i);
+        pts = mapper.transform(refpts, i, displacement);
         fh = patch(handle, pts(:,1), pts(:,2), pts(:,3), 'yellow');
       end
       facesId = 1:nelems;
