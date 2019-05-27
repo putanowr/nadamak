@@ -51,10 +51,9 @@ quadrature = mp.IM.Triangle(4);
 
 s = 0.0;
 for i=1:mesh.perDimCount(mesh.dim)
-  J = gmap.jacobian(quadrature.pts, i, u);
-  for k=1:numel(quadrature.w)
-    j = det(J(:,:,k));
-    s = s+j*quadrature.w(k);
+  J = gmap.volumeForm(quadrature.pts, i, u);
+  for k=1:numel(quadrature.w);
+    s = s+J*quadrature.w(k);
   end
 end
 
