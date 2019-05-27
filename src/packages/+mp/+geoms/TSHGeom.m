@@ -37,8 +37,8 @@ classdef TSHGeom < mp.GeomModel
       name = 'tsh.tpl';
     end
     function [regionNames] = regions(~)
-      regionNames = {'domain', 'boundary', 'corners', 'left_boundary', ...
-                     'rgith_boundary', 'left', 'right'};
+      regionNames = {'left_domain', 'right_domain', 'left_boundary', ...
+                     'right_boundary','interface', 'corners'};
     end
     function [obj] = TSHGeom(name, params, legacyID)
       if nargin < 3

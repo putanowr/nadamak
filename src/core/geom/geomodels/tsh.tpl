@@ -115,10 +115,8 @@ If (quads[1])
   Recombine Surface {2};
 EndIf
 
-Physical Surface("domain") = {1,2};
+Physical Surface("domain_left") = {1};
+Physical Surface("doman_right") = {2};
 Physical Point("corners") = {1,2,3,4,5,6};
-Physical Line("boundary") = {5,6,1,2,3,4};
 Physical Line("left_boundary") = {5,6,1};
 Physical Line("right_boundary") = {2,3,4};
-Physical Surface("left") = {1};
-Physical Surface("rigth") = {2};
