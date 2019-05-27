@@ -594,7 +594,10 @@ classdef Mesh < handle
     function setupGeomTrans(obj)
       obj.geomTransArray = cell(1,obj.dim);
       for dimension=1:obj.dim
-        obj.geomTransArray{dimension} = mp.GeomTrans(obj, dimension);
+        ct = obj.cellTypes(dimension);
+        if ~isempty(ct) % Only set GeomTrans if there are elements of give dimension
+          obj.geomTransArray{dimension} = mp.GeomTrans(obj, dimension);
+        end
       end
     end
     function [entityId] = findEntitySpannedByNodes(obj, nodesId, entityTopoDim)
