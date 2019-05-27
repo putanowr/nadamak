@@ -151,10 +151,10 @@ classdef Mesh < handle
       % Return vector of cell types for mesh elements. If and argument is
       % given it is the dimension to which the search should be restricted
       % Example:
-      %   mesh.cellTypes() return the cell type of dimension equal to
-      %   dimension of the mesh
+      % mesh.cellTypes() return the cell type of dimension equal to
+      % dimension of the mesh
       %
-      %   mesh.cellTypes(1) return the cell type of 1D elements
+      % mesh.cellTypes(1) return the cell type of 1D elements
       if nargin < 2 || isempty(dimension)
         dimension = obj.dim;
       end
