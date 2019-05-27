@@ -267,7 +267,23 @@ classdef Viewer < handle
       if isfield(obj.handles, what)
         set(obj.handles.(what), 'Visible', how)
       end
-    end   
+    end
+    function handle = plot_curved_elements(obj, nptsPerEdge)
+      param.dim = 2;
+      mapper = obj.mesh.geomTrans(param.dim);
+      obj.mesh.updateFaces2Elems();
+      handle = hggroup(obj.myAX());
+      nelems = obj.mesh.facesCount();
+      for i=1:nelems
+        elem = obj.mesh.faces2elements(i,2);
+        type = obj.mesh.elementGmshType(elem);
+        refpts = mp_gmsh_all_edges_points(type, nptsPerEdge);
+        pts = mapper.transform(refpts, i);
+        fh = patch(handle, pts(:,1), pts(:,2), pts(:,3), 'yellow');
+      end
+      facesId = 1:nelems;
+      set(handle, 'UserData', facesId);
+    end
   end
 
   methods(Static)
@@ -278,7 +294,7 @@ classdef Viewer < handle
         status = false;
       end
     end
-  end  
+  end
   methods(Access=private)
     function drawStarItem(obj, mesh, itemDim, nodes, isSeed)
       obj.makeCurrent();
