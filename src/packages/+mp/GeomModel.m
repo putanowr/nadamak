@@ -1,4 +1,4 @@
- classdef GeomModel < handle
+classdef GeomModel < handle
   % GeomModel Represents geometric model.
   % The dim property describes the intrinsic dimension. It is 1 for curves
   % 2 for surfaces and 3 for volumes.
