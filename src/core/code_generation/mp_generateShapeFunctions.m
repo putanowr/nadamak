@@ -98,13 +98,13 @@ function [sf] = Hex8ShapeFun()
              1,     1,  1;
              0,     1,  1]);
    f(x,y,z) = [1, x, y, z, y.*z, z.*x, x.*y, x.*y.*z];
-   XY = cell2sym(f(pts(:,1), pts(:,2), pts(:,3)))
+   XY = cell2sym(f(pts(:,1), pts(:,2), pts(:,3)));
    n = size(pts, 1);
    sf = sym(zeros(1,n));
    for i=1:n
       w = sym(zeros(n,1));
       w(i) = 1;
-      sf(i) = dot(formula(f)', XY\w)
+      sf(i) = dot(formula(f)', XY\w);
    end
 end
 function writeSf(verbose, sfDef, name, pth)
