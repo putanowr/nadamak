@@ -1,5 +1,5 @@
 classdef MeshFactory
-  methods(Static)
+  methods (Static)
     function [mesh] = produce(meshname)
       [nodes, elements, regions, nodemap] = mp.meshFactoryHelper(meshname);
       mesh = mp.Mesh(2, nodes, elements, regions, nodemap);
