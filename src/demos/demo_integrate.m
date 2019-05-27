@@ -40,24 +40,28 @@ for i=1:mesh.elemsCount()
   end	 
 end
 
-radius = 0.1*radius;
+radius = 0.3*radius;
 radius(boundaryNodes) = 0.0;
 direction = 2*pi*rand(mesh.nodesCount(), 1);
 distance = radius.*(0.5+0.5*rand(mesh.nodesCount(),1));
 u = distance.*[cos(direction), sin(direction)];
 
 gmap = mesh.geomTrans();
-quadrature = mp.IM.Triangle(4);
+quadrature = mp.IM.Triangle(2);
 
 s = 0.0;
 for i=1:mesh.perDimCount(mesh.dim)
   J = gmap.volumeForm(quadrature.pts, i, u);
-  for k=1:numel(quadrature.w);
-    s = s+J*quadrature.w(k);
-  end
+  s = s+dot(J,quadrature.w);
 end
 
 fprintf('Integral : %g\n', s);
+viewer = mp.Viewer();
+viewer.show(mesh);
+h = viewer.plot_curved_elements(mesh, 10, u);
+alpha(get(h, 'Children'), 0.3)
+set(get(h, 'Children'), 'LineWidth', 2)
+
 
 % Report demo status
 mp_manage_demos('report', 'integrate', true);
