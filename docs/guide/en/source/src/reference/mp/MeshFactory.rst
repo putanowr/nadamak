@@ -2,7 +2,7 @@
 .. default-domain:: mat
 
 MeshFactory Class
-===============
+=================
 
 This is the MeshFactory class definition.
 
