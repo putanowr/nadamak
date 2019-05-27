@@ -615,7 +615,7 @@ classdef Mesh < handle
       end
       if length(entitiesToCheck) ~= 1
           error('Corrupted adjacencies: #%s entities of dim %d %s spanned by nodes %s\n', ...
-                 mp_to_string(entitiesToCheck), entityTopoDim, mp_to_string(nodesID));
+                 mp_to_string(entitiesToCheck), entityTopoDim, mp_to_string(nodesId));
       end
       entityId = entitiesToCheck(1);
     end
