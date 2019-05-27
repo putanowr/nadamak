@@ -27,10 +27,14 @@ classdef GeomTrans < handle
       end
       obj.fem = mp.FEM.FemType.fromId(ct(1));
     end
-    function [xyz] = transform(obj, refPoint, cellID)
+    function [xyz] = transform(obj, refPoint, cellID, displacement)
       % Return real coordinates for point with reference coordinates in given element
       cellNodes = obj.cellToNodes.at(cellID);
       ambientXYZ = obj.mesh.nodes(cellNodes, :);
+      if nargin > 3 && ~isempty(displacement)
+        n = size(displacement,2);
+        ambientXYZ(:, 1:n) = ambientXYZ(:, 1:n) + displacement(cellNodes, :);
+      end
       sf = obj.fem.sfh(refPoint);
       xyz = sf*ambientXYZ;
     end
