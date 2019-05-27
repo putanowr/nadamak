@@ -57,9 +57,12 @@ semilogy(lc, numNodes, '-*');
 %% Table of mesh data
 numNodes_VS_lc = [lc; numNodes];
 
-f = figure();
-t = uitable(f, 'Data', numNodes_VS_lc, 'Position', [20,20,430,80]);
-
+if ispc % Table can be published only under Windows.
+  f = figure();
+  t = uitable(f, 'Data', numNodes_VS_lc, 'Position', [20,20,430,80]);
+else
+  disp(numNodes_VS_lc)
+end
 
 %%
 mp_manage_demos('report', 'LShapeGeom_refinement', true);
