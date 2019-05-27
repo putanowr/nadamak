@@ -91,6 +91,12 @@ classdef MeshFem < handle
         fprintf(fid, '\n');
       end
     end
+    function [N] = matrixN(obj, refPts)
+      % Calculate matrix of shape functions
+      dofPerElem = obj.qdim * obj.femType.numOfDofs;
+      N = zeros(obj.qdim, dofPerElem);
+      error('NOT FINISHED'); % FIXME
+    end
   end
   methods(Access=private)
     function enumerateClassicNodalC(obj)
@@ -99,7 +105,7 @@ classdef MeshFem < handle
       nnodes = obj.mesh.nodesCount();
       qd = prod(obj.qdim);
       obj.nodes2dofs = zeros(qd, nnodes, 'uint32');
-      totalDofs=0;
+      totalDofs= 0;
       for i=1:nelem
         nodes = obj.mesh.elemNodes(i);
         notSet = find(~all(obj.nodes2dofs(:, nodes)));
