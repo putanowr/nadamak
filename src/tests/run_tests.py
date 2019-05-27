@@ -12,7 +12,9 @@ def get_tests_command(args):
   """Return sting with Matlab/Octave command to be run on start
   """
   scriptpath = os.path.dirname(__file__)
+  environpath = os.path.join(scriptpath, '..');
   command = "addpath('%s');" \
+            "addpath('%s');" \
             "mp_run_tests(struct(" \
             "'exitAfter', %d," \
             "'filter', '%s'," \
@@ -21,7 +23,7 @@ def get_tests_command(args):
             "'logfile', '%s'," \
             "'suite', '%s'," \
             "'suiteexclude', '%s'" \
-            "))" % (scriptpath, 1, args.filter, args.testdir, args.environ, args.logfile, args.suite, args.suiteexclude)
+            "))" % (environpath,scriptpath, 1, args.filter, args.testdir, args.environ, args.logfile, args.suite, args.suiteexclude)
   return command
 
 def setup_tests_parser():
