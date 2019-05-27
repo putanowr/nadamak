@@ -1,6 +1,6 @@
 %% Generate some predefined meshes
 %
-function [nodes, elements, regions, nodemap] = mp_gmsh_mesh_factory(name)
+function [nodes, elements, regions, nodemap] = meshFactoryHelper(name)
   persistent generators
   if isempty(generators)
     generators.meshA = @mp_gmsh_mesh_factory_A;
