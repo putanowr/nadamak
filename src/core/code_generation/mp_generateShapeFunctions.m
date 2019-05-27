@@ -116,7 +116,8 @@ function writeSf(verbose, sfDef, name, pth)
   end
   fname = sprintf('sf%s.m', name);
   fpath = fullfile(pth, fname);  
-  if isfile(fpath)
+  % if isfile(fpath) % This solution works only since version 2017b
+  if exist(fpath,'file') == 2
     if verbose 
       fprintf('    Shape fuction for %s already exists ... SKIPPED\n', name);
       return;
