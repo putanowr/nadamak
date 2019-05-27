@@ -12,7 +12,7 @@ geom = mp.geoms.SquareGeom('my_domain', struct('da', L));
 %% Generate Mesh object
 Ne = 5;
 meshingparams.lc = L/Ne;
-meshingparams.order = 3;
+meshingparams.order = 2;
 mesh = mesher.generate(geom, meshingparams);
 
 %% Selecting nodes
