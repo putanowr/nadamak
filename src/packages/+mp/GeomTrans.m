@@ -22,7 +22,7 @@ classdef GeomTrans < handle
       obj.cellToNodes = mesh.getAdjacency(obj.dim, 0);
       ct = mesh.cellTypes(obj.dim);
       if (length(ct) > 1)
-        error('GeomTrans not cannot handle mixed element type meshes yet')
+        % error('GeomTrans not cannot handle mixed element type meshes yet')
         return
       end
       obj.fem = mp.FEM.FemType.fromId(ct(1));
