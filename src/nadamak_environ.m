@@ -19,7 +19,11 @@ function [mypathstr] = nadamak_environ(params)
   if nargin < 1
     params = struct;
   end
-  forced = mp_get_option(params, 'forced', false);
+  if isfield(params, 'forced')
+    forced = params.forced;
+  else
+    forced = false;
+  end
   if forced
     pth = [];
   end
