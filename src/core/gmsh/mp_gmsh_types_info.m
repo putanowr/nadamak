@@ -36,7 +36,7 @@ function [info] = mp_gmsh_types_info(varargin)
     gt.type_4.shape = 'tetrahedron';
     gt.type_4.nnodes = 4;
     gt.type_4.description = '4-node tetrahedron';
-    gt.type_4.faces = cellfun(@uint32, {[1,3,2],[1,4,3],[4,2,3],...
+    gt.type_4.faces = cellfun(@uint32, {[1,3,2],[1,4,3],[4,2,3]},...
                                         'UniformOutput', false);
     gt.type_4.edges = cellfun(@uint32, {[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]}, 'UniformOutput', false);
     gt.type_4.nodes = [0,0,0; 1,0,0; 0,1,0; 0,0,1];
