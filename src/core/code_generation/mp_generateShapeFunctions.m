@@ -149,7 +149,8 @@ function writeSfDeriv(verbose, sfDef, name, pth)
   end
   fname = sprintf('sfDeriv%s.m', name);
   fpath = fullfile(pth, fname);
-  if isfile(fpath)
+  % if isfile(fpath) % This solution works only since version 2017b
+  if exist(fpath,'file') == 2
     if verbose 
       fprintf('    Shape derivatives for %s already exists ... SKIPPED\n', name);
       return;
