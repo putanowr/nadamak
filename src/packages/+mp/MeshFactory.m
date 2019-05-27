@@ -13,4 +13,8 @@ classdef MeshFactory
       meshes = meshNames;
     end
   end
+  methods
+    function obj = MeshFactory()
+    end
+  end
 end
