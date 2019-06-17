@@ -6,7 +6,7 @@
 %
 % Contrary to this, enumeration classes provide many advantages. Besides
 % improving code readability they can also prevent many, hard to debug,
-% errors. This is the reason that combMESBMRS package provides several
+% errors. This is the reason that Nadamak package provides several
 % enum types. 
 %
 
