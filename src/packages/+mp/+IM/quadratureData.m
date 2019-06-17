@@ -4,15 +4,15 @@ function [pts, w] = quadratureData(tag)
   if isempty(qd)
     for npts = [1,2,3,4,5,6]
       order = 2*npts-1;
-      tag = sprintf('Gauss1D_%d', order);
+      tagG1D = sprintf('Gauss1D_%d', order);
       [p, w] = legpts(npts, [0.0, 1.0]);
       pts = zeros(npts, 3);
       pts(:,1) = p';
-      qd.(tag).pts = pts;
-      qd.(tag).w = w
+      qd.(tagG1D).pts = pts;
+      qd.(tagG1D).w = w;
     end
-    qd.Triangle_1.pts = [1/3, 1/3, 0]
-    qd.Triangle_1.w = [1/2]
+    qd.Triangle_1.pts = [1/3, 1/3, 0];
+    qd.Triangle_1.w = [1/2];
     qd.Triangle_2.pts = [1/6, 1/6, 0;
                          2/3, 1/6, 0;
 			 1/6, 2/3, 0];
