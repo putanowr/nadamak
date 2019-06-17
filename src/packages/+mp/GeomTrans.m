@@ -55,16 +55,33 @@ classdef GeomTrans < handle
       cellNodes = obj.cellToNodes.at(cellID);
       ambientXYZ = obj.mesh.nodes(cellNodes, :);
       n = size(displacement,2);
-      if nargin > 3
+      if nargin > 3 && ~isempty(displacement)
         ambientXYZ(:, 1:n) = ambientXYZ(:, 1:n) + displacement(cellNodes, :);
       end
       npt = size(refPts, 1);
       jmat = zeros(obj.ambientDim, obj.dim, npt);
       for k = 1:size(refPts, 1)
         sfD = obj.fem.sfDh(refPts(k,:));
-        jmat(1:obj.dim,:,k) = sfD*ambientXYZ(:, 1:obj.dim);
+        jmat(1:obj.dim,:,k) = (sfD*ambientXYZ(:, 1:obj.dim))';
       end
     end
+    function [form] = volumeFormOnEdge(obj, refPts, cellID, edgeID, displacement)
+       info = obj.fem.getInfo();
+       edge = info.edges{edgeID};
+       pt1 = info.nodes(edge(1),:);
+       pt2 = info.nodes(edge(end),:);
+       n = size(refPts, 1);
+       form = zeros(1, n);
+       dstdxi = pt2 - pt1;
+       dstdxi = dstdxi(1:obj.dim)';
+       % Map Gauss points onto edge.
+       p = pt1.*(1-refPts(:,1))+pt2.*(refPts(:,1));
+       jmat = obj.jacobianMatrix(p, cellID, displacement);      
+       for i=1:n
+          df = jmat(:,:, i)*dstdxi;
+          form(i) = sqrt(det(df'*df));
+       end
+    end   
     function [form] = volumeForm(obj, refPts, cellID, displacement)
       % Calculate pulback of volume form under displacement map
       % onto reference element.
