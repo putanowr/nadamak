@@ -81,6 +81,6 @@ function [mypathstr] = nadamak_environ(params)
   % generate some source codes
   verbose = mp_get_option(params, 'verbose', false);
   
-  pth = fullfile(mypathstr, 'packages', '+mp', '+FEM');
-  mp_generateShapeFunctions(pth, verbose);
+  srcpth = fullfile(mypathstr, 'packages', '+mp', '+FEM');
+  mp_generateShapeFunctions(srcpth, verbose);
 end
