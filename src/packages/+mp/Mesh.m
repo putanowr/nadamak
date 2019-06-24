@@ -83,7 +83,7 @@ classdef Mesh < handle
       mp_gmsh_regions_printf(obj.regions, fid);
     end
     function m = getDual(obj)
-      t = obj.singleElemType();
+      t = obj.isSingleElemType();
       if t ~= 2
         error('Dual meshed can be constructed only from triangular meshes');
       end
@@ -116,11 +116,13 @@ classdef Mesh < handle
       m.isDual = true;
       m.setParent(obj, [], []);
     end
-    function t=singleElemType(obj, varargin)
-      % singleElemType - check if mesh is of single element type
+    function t=isSingleElemType(obj, varargin)
+      % isSingleElemType - check if mesh is of single element type
       % Normally check only element of dimension equal to mesh dimension.
-      % If called as mesh.singleElemType('all') then consders all element
+      % If called as mesh.isSingleElemType('all') then considers all element
       % types.
+      %
+      % Return 1 on success and 0 otherwise
       checkAll = false;
       if ~isempty(varargin) && strcmp(varargin{1}, 'all')
         checkAll = true;
@@ -621,7 +623,7 @@ classdef Mesh < handle
     end
     function checkSimplical(obj)
       if obj.simplical == -1
-        type = obj.singleElemType();
+        type = obj.isSingleElemType();
         obj.simplical = (type == 2);
       end
     end
