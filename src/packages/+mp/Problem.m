@@ -8,6 +8,9 @@ classdef Problem < handle
     bc mp.BcRegistry
     variables
   end
+  properties(Constant)
+    validExports = {'FlagSHyp'}; % names of valid export formats
+  end
   methods(Abstract)
     [] = setupVariables(obj)
   end
@@ -26,6 +29,36 @@ classdef Problem < handle
       project.data.GeometryType = obj.geometry.projectName;
       project.data.ProblemType = char(obj.type);
       obj.bc.exportToProject(project);
+    end
+    function [status, msg] = export(obj, format, fpath)
+      % export - saves Project data in specified format in file
+      %   Arguments:
+      %      format - name of export format. Valid names are
+      %               available as property validExports
+      %      fpath - file path
+      %   Return:
+      %      status - boolean
+      %      msg - message describin action or cause of error
+      %
+      % Note: this function check for valid export formats
+      status = false;
+      msg = 'Internal error: exporting Problem failed';
+      if ismember(format, obj.validExports)
+        if strcmp(format, 'FlagSHyp')
+          [status, msg] = obj.exportFlagSHyp(fpath);
+        end
+      else
+        status = false;
+        vf = strjoin(obj.validExports, '\n');
+        msg = sprintf('Invalid export format : %s\nValid formats: %s', format, vf);
+      end
+    end
+    function [status, msg] = exportFlagSHyp(obj, fpath)
+      status = true;
+      msg = 'Export successful';
+      fid = fopen(fpath, 'w');
+      fprintf(fid, 'Flagshyp version of the data');
+      fclose(fid);
     end
     function vars = variableNames(obj)
       vars= fieldnames(obj.variables)';
