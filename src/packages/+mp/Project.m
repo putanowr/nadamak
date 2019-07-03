@@ -40,10 +40,6 @@ classdef Project < handle
       fprintf(fid, jsonencode(obj.data));
       fclose(fid);
     end
-    function writeFlagshyp(obj, fid)
-      fid = fopen(fid, 'w');
-      fprintf(fid, 'Flagshyp version of the data');
-      fclose(fid);
-    end
+
   end
 end
