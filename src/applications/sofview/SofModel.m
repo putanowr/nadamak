@@ -130,6 +130,9 @@ classdef SofModel < handle
       obj.project = mp.Project();
       obj.problem.exportToProject(obj.project);
     end
+    function [status, msg] = export(obj, format, fpath)
+      [status, msg] = obj.problem.export(format, fpath);
+    end
   end
 end
 
