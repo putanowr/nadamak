@@ -4,5 +4,6 @@ classdef TaggingType < uint8
     Max          (1)
     Min          (2)
     Priority     (3)
+    Transition   (4)
   end
 end
