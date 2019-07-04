@@ -6,6 +6,9 @@ classdef BcFactory < handle
   end
   methods(Static)
     function [bc] = produce(bcname, varname, params)
+      if nargin < 3
+        params = struct()
+      end
       bcname = sprintf('%s', bcname);
       [vbc, trueVarName] = mp.BcFactory.validBc(varname);
       idx = find( vbc == bcname);
