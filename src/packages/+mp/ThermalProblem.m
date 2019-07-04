@@ -5,7 +5,7 @@ classdef ThermalProblem < mp.Problem
       obj = obj@mp.Problem(mp.ProblemType.Thermal, geometry);
     end
     function setupVariables(obj)
-      varname = 'T';
+      varname = 'Temperature';
       obj.variables.(varname) = mp.Variable(varname, 1, mp.VariableType.State); 
     end
   end
