@@ -1,10 +1,10 @@
 mp_test_register('bc2tag', 'Test conversion from BcType to FlagSHyp tag');
 bc2tag = @mp.exports.flagshyp.bc2tag;
-mp_test_assert_equal(0, bctag(mp.BcType.NotSet));
-mp_test_assert_equal(1, bctag(mp.BcType.FixityX));
-mp_test_assert_equal(2, bctag(mp.BcType.FixityY));
-mp_test_assert_equal(3, bctag(mp.BcType.FixityXY));
-mp_test_assert_equal(4, bctag(mp.BcType.FixityZ));
-mp_test_assert_equal(5, bctag(mp.BcType.FixityXZ));
-mp_test_assert_equal(6, bctag(mp.BcType.FixityYZ));
-mp_test_assert_equal(7, bctag(mp.BcType.Fixity));
+mp_test_assert_equal(0, bc2tag(mp.BcType.NotSet));
+mp_test_assert_equal(1, bc2tag(mp.BcType.FixityX));
+mp_test_assert_equal(2, bc2tag(mp.BcType.FixityY));
+mp_test_assert_equal(3, bc2tag(mp.BcType.FixityXY));
+mp_test_assert_equal(4, bc2tag(mp.BcType.FixityZ));
+mp_test_assert_equal(5, bc2tag(mp.BcType.FixityXZ));
+mp_test_assert_equal(6, bc2tag(mp.BcType.FixityYZ));
+mp_test_assert_equal(7, bc2tag(mp.BcType.Fixity));
