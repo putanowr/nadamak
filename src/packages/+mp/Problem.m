@@ -58,7 +58,11 @@ classdef Problem < handle
       msg = 'Export successful';
       fid = fopen(fpath, 'w');
       fprintf(fid, 'Flagshyp version of the data');
-      selector = mp.exports.flagshyp.makeBcSelector(obj.bc)
+      mapper = mp.exports.flagshyp.makeBcMapper(obj.bc);
+      tagger = mp.exports.flagshyp.NodeTagger();
+      mesh = obj.model.meshes.get('mainmesh');
+      nodeTags = mp_tag_region_nodes(mesh, mapper, tagger, 0);
+      mp.exports.flagshyp.writeMesh(fid, mesh, nodeTags);
       fclose(fid);
     end
     function vars = variableNames(obj)
