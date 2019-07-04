@@ -10,6 +10,9 @@ classdef BcType < int32
     FixityX           (12)
     FixityY           (13)
     FixityZ           (14)
+    FixityXY          (15)
+    FixityXZ          (16)
+    FixityYZ          (17)
     Pressure          (20)
     Traction          (21)
   end
