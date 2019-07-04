@@ -1,4 +1,4 @@
-function writeMesh(mesh,fid)
+function writeMesh(fid, mesh, nodeTags)
   % Write mp.Mesh in FLagSHyp format
   if ~mesh.isSingleElemType()
     ME = MException('mp.exports.flashyp:mixedMeshTypes', ...
@@ -6,17 +6,25 @@ function writeMesh(mesh,fid)
     throw(ME);
   end       
   ct = mesh.cellTypes();
-  fprintf(fid, '%s\n', flagshypCellType(ct));
-  outputArg2 = inputArg2;
-end
-
-function fct = flashypCellType(ct)
-  persistent validTypes
-  if isempty(velidTypes)
-    validTypes = mp.exports.flagshyp.validCellTypes)
+  fprintf(fid, '%s\n', mp.exports.flagshyp.cellType(ct(1)));
+  fprintf(fid, '%d\n', mesh.nodesCount());
+  for i=1:mesh.nodesCount()
+    fprintf(fid, '%d %d ', i, nodeTags(i));
+    for d = 1:mesh.ambientDim
+      fprintf(fid, ' %f', mesh.nodes(i,d));
+    end
+    fprintf(fid, '\n');
   end
-  fct = validTypes(ct)
+  ne = mesh.perDimCount(mesh.dim);
+  fprintf(fid, '%d\n', ne);
+  for i=1:ne
+    matid = 1;
+    fprintf(fid, '%d %d ', i, matid);
+    ei = mesh.elemsFromIds(i);
+    nodes = mesh.elemNodes(ei);
+    for idx = nodes
+      fprintf(fid, ' %d', idx);
+    end
+    fprintf(fid, '\n');
+  end
 end
-
-
-
