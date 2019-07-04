@@ -5,7 +5,7 @@ bcr.register('boundaryA', bc);
 bc = mp.BcFactory.produce('FixityX', 'Displacement');
 bcr.register('boundaryB', bc);
 
-selector = mp.exports.flagshyp.makeBcSelector();
+selector = mp.exports.flagshyp.makeBcSelector(bcr);
 mp_test_assert_equal(7, selector.boundaryA);
 mp_test_assert_equal(1, selector.boundaryB);
 
