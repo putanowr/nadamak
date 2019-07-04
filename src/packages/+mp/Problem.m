@@ -58,6 +58,7 @@ classdef Problem < handle
       msg = 'Export successful';
       fid = fopen(fpath, 'w');
       fprintf(fid, 'Flagshyp version of the data');
+      selector = mp.exports.flagshyp.makeBcSelector(obj.bc)
       fclose(fid);
     end
     function vars = variableNames(obj)
