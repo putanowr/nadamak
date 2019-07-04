@@ -1,4 +1,4 @@
-classdef NodeTagger  < handle
+classdef NodeTagger  < mp.Tagger
   properties (Constant)
      tagTable = [0  1  2  3  4  5  6  7
                  1  1  3  3  5  5  7  7
@@ -11,6 +11,7 @@ classdef NodeTagger  < handle
   end
   methods
     function obj = NodeTagger()
+      obj = obj@mp.Tagger(mp.TaggingType.Max);
     end
     function t = tag(obj, oldTag, newTag)
       t = obj.tagTable(oldTag+1, newTag+1);
