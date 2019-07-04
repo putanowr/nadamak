@@ -18,4 +18,3 @@ function [tag] = bc2tag(bctype)
   end
   tag = b2t(int32(bctype));
 end
-
