@@ -15,5 +15,6 @@ classdef BcType < int32
     FixityYZ          (17)
     Pressure          (20)
     Traction          (21)
+    Force             (22)
   end
 end
