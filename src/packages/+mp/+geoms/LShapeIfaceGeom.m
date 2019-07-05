@@ -1,5 +1,5 @@
 classdef LShapeIfaceGeom < mp.geoms.LShapeGeom 
-  % Geometric model for L-shpe splited into two subdomains.
+  % Geometric model for L-shpe split into two subdomains.
   methods(Access=private)
     function setup(obj, params_)
       obj.params.fA = mp_get_option(params_, 'fA', 0.5);
