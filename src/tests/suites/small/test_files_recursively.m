@@ -3,4 +3,4 @@ mypath = mfilename('fullpath');
 [folder, ~, ~] = fileparts(mypath);
 folder = fullfile(folder, '..', '..', '..','core','geom');
 files = mp_files_recursively(folder, '.tpl');
-mp_test_assert_equal(14, length(files));
+mp_test_assert_equal(15, length(files));
