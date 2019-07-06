@@ -1,9 +1,9 @@
 classdef RectangleIfaceGeom  < mp.GeomModel
   % Geometric model for Rectangle split into two subdomains.
-  properties (Access = public)
+  properties (Access=public)
     params = struct('dW', 2, 'dH', 3.0, 'lcFactors', [1,1,1,1,1,1]);
   end
-  methods(Access=private)
+  methods (Access=private)
     function setup(obj, params_)
       obj.params.dH = mp_get_option(params_, 'dH', obj.params.dH);
       obj.params.dW = mp_get_option(params_, 'dW', obj.params.dW);
@@ -26,7 +26,7 @@ classdef RectangleIfaceGeom  < mp.GeomModel
         obj.setup(params);
       end
     end
-    function [regionNames] = regions(obj)
+    function [regionNames] = regions(~)
       regionNames = {'p_sw', ...
                      'p_se', ...
                      'p_ne', ...
@@ -54,7 +54,7 @@ classdef RectangleIfaceGeom  < mp.GeomModel
     function setInterfaceLcFactor(obj, factor)
       obj.params.lcFactors([2,5]) = factor;
     end
-    function [name] = templateName(obj)
+    function [name] = templateName(~)
       name = 'rectangle_iface.tpl';
     end
     function [lc] = coarsest_lc(obj)
