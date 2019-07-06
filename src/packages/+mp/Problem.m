@@ -57,12 +57,14 @@ classdef Problem < handle
       status = true;
       msg = 'Export successful';
       fid = fopen(fpath, 'w');
-      fprintf(fid, 'Flagshyp version of the data');
-      mapper = mp.exports.flagshyp.makeBcMapper(obj.bc);
-      tagger = mp.exports.flagshyp.NodeTagger();
       mesh = obj.model.meshes.get('mainmesh');
-      nodeTags = mp_tag_region_nodes(mesh, mapper, tagger, 0);
-      mp.exports.flagshyp.writeMesh(fid, mesh, nodeTags);
+      mp.exports.flagshyp.writeMesh(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writeMaterialData(fid);
+      mp.exports.flagshyp.writeLoadingData(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writePointLoads(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writePrescribedDisplacements(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writePressureLoads(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writeSolutionParameters(fid);
       fclose(fid);
     end
     function vars = variableNames(obj)

@@ -1,10 +1,13 @@
-function writeMesh(fid, mesh, nodeTags)
+function writeMesh(fid, mesh, bc)
   % Write mp.Mesh in FLagSHyp format
   if ~mesh.isSingleElemType()
     ME = MException('mp.exports.flashyp:mixedMeshTypes', ...
                     'Mesh object is not of single element type');
     throw(ME);
-  end       
+  end      
+  mapper = mp.exports.flagshyp.makeBcMapper(bc);
+  tagger = mp.exports.flagshyp.NodeTagger();
+  nodeTags = mp_tag_region_nodes(mesh, mapper, tagger, 0);
   ct = mesh.cellTypes();
   fprintf(fid, '%s\n', mp.exports.flagshyp.cellType(ct(1)));
   fprintf(fid, '%d\n', mesh.countNodes());
