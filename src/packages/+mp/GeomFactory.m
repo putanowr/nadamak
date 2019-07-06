@@ -1,6 +1,7 @@
 classdef GeomFactory < handle
   properties (Constant)
     akas = {'Rectangle', {'Rectangle', 'RectangleGeom'};
+            'RectangleIface', {'Rectangle with interface', 'RectangleIfaceGeom' 'RectangleIface'};
             'Square',    {'Square',    'SquareGeom'};
 	          'LShape',    {'L-Shape',   'LShapeGeom', 'LShape', 'L'};
             'Cube',      {'Cube',      'CubeGeom'};
