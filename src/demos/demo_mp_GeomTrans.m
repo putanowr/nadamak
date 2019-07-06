@@ -21,7 +21,7 @@ center = sum(info.nodes, 1)/info.nnodes
 
 % Calculate number of cells
 cellSelector.dim = mesh.dim;
-ncells = mesh.elemsCount(cellSelector);
+ncells = mesh.countElems(cellSelector);
 
 %% Map center of reference element to real element
 

@@ -8,7 +8,7 @@ function [elemEdges, elemTan, elemNor] = mp_face_edge_data(mesh)
   if dim ~= 2
     error('Function mp_edge_relations works correctly only for 2D mesh');
   end
-  nfaces = mesh.facesCount();
+  nfaces = mesh.countFaces();
   f2e = mesh.getAdjacency(2,1);
   e2f = mesh.getAdjacency(1,2);
   elemEdges = mp.SharedArray([nfaces, 4], 'int8');

@@ -98,7 +98,7 @@ classdef SofModel < handle
        varName = 'Displacement';
        if obj.problem.model.variables.hasVariable(varName)
          var = obj.problem.model.variables.get(varName);
-         nnodes = var.fem.mesh.nodesCount();
+         nnodes = var.fem.mesh.countNodes();
          val = var.dofValues(var.fem.nodes2dofs);
          d = reshape(val, var.variable.qdim, nnodes)';
        else

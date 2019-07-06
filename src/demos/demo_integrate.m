@@ -27,9 +27,9 @@ internalNodes = find(nodesTag==1);
 
 boundaryPts = mesh.nodes(boundaryNodes, :);
 
-radius = L*ones(mesh.nodesCount(), 1);
+radius = L*ones(mesh.countNodes(), 1);
 %% Iterate over elements and calculate maximum allowabel radius
-for i=1:mesh.elemsCount() 
+for i=1:mesh.countElems() 
   nodes = mesh.elemNodes(i);
   nen = length(nodes);
   pairs = combnk(1:nen, 2);
@@ -42,15 +42,15 @@ end
 
 radius = 0.3*radius;
 radius(boundaryNodes) = 0.0;
-direction = 2*pi*rand(mesh.nodesCount(), 1);
-distance = radius.*(0.5+0.5*rand(mesh.nodesCount(),1));
+direction = 2*pi*rand(mesh.countNodes(), 1);
+distance = radius.*(0.5+0.5*rand(mesh.countNodes(),1));
 u = distance.*[cos(direction), sin(direction)];
 
 gmap = mesh.geomTrans();
 quadrature = mp.IM.Triangle(2);
 
 s = 0.0;
-for i=1:mesh.perDimCount(mesh.dim)
+for i=1:mesh.countPerDim(mesh.dim)
   J = gmap.volumeForm(quadrature.pts, i, u);
   s = s+dot(J,quadrature.w);
 end

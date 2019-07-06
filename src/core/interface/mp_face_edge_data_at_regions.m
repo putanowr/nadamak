@@ -4,7 +4,7 @@ function [elemsEdges, elemsTan, elemsNor, nodesTan, nodesNor] = mp_face_edge_dat
   % It calculates element normal and tangent vectors for each element side (elemTan and elemNor).
   % It calculates also normal and tangent vectors at nodes belonging to edges tagged with selectEdgeTag (nodesTan, nodesNor).
   [elemsEdges, elemsTan, elemsNor] = mp_face_edge_data(mesh);
-  nnodes = mesh.nodesCount();
+  nnodes = mesh.countNodes();
   nodesTan = mp.SharedArray([nnodes, 2], 'double');
   nodesNor = mp.SharedArray([nnodes, 2], 'double');
   f2e = mesh.getAdjacency(2, 1);

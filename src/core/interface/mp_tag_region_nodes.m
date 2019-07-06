@@ -7,7 +7,7 @@ function [nodeTags] = mp_tag_region_nodes(mesh, regionsSelector, taggingType, de
 %
 % CAUTION: if taggingType='default' this function supports tag values in [0,1,2,3]
 % with the following priorites (tag priority): (0,0), (1, 100), (2, 50), (3, 75)
-  nodeTags = defaultTag*ones(mesh.nodesCount(),1);
+  nodeTags = defaultTag*ones(mesh.countNodes(),1);
   if isa(taggingType, 'mp.Tagger')
     tagger = taggingType;
   else

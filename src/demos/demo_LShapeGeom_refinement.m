@@ -46,7 +46,7 @@ numNodes = zeros(1, nlc);
 for i=1:nlc
   mesh = mesher.generate(geom, struct('lc', lc(i)));
   viewer.show(mesh);
-  numNodes(i) = mesh.nodesCount();
+  numNodes(i) = mesh.countNodes();
   tstring = sprintf('lc=%4.2f nodes=%d', lc(i), numNodes(i));
   title(tstring);
   viewer.stackFigure();
