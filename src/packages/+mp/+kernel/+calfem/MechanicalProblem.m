@@ -77,7 +77,7 @@ classdef MechanicalProblem < mp.MechanicalProblem
     function assembly(obj, options)
       mesh = obj.model.meshes.get('mainmesh');
       c2v = mesh.getAdjacency(mp.Topo(mesh.dim), mp.Topo.Vertex);
-      nelems = mesh.perDimCount(mesh.dim);
+      nelems = mesh.countPerDim(mesh.dim);
       variable = obj.model.variables.get('Displacement');
       fem = variable.fem;
       if ~obj.isValidFem(fem)

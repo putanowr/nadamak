@@ -100,9 +100,9 @@ classdef MeshFem < handle
   end
   methods(Access=private)
     function enumerateClassicNodalC(obj)
-      nelem = obj.mesh.elemsCount();
+      nelem = obj.mesh.countElems();
       obj.dofs = cell(1,nelem);
-      nnodes = obj.mesh.nodesCount();
+      nnodes = obj.mesh.countNodes();
       qd = prod(obj.qdim);
       obj.nodes2dofs = zeros(qd, nnodes, 'uint32');
       totalDofs= 0;
@@ -125,11 +125,11 @@ classdef MeshFem < handle
     end
     function enumerateClassicNodal(obj)
       dim = obj.mesh.dim;
-      nelem = obj.mesh.elemsCount(struct('dim', dim));
+      nelem = obj.mesh.countElems(struct('dim', dim));
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
       obj.dofs = zeros(dofsPerElem, nelem, 'uint32');
       c2v = obj.mesh.getAdjacency(mp.Topo(dim), mp.Topo.Vertex);
-      nnodes = obj.mesh.nodesCount();
+      nnodes = obj.mesh.countNodes();
       qd = prod(obj.qdim);
       nodes2dofs = zeros(qd, nnodes);
       totalDofs=0;
@@ -153,7 +153,7 @@ classdef MeshFem < handle
     end
     function ndof = enumerateGeneric(obj)
       dim = obj.mesh.dim;
-      nelem = obj.mesh.elemsCount(struct('dim', dim));
+      nelem = obj.mesh.countElems(struct('dim', dim));
       dofCounter = uint32(offset);
       dofsPerElem = obj.femType.numOfDofs*obj.qdim;
       obj.dofs = zeros(dofsPerElem, nelem, 'uint32');

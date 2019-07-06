@@ -34,9 +34,9 @@ boundaryPts = mesh.nodes(boundaryNodes, :);
 
 viewer.showPoints(boundaryPts);
 
-radius = L*ones(mesh.nodesCount(), 1);
+radius = L*ones(mesh.countNodes(), 1);
 %% Iterate over elements and calculate maximum allowabel radius
-for i=1:mesh.elemsCount() 
+for i=1:mesh.countElems() 
   nodes = mesh.elemNodes(i);
   nen = length(nodes);
   pairs = combnk(1:nen, 2);
@@ -49,13 +49,13 @@ end
 
 radius = 0.3*radius;
 
-direction = 2*pi*rand(mesh.nodesCount(), 1)
-distance = radius.*(0.5+0.5*rand(mesh.nodesCount(),1));
+direction = 2*pi*rand(mesh.countNodes(), 1)
+distance = radius.*(0.5+0.5*rand(mesh.countNodes(),1));
 u = distance.*[cos(direction), sin(direction)];
 
 hold on
 
-for i=1:mesh.nodesCount
+for i=1:mesh.countNodes
   if nodesTag(i)
     xy = mesh.nodes(i, 1:2);
     r = radius(i);
@@ -71,5 +71,7 @@ mesh.nodes(internalNodes, 1:2) = mesh.nodes(internalNodes, 1:2)+ u(internalNodes
 viewer.stackFigure();
 
 viewer.show(mesh);
+
+viewer.plot_curved_elements(70);
 % Report demo status
 mp_manage_demos('report', 'shake_internal_nodes', true);

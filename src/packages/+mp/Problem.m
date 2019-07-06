@@ -99,8 +99,8 @@ classdef Problem < handle
     function [info] = meshInfo(obj, meshName)
       if obj.model.meshes.hasMesh(meshName)
         mh = obj.model.meshes.get(meshName);
-        nnodes = mh.nodesCount();
-        nelems = mh.perDimCount(obj.geometry.dim);
+        nnodes = mh.countNodes();
+        nelems = mh.countPerDim(obj.geometry.dim);
         info = sprintf('Nodes: %d  Elements %d', nnodes, nelems);
       else
         info = sprintf('Error: no mesh called %s', meshName);

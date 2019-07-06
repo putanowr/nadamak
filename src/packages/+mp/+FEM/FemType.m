@@ -28,7 +28,7 @@ classdef FemType
     function [info]=getInfo(self)
       info = mp_gmsh_types_info(self.gmshID);
     end
-    function [nnodes]=nodesCount(self)
+    function [nnodes]=countNodes(self)
       info = mp_gmsh_types_info(self.gmshID);
       nnodes = info.nnodes;
     end

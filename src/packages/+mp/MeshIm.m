@@ -18,7 +18,7 @@ classdef MeshIm < handle
   end
   methods(Access=private)
     function setup(obj, order)
-      nelem = obj.mesh.elemsCount();
+      nelem = obj.mesh.countElems();
       for i=1:nelem
         et = obj.mesh.elementGmshType(i);
         if ~obj.elemType2quad.isKey(et)

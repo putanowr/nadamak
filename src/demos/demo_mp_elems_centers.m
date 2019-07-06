@@ -15,10 +15,10 @@ viewer.show(mesh);
 %% 
 % Pre-allocate vectors for element centers for efficiency reason
 elemsSelector.dim = 2;
-nElems2D = mesh.elemsCount(elemsSelector)
+nElems2D = mesh.countElems(elemsSelector)
 x2 = zeros(1, nElems2D); y2 = x2;
 elemsSelector.dim = 1;
-nElems1D = mesh.elemsCount(elemsSelector)
+nElems1D = mesh.countElems(elemsSelector)
 x1 = zeros(1, nElems1D); y1 = x1;
 % Set countes of 1D and 2D elements to zero
 i1=0;
