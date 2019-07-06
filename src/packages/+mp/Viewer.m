@@ -220,9 +220,11 @@ classdef Viewer < handle
     function highlight_nodes(obj, selectorOrIds)
       obj.highlightNodes(selectorOrIds);
     end
-    function highlightNodes(obj, selectorOrIds)
-      hopts.markerColor = 'red';
-      hopts.markerFactor = 2;
+    function highlightNodes(obj, selectorOrIds, hopts)
+      if nargin < 3
+        hopts.markerColor = 'red';
+        hopts.markerFactor = 2;
+      end
       if isstruct(selectorOrIds)
         nodes = mp_gmsh_elems_select_nodes(obj.mesh.elements, obj.mesh.regions, selectorOrIds);
       else
@@ -276,7 +278,7 @@ classdef Viewer < handle
       mapper = mesh.geomTrans(param.dim);
       mesh.updateFaces2Elems();
       handle = hggroup(obj.myAX());
-      nelems = mesh.facesCount();
+      nelems = mesh.countFaces();
       for i=1:nelems
         elem = mesh.faces2elements(i,2);
         type = mesh.elementGmshType(elem);
