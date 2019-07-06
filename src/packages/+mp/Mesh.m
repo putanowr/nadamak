@@ -128,7 +128,7 @@ classdef Mesh < handle
         checkAll = true;
       end
       t = -1;
-      for i = 1:obj.elemsCount()
+      for i = 1:obj.countElems()
         elem = obj.elements{i};
         if ~checkAll
           if obj.dim ~= mp_gmsh_element_dim(elem)
@@ -347,6 +347,12 @@ classdef Mesh < handle
       %
       regionsIds = mp_gmsh_regions_find_id(obj.regions, selector);
     end
+    function [nodesIds] = findRegionNodes(obj, selector)
+      % Return ID of nodes on regions matching given selection criteria
+      elemsSelector.region = mp_gmsh_regions_find_id(obj.regions, selector);
+      elemsIds = obj.findElems(elemsSelector);
+      nodesIds = obj.elemNodes(elemsIds);
+    end
     function [elemsIds] = findElems(obj, selector)
       % Return ID of elements matching give selection cirteria
       %
@@ -363,56 +369,82 @@ classdef Mesh < handle
       % all field values to be selected.
       elemsIds = mp_gmsh_elems_find(obj.elements, selector);
     end
-    function [nodesIds] = elemNodes(obj, elemsId)
+    function [nodesIds] = elemNodes(obj, elemsIds)
       % Return Id of nodes of given element.
       % If single element is specified the returned vector corresponds
       % to element connectivity.
       % If more elements are specified then the returned vector is a sorted
       % union of unique nodes Id.
-      nodesIds = mp_gmsh_element_nodes(obj.elements{elemsId(1)});
-      if length(elemsId) > 1
-        for i=elemsId
-          nodesIds = [nodesIds, mp_gmsh_element_nodes(obj.elements{i})];
-        end
-        nodesIds = unique(nodesIds);
+      ncount = obj.countElemsNodes(elemsIds);
+      nodesIds = zeros(ncount,1);
+      tb=1;
+      for i = elemsIds
+         nids = mp_gmsh_element_nodes(obj.elements{i});
+         te = tb+numel(nids)-1;
+         nodesIds(tb:te) = nids;
+         tb = te+1;
+      end
+      nodesIds = unique(nodesIds);
+    end
+    function [nitems] = countPerDim(obj, dim)
+      suffix = ['Nodes'; 'Edges'; 'Faces'; 'Cells'];
+      nitems = obj.(['count', suffix(dim+1,:)])();
+    end
+
+    function [nElems] = countElems(obj, varargin)
+    %% Return number of elements.
+    % If no argument given then return total number of elements in the
+    % mesh. Otherwise return number of elements mathing give selection
+    % cirteria
+    % Example:
+    % mesh.countElems();
+    % mesh.countElems(struct('dim', 2));
+      if isempty(varargin)
+        nElems = length(obj.elements);
+      else
+        elemIds = mp_gmsh_elems_find(obj.elements, varargin{1});
+        nElems = length(elemIds);
       end
     end
-    function [nitems] = perDimCount(obj, dim)
-      prefix = ['nodes'; 'edges'; 'faces'; 'cells'];
-      nitems = obj.([prefix(dim+1,:),'Count'])();
+
+    function [nnodes] = countElemsNodes(obj, elemsIds)
+      % Return number of nodes in element. If more elemens are given
+      % return the total count.
+      tfun = @(x) mp_gmsh_node_count(obj.elements{x}(2));
+      nnodes = sum(arrayfun(tfun, elemsIds, 'UniformOutput', true));
     end
-    function [nnodes] = nodesCount(obj)
+
+    function [nnodes] = countNodes(obj)
       %% Return number of nodes in the mesh.
       nnodes = size(obj.nodes, 1);
     end
-    function [nfaces] = facesCount(obj)
+    function [nfaces] = countFaces(obj)
       %% Return number of faces in the mesh
       adj = obj.getAdjacency(2,0);
       nfaces = adj.length;
     end
-    function [nedges] = edgesCount(obj)
+    function [nedges] = countEdges(obj)
       %% Return number of edges in the mesh
       adj = obj.getAdjacency(1,0);
       nedges = adj.length;
     end
-    function [ncells] = cellsCount(obj)
+    function [ncells] = countCells(obj)
       %% Return number of cells in the mesh
       adj = obj.getAdjacency(3, 0);
       ncells = adj.length;
     end
-    function [nRegions] = regionsCount(obj, varargin)
+
+    function [nRegions] = regionsCells(obj, regdim)
       %% Return number of regions.
       % If no argument given then counts regions of the dimension equal
       % to the dimension of the mesh. Othervise counts regions of given
       % dimension.
       %
       % Example:
-      %   mesh.regionsCount();
-      %   mesh.regionsCount(2);
-      if varargin < 1
+      %   mesh.regionsCells();
+      %   mesh.regionsCells(2);
+      if nargin < 2
         regdim = obj.dim;
-      else
-        regdim = varargin{1};
       end
       nRegions = mp_gmsh_regions_count(obj.regions, struct('dim', regdim));
     end
@@ -422,25 +454,10 @@ classdef Mesh < handle
       names = arrayfun(@(K) K.name, obj.regions, 'UniformOutput', false);
     end
 
-    function [nElems] = elemsCount(obj, varargin)
-    %% Return number of elements.
-    % If no argument given then return total number of elements in the
-    % mesh. Otherwise return number of elements mathing give selection
-    % cirteria
-    % Example:
-    % mesh.elemsCount();
-    % mesh.elemsCount(struct('dim', 2));
-      if isempty(varargin)
-        nElems = length(obj.elements);
-      else
-        elemIds = mp_gmsh_elems_find(obj.elements, varargin{1});
-        nElems = length(elemIds);
-      end
-    end
     function [centerCoords] = elemsCenters(obj, elemsID)
       %% Return shared array of face coordinates.
       if nargin < 2
-        nelems = obj.elemsCount();
+        nelems = obj.countElems();
         elemsID = 1:nelems;
       else
         nelems = length(elemsID);
@@ -461,7 +478,7 @@ classdef Mesh < handle
     function [centerCoords] = faceCenters(obj, faces)
       %% Return shared array of face coordinates.
       if nargin < 2
-        nfaces = obj.facesCount();
+        nfaces = obj.countFaces();
         faces = 1:nfaces;
       else
         nfaces = length(faces);
@@ -481,7 +498,7 @@ classdef Mesh < handle
       %% Return shared array of edge coordinates.
       % Caution: Current implementation works only for straight edges;
       if nargin < 2
-        nedges = obj.edgesCount();
+        nedges = obj.countEdges();
         edges = 1:nedges;
       else
         nedges = length(edges);
@@ -549,8 +566,8 @@ classdef Mesh < handle
       end
       fprintf(fid, '$EndPhysicalNames\n');
       fprintf(fid, '$Nodes\n');
-      fprintf(fid, '%d\n', obj.nodesCount());
-      for i=1:obj.nodesCount()
+      fprintf(fid, '%d\n', obj.countNodes());
+      for i=1:obj.countNodes()
         fprintf(fid, '%d %f %f %f\n', i, obj.nodes(i,:));
       end
       fprintf(fid, '$EndNodes\n');
@@ -757,7 +774,7 @@ classdef Mesh < handle
       e2v = obj.getAdjacency(1,0);
       v2e = obj.getAdjacency(0,1);
       f2v = obj.getAdjacency(2,0);
-      nfaces = obj.facesCount();
+      nfaces = obj.countFaces();
       targets = cell(1, nfaces);
       obj.f2eOrient = cell(1, nfaces);
       for i=1:nfaces
