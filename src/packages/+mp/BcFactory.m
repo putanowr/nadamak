@@ -36,10 +36,12 @@ classdef BcFactory < handle
       error('Variable "%s" has not valid BCs', varname);
     end
     function [validbc] = validBcForDisplacement()
+      % Return types of boundary conditions that are valid for the 
+      % Displacement variable (or derived variables)
       validbc = [mp.BcType.NotSet, mp.BcType.Displacement, mp.BcType.Fixity,...
                  mp.BcType.FixityX, mp.BcType.FixityY mp.BcType.FixityZ,...
                  mp.BcType.FixityXY, mp.BcType.FixityXZ, mp.BcType.FixityYZ,...
-                 mp.BcType.Pressure, mp.BcType.Traction];
+                 mp.BcType.Pressure, mp.BcType.Traction, mp.BcType.Force];
     end
     function [validbc] = validBcForTemperature()
       validbc = [mp.BcType.NotSet, mp.BcType.HeatFlux, mp.BcType.Insulation];
