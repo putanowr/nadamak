@@ -29,12 +29,12 @@ Reading and writing
 .. automethod:: Mesh.getAdjacency
 .. automethod:: Mesh.updateAdjacency
 .. automethod:: Mesh.elemNodes
-.. automethod:: Mesh.nodesCount
-.. automethod:: Mesh.facesCount
-.. automethod:: Mesh.edgesCount
-.. automethod:: Mesh.regionsCount
+.. automethod:: Mesh.countNodes
+.. automethod:: Mesh.countFaces
+.. automethod:: Mesh.countEdges
+.. automethod:: Mesh.countRegions
 .. automethod:: Mesh.regionNames
-.. automethod:: Mesh.elemsCount
+.. automethod:: Mesh.countElems
 .. automethod:: Mesh.elemsCenters 
 .. automethod:: Mesh.faceCenters 
 .. automethod:: Mesh.edgeCenters 
