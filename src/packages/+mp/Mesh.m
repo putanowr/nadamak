@@ -387,18 +387,19 @@ classdef Mesh < handle
       nodesIds = unique(nodesIds);
     end
     function [nitems] = countPerDim(obj, dim)
+      % Count mesh components of given dimension
       suffix = ['Nodes'; 'Edges'; 'Faces'; 'Cells'];
       nitems = obj.(['count', suffix(dim+1,:)])();
     end
 
     function [nElems] = countElems(obj, varargin)
-    %% Return number of elements.
-    % If no argument given then return total number of elements in the
-    % mesh. Otherwise return number of elements mathing give selection
-    % cirteria
-    % Example:
-    % mesh.countElems();
-    % mesh.countElems(struct('dim', 2));
+      % Return number of elements.
+      % If no argument given then return total number of elements in the
+      % mesh. Otherwise return number of elements mathing give selection
+      % cirteria
+      % Example:
+      % mesh.countElems();
+      % mesh.countElems(struct('dim', 2));
       if isempty(varargin)
         nElems = length(obj.elements);
       else
