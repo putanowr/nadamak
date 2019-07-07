@@ -31,7 +31,10 @@ classdef BcRegistry < handle
         vns = fieldnames(obj.registry.(regionName{:}));
         for vn = vns'
           bc = obj.registry.(regionName{:}).(vn{:});
-          project.data.BC.(regionName{:}).(bc.variable) = char(bc.type);
+          bcval.variable = bc.variable;
+          bcval.type = char(bc.type);
+          bcval.value = bc.value;
+          project.data.BC.(regionName{:}) = bcval;
         end
       end
     end
