@@ -72,6 +72,6 @@ viewer.stackFigure();
 
 viewer.show(mesh);
 
-viewer.plot_curved_elements(70);
+viewer.plot_curved_elements(mesh, 70);
 % Report demo status
 mp_manage_demos('report', 'shake_internal_nodes', true);
