@@ -347,11 +347,14 @@ classdef Mesh < handle
       %
       regionsIds = mp_gmsh_regions_find_id(obj.regions, selector);
     end
-    function [nodesIds] = findRegionNodes(obj, selector)
-      % Return ID of nodes on regions matching given selection criteria
+    function [elemsIds] = findRegionElements(obj, selector)
+      % Return ID of elements on regions matching given selection criteria
       elemsSelector.region = mp_gmsh_regions_find_id(obj.regions, selector);
       elemsIds = obj.findElems(elemsSelector);
-      nodesIds = obj.elemNodes(elemsIds);
+    end
+    function [nodesIds] = findRegionNodes(obj, selector)
+      % Return ID of nodes on regions matching given selection criteria
+      nodesIds = obj.elemNodes(obj.findRegionElements(selector));
     end
     function [elemsIds] = findElems(obj, selector)
       % Return ID of elements matching give selection cirteria
