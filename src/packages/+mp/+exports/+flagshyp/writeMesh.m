@@ -5,7 +5,7 @@ function writeMesh(fid, mesh, bc)
                     'Mesh object is not of single element type');
     throw(ME);
   end      
-  mapper = mp.exports.flagshyp.makeBcMapper(bc);
+  mapper = mp.exports.flagshyp.makeBcMapper(bc, mesh.ambientDim);
   tagger = mp.exports.flagshyp.NodeTagger();
   nodeTags = mp_tag_region_nodes(mesh, mapper, tagger, 0);
   ct = mesh.cellTypes();

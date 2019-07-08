@@ -1,3 +1,3 @@
 function writeLoadingData(fid, mesh, bc)
-  fprintf('Write loding data\n');
+  fprintf(fid, 'Write loding data\n');
 end
