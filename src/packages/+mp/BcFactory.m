@@ -33,7 +33,7 @@ classdef BcFactory < handle
           return
         end
       end
-      error('Variable "%s" has not valid BCs', varname);
+        error('Variable "%s" has not valid BCs', varname);
     end
     function [validbc] = validBcForDisplacement()
       % Return types of boundary conditions that are valid for the 
