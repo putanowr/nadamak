@@ -7,7 +7,7 @@ function [selector] = makeBcRegionsSelector(bcRegistry, bctype, variable)
   for regionName = rn
     bc = bcRegistry.get(regionName{:}, variable);
     if bc.type == bctype;
-      selector.name{end+1} = regionName{:};
+      selector.name(end+1) = regionName;
     end
   end
 end
