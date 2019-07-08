@@ -28,5 +28,8 @@ classdef Variable
     function qst = isDerived(obj)
       qst = (obj.type == mp.VairableType.Derived);
     end
+    function qst = isData(obj)
+      qst = (obj.type == mp.VariableType.Data);
+    end
   end
 end
