@@ -1,6 +1,6 @@
 function mp_write_vector(fid, vector, slice, params)
   if nargin < 4
-    params.format = '%d';
+    params.format = '%g';
     params.separator = ' ';
     params.newline = false;
   end
@@ -22,8 +22,8 @@ function mp_write_vector(fid, vector, slice, params)
         error('Invalid specification of slice for vector writing');
      end
   end   
-  format = mp_get_option(params, 'format', params.format);
-  separator = mp_get_option(params, 'separator', params.separator);
+  format = mp_get_option(params, 'format', '%g');
+  separator = mp_get_option(params, 'separator', ' ');
   for i=first:last-1
     fprintf(fid, format, vector(i));
     fprintf(fid, separator);
