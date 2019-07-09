@@ -6,7 +6,8 @@ classdef Problem < handle
     geometry
     progress mp.Progress
     bc mp.BcRegistry
-    variables
+    variables % structure of variables used in the problem
+    myspace mp.ProblemWorkspace
   end
   properties(Constant)
     validExports = {'FlagSHyp'}; % names of valid export formats
@@ -20,9 +21,11 @@ classdef Problem < handle
       if nargin > 1
         obj.setGeometry(geometry);
       end
+      obj.variables = struct();
       obj.progress = mp.Progress();
       obj.model = mp.FemModel();
       obj.bc = mp.BcRegistry();
+      obj.myspace = mp.ProblemWorkspace();
       obj.setupVariables();
     end
     function exportToProject(obj, project)
@@ -60,7 +63,7 @@ classdef Problem < handle
       mesh = obj.model.meshes.get('mainmesh');
       mp.exports.flagshyp.writeMesh(fid, mesh, obj.bc);
       mp.exports.flagshyp.writeMaterialData(fid);
-      mp.exports.flagshyp.writeLoadingData(fid, mesh, obj.bc);
+      mp.exports.flagshyp.writeLoadingData(fid, mesh, obj.bc, obj.myspace.getData('gravity'));
       mp.exports.flagshyp.writePointLoads(fid, mesh, obj.bc);
       mp.exports.flagshyp.writePrescribedDisplacements(fid, mesh, obj.bc);
       mp.exports.flagshyp.writePressureLoads(fid, mesh, obj.bc);
@@ -173,16 +176,24 @@ classdef Problem < handle
     function postprocess(obj)
       obj.progress.report(0.8, 'Postprocess');
     end
+    function addVariable(obj, variable)
+      if isfield(obj.variables, variable.name)
+        error('Variable %s already set in Problem', variable.name);
+      end
+      obj.variables.(variable.name) = variable;
+    end
     function setupApproximation(obj, options)
       obj.progress.report(0.2, 'Setup approximation')
       for vn = fieldnames(obj.variables)'
         variableName = vn{:};
         var = obj.variables.(variableName);
-        fem = obj.model.addIsoparametricFem(variableName, 'mainmesh', var.qdim);
-        modelVariable = mp.ModelVariable(var, struct('fem', fem));
-        obj.model.variables.addVariable(modelVariable);
-        msg = sprintf('Added model variable %s with %d DOFS', variableName, modelVariable.numOfDofs());
-        obj.progress.report([], msg);
+        if var.isState()
+          fem = obj.model.addIsoparametricFem(variableName, 'mainmesh', var.qdim);
+          modelVariable = mp.ModelVariable(var, struct('fem', fem));
+          obj.model.variables.addVariable(modelVariable);
+          msg = sprintf('Added model variable %s with %d DOFS', variableName, modelVariable.numOfDofs());
+          obj.progress.report([], msg);
+        end
       end
     end
   end
