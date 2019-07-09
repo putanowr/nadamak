@@ -3,7 +3,7 @@ classdef FemModel < handle
   properties(SetAccess=private)
     meshes mp.MeshRegistry;
     fems struct; % structure holding name -> MeshFem.
-    variables mp.VariableRegistry;
+    variables mp.ModelVariableRegistry;
   end
   properties
     K
@@ -13,12 +13,12 @@ classdef FemModel < handle
     function [obj] = FemModel()
       obj.meshes = mp.MeshRegistry;
       obj.fems = struct();
-      obj.variables = mp.VariableRegistry();
+      obj.variables = mp.ModelVariableRegistry();
       K = [];
       F = [];
     end
     function resetVariables(obj)
-      obj.variables = mp.VariableRegistry();
+      obj.variables = mp.ModelVariableRegistry();
     end
     function [fem] = addFem(obj, name, meshName, regionName, femType, qdim)
       mesh = obj.meshes.get(meshName);
