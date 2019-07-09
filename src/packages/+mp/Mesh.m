@@ -202,8 +202,8 @@ classdef Mesh < handle
       % Return GMSH element indices from given set if indices assuming it
       % pertains to elements of the highest dimension present in the mesh,
       % that is elements of dimension equal to mesh dimension.
-      checker = {@obj.elemsFromEdges,
-                 @obj.elemsFromFaces,
+      checker = {@obj.elemsFromEdges,...
+                 @obj.elemsFromFaces,...
                  @obj.elemsFromCells};
       h = checker{obj.dim};
       elemsIds = h(ids);
