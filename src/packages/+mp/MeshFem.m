@@ -107,7 +107,7 @@ classdef MeshFem < handle
       obj.nodes2dofs = zeros(qd, nnodes, 'uint32');
       totalDofs= 0;
       for i=1:nelem
-        nodes = obj.mesh.elemNodes(i);
+        nodes = obj.mesh.singleElemNodes(i);
         notSet = find(~all(obj.nodes2dofs(:, nodes)));
         notSetNum = numel(notSet);
         if notSetNum > 0
