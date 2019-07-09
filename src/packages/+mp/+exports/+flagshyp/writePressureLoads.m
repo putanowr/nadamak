@@ -10,7 +10,7 @@ function writePressureLoads(fid, mesh, bc)
     vecFormat.newline = false;
     for i = 1:numel(elems) 
       fprintf(fid, '%d ', i);
-      mp_write_vector(fid, mesh.elemNodes(elems(i)), nan, vecFormat);
+      mp_write_vector(fid, mesh.singleElemNodes(elems(i)), nan, vecFormat);
       fprintf(fid, ' %f\n', bcond.value);
     end
   end
