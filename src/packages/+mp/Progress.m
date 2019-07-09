@@ -8,6 +8,9 @@ classdef Progress < handle
     function [obj] = Progress()
       obj.fraction = 0.0;
     end
+    function reportOnlyGUI(obj, fraction, message)
+      obj.report(fraction, message);
+    end
     function report(obj, fraction, message)
       if ~isempty(fraction)
         obj.fraction = fraction;
