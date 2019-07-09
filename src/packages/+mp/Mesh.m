@@ -372,12 +372,18 @@ classdef Mesh < handle
       % all field values to be selected.
       elemsIds = mp_gmsh_elems_find(obj.elements, selector);
     end
-    function [nodesIds] = elemNodes(obj, elemsIds)
+    function [nodesIds] = singleElemNodes(obj, elemId)
+      nodesIds = mp_gmsh_element_nodes(obj.elements{elemId});
+    end
+    function [nodesIds] = elemNodes(obj, elemsIds, makeUnique)
       % Return Id of nodes of given element.
       % If single element is specified the returned vector corresponds
       % to element connectivity.
       % If more elements are specified then the returned vector is a sorted
       % union of unique nodes Id.
+      if nargin < 3
+        makeUnique = true;
+      end
       ncount = obj.countElemsNodes(elemsIds);
       nodesIds = zeros(ncount,1);
       tb=1;
@@ -387,7 +393,9 @@ classdef Mesh < handle
          nodesIds(tb:te) = nids;
          tb = te+1;
       end
-      nodesIds = unique(nodesIds);
+      if makeUnique && numel(elemsIds) > 1
+        nodesIds = unique(nodesIds);
+      end
     end
     function [nitems] = countPerDim(obj, dim)
       % Count mesh components of given dimension
