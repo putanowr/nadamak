@@ -6,10 +6,8 @@ classdef ThermoMechanicalProblem < mp.Problem
     end
     function setupVariables(obj)
       d = obj.geometry.dim;
-      varname = 'Displacement';
-      obj.variables.(varname) = mp.Variable(varname, d, mp.VariableType.State);
-      varname = 'Temperature';
-      obj.variables.(varname) = mp.Variable(varname, 1, mp.VariableType.State);
+      obj.addVariable(mp.Variable('Displacement', d, mp.VariableType.State));
+      obj.addVariable(mp.Variable('Temperature',  1, mp.VariableType.State));
     end
   end
 end
