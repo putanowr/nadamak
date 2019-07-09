@@ -1,0 +1,13 @@
+There are two levels of variables description :
+
+1. Variables hold on Problem level.
+2. Variables hold on FemModel level.
+
+Variables on Problem level include all kind of variables or better call 
+it parameters: both known and unknown. Unknown variables include 
+displacement field, stresse. Known variables include for instance gravity
+
+Variable on FemModel level is the subset of Problem variables that are
+state variables to be calculated.
+
+
