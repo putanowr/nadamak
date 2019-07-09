@@ -145,7 +145,6 @@ classdef MechanicalProblem < mp.MechanicalProblem
     function runSolver(obj, options)
       sol = solveq(obj.model.K, obj.model.F, obj.bcT);
       fprintf('Running Calfem solver')
-      bt = obj.bcT
       variable = obj.model.variables.get('Displacement');
       nd = variable.numOfDofs();
       of = variable.offset;
