@@ -24,7 +24,7 @@ function writeMesh(fid, mesh, bc)
     matid = 1;
     fprintf(fid, '%d %d ', i, matid);
     ei = mesh.elemsFromIds(i);
-    nodes = mesh.elemNodes(ei);
+    nodes = mesh.singleElemNodes(ei);
     for idx = nodes
       fprintf(fid, ' %d', idx);
     end
