@@ -5,6 +5,7 @@ function [dofsCount]=countDisplacedDofs(mesh, bc)
   % The difference is that the Displacement value can be any number while
   % in the fictures it is strictly zero.
   selector = mp.makeBcRegionsSelector(bc, mp.BcType.Displacement, 'Displacement');
+  dofsCount = 0;
   for regname = selector.name
     bcond = bc.get(regname{:}, 'Displacement');
     nodes = mesh.findRegionNodes(struct('name', {regname}));
