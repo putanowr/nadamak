@@ -4,7 +4,6 @@ function writePointLoads(fid, mesh, bc)
   selector = mp.makeBcRegionsSelector(bc, mp.BcType.Force, 'Displacement');
   vecFormat.format='%g';
   vecFormat.newline=true;
-  selector.name
   for regname = selector.name
     bcond = bc.get(regname{:}, 'Displacement');
     nodes = mesh.findRegionNodes(struct('name', {regname}));
