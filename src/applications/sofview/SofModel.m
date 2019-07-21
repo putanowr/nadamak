@@ -35,7 +35,7 @@ classdef SofModel < handle
         dim = obj.geometryDim();
       end
       names = obj.problem.geometry.regionsPerDim(dim);
-    en%d
+    end
     function writeBc(obj, fid)
       obj.problem.writeBc(fid);
     end
