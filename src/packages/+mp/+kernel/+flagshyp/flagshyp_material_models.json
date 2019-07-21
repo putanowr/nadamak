@@ -1,0 +1,47 @@
+{
+  "MT1": {
+    "id": 1,
+    "description" : "plane strain or three-dimensional compressible neo-Hookean",
+    "params": [ "rho", "mu", "lambda" ]
+  },
+  "MT2": {
+    "id": 2,
+    "description" : "one-dimensional stretch-based hyperelastic plastic (truss2 only)",
+    "params": [ "rho", "E", "nu", "area", "tau_y", "H" ]
+  },
+  "MT3": {
+    "id": 3,
+    "description" : "plane strain or three-dimensional hyperelastic in principal directions",
+    "params": [ "rho", "mu", "lambda" ]
+  },
+  "MT4": {
+    "id": 4,
+    "description" : "plane stress hyperelastic in principal directions",
+    "params": [ "rho", "mu", "lambda", "h" ]
+  },
+  "MT5": {
+    "id": 5,
+    "description" : "plane strain or three-dimensional nearly incompressible neoHookean",
+    "params": [ "rho", "mu", "kappa" ] 
+  },
+  "MT6": {
+    "id": 6,
+    "description" : "plane stress incompressible neo-Hookean",
+    "params": [ "rho", "mu", "h" ]
+  },
+  "MT7": {
+    "id": 7,
+    "description" : "plane strain or three-dimensional nearly incompressible hyperelasticity in principal directions",
+    "params": [ "rho", "mu", "kappa" ]
+  },
+  "MT8": {
+    "id": 8,
+    "description" : "plane stress incompressible hyperelasticity in principal directions",
+    "params": [ "rho", "mu", "h" ]
+  },
+  "MT17": {
+    "id": 17,
+    "description" : "plane strain or three-dimensional nearly incompressible hyperelastic plastic in principal directions",
+    "params": [ "rho", "mu", "lambda", "tau_y", "H" ]
+  }
+}
