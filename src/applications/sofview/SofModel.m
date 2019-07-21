@@ -22,15 +22,26 @@ classdef SofModel < handle
     function [dim] = geometryDim(obj)
       dim = obj.problem.geometry.dim();
     end
-    function [names] = regionNames(obj)
-      names = obj.problem.geometry.regions();
-    end
+    function [names] = regionNames(obj, dim)
+      % Return names of regions of given dimension.
+      % This function returns cell array of strings.
+      % 
+      % Arguments:
+      %   * dim (optional) - region dimension. If not
+      %                      given then returns names of
+      %                      regions of dimension equal
+      %                      the dimension of geometric model.
+      if nargin < 2
+        dim = obj.geometryDim();
+      end
+      names = obj.problem.geometry.regionsPerDim(dim);
+    en%d
     function writeBc(obj, fid)
       obj.problem.writeBc(fid);
     end
     function writeDofs(obj, fid)
       obj.problem.writeDofs(fid)
-    end
+    end  
     function [status, msg, bc] = setBc(obj, regionName, variableName, bcName, params)
       status = true;
       msg = sprintf('Set BC on "%s" to "%s"', regionName, bcName);
@@ -132,6 +143,9 @@ classdef SofModel < handle
     end
     function [status, msg] = export(obj, format, fpath)
       [status, msg] = obj.problem.export(format, fpath);
+    end
+    function [materialName] = getRegionMaterial(obj, regionName)
+      materialName = 'default';
     end
   end
 end
