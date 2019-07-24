@@ -11,6 +11,9 @@ classdef BoundaryCondition < handle
       obj.variable  = variableName;
       obj.setValue(params);
     end
+    function v = get.value(obj)
+      v = double(obj.value);
+    end
     function flag = isActive(obj, variableName)
       % Return true if BC is set for variable
       if obj.type == mp.BcType.NotSet
