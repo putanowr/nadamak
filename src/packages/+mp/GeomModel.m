@@ -16,6 +16,7 @@ classdef GeomModel < handle
     ambientDim = 0;
     legacyID = 0;
     name = 'dummy';
+    ntransdir = 0;
   end
   properties(Constant)
     %% Directory holding templates for geometric models.
@@ -28,6 +29,7 @@ classdef GeomModel < handle
       obj.dim = dim;
       obj.ambientDim = ambientDim;
       obj.legacyID = legacyID;
+      obj.ntransdir = dim;
     end
     function [geomgmsh] = as_gmsh(obj)
       tpl = fileread(fullfile(obj.templateDir, obj.templateName()));
