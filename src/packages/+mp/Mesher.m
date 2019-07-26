@@ -9,11 +9,12 @@ classdef Mesher < handle
     incomplete = false;
     quadsonly = false;
     transfinite = false;
-    transres = [1,1];
+    transres = [1];
     useGlobalField = false;
     showinfo = false;
     verbosity = 5;
     regionsToMesh = {};
+    meshall = true;
   end
   methods
     function [obj] = Mesher(varargin)
@@ -26,11 +27,7 @@ classdef Mesher < handle
     end
     function [mesh] = generate(obj, geometry, params)
       if nargin < 3
-        params.lc = geometry.coarsest_lc();
-        params.quadsonly = false;
-        params.meshall = true;
-        params.transres = [1,1];
-        params.transfinite = false;
+        params = struct();
       end
       geomgmsh = mp_tpl_substitute(geometry.as_gmsh(), params);
       if obj.useGlobalField
@@ -38,11 +35,17 @@ classdef Mesher < handle
         geomgmsh = [geomgmsh, newline, bgf];
       end
       meshingParam.dim = mp_get_option(params, 'dim', min([obj.dim, geometry.dim]));
+      meshingParam.quadsonly = mp_get_option(params, 'quadsonly', obj.quadsonly);
+      meshingParam.meshall = mp_get_option(params, 'meshall', obj.meshall);
       meshingParam.clean = obj.clean;
-      meshingParam.lc = params.lc;
+      meshingParam.lc = mp_get_option(params, 'lc', geometry.coarsest_lc());
       meshingParam.order = mp_get_option(params, 'order', obj.order);
       meshingParam.transfinite = mp_get_option(params, 'transfinite', obj.transfinite);
-      meshingParam.transres = mp_get_option(params, 'transres', obj.transres);
+      tr = mp_get_option(params, 'transres', obj.transres);
+      ntr = min(geometry.ntransdir, numel(tr));
+      trfilled = ones(1,geometry.ntransdir)*tr(ntr);
+      trfilled(1:ntr) = tr(1:ntr);
+      meshingParam.transres = trfilled; 
       meshingParam.showinfo = mp_get_option(params, 'showinfo', obj.showinfo);
       meshingParam.verbosity = mp_get_option(params, 'verbosity', obj.verbosity);
       meshingParam.regionsToMesh = mp_get_option(params, 'regionsToMesh', obj.regionsToMesh);
