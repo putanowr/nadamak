@@ -12,6 +12,7 @@ mesher = mp.Mesher();
 %% Set meshing parameters
 mesher.clean = true;
 mesher.quadsonly = false;
+mesher.showinfo = true;
 
 %% Create object describing geometric model
 geom = mp.geoms.NotchedRQGeom('my_domain');
