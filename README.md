@@ -14,6 +14,6 @@ While documentation is being prepared one can look at [demo pages](https://putan
 # Documentation 
 
 Documentation is absolutely essential part of Nadamak, however making it is
-huge effort. Despite the fact that Nadamak guide barely scratches the surface
+a huge effort. Despite the fact that Nadamak guide barely scratches the surface
 of the subject you can look at [HTML version of
 it](https://putanowr.github.io/projects/nadamak/guide/en/html/index.html).
