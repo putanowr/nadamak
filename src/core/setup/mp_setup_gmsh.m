@@ -26,15 +26,8 @@ function [gmshpath] = mp_set_gmsh_path()
       gmshpath = 'gmsh';  
     end 
   else % Windows
+    gmshpath = 'gmsh';  
+	  gmshpath = 'C:\\Users\\roman\\anaconda3\\envs\\humsim\\Library\\bin\\gmsh';
     hostname = getenv('computername');
-    if strcmp(hostname, 'LAP025')      
-      gmshpath = 'gmsh.exe';
-    elseif strcmp(hostname, 'KOMPUTER')
-      gmshpath = 'D:\DOKUMENTY\REPOSITORY\gmsh-3.0.5-Windows64\gmsh-3.0.5-Windows\gmsh.exe';
-    elseif strcmp(hostname, 'ROG')
-      gmshpath = 'E:\DOKUMENTY\REPOSITORY\gmsh-3.0.5-Windows64\gmsh-3.0.5-Windows\gmsh.exe';
-    else
-      gmshpath = 'C:\Users\Slawek\Documents\gmsh-3.0.5-Windows64\gmsh-3.0.5-Windows\gmsh.exe';
-    end
   end % system type 
 end
