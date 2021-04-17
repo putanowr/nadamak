@@ -9,7 +9,7 @@ function [nodes, nodemap] = mp_gmsh_read_nodes(fid_or_name, version)
   elseif version == 2
     [nodes, nodemap] = local_read_nodes_ver_2(fid_or_name);
   else
-    error('Invalid msh version %d', version)
+    error("Invalid msh version %d", version)
   end
 end
 
@@ -23,28 +23,32 @@ function [nodes, nodemap] = local_read_nodes_ver_4(fid_or_name)
   numNodes = data(2);
   minNodeTag = data(3);
   maxNodeTag = data(4);
-  nodemap = mp.SharedArray([numNodes, 1]);
-  nodes = mp.SharedArray([numNodes, 3])'
+  nodes = zeros(numNodes, 3);
+  nodemap = zeros(numNodes, 1);
   is = 0;
   ie = 0;
   for i = 1:numEntityBlocks
       tline = fgetl(fid);
-      data = sscanf(tline, '%d');
+      disp(tline)
+      data = sscanf(tline, '%d', [4])
+      disp('HERE')
       entityDim = data(1);
       entityTag = data(2);
       hasParamCoords = data(3);
       numNodesInBlock = data(4);
-      is=ie+1;
-      ie=is+numNodesInBlock-1;
-      data = fscanf(fid, '%d', [1, numNodesInBlock]);
-      nodemap.Data(is:ie,1) = data';
-      if hasParamCoords
-        data = fscanf(fid, '%f', [6, numNodesInBlock]);
-      else
-        data = fscanf(fid, '%f', [3, numNodesInBlock]);
-      end
-        nodes.Data(is:ie,:) = data(1:3,:)';
-      fgetl(fid);
+      if numNodesInBlock > 0
+        is=ie+1;
+        ie=is+numNodesInBlock-1;
+        data = fscanf(fid, '%d', [1, numNodesInBlock]);
+        nodemap(is:ie,1) = data';
+        if hasParamCoords
+          data = fscanf(fid, '%f', [6, numNodesInBlock]);
+        else
+          data = fscanf(fid, '%f', [3, numNodesInBlock]);
+        end
+        nodes(is:ie,:) = data(1:3,:)';
+        fgetl(fid);
+      end  
   end
   mp_read_end_section(fid, '\$EndNodes');
   if needclose
@@ -58,10 +62,10 @@ function [nodes, nodemap] = local_read_nodes_ver_2(fid_or_name)
   tline = fgetl(fid);
   n = sscanf(tline, '%d');
   data = fscanf(fid, '%f', [4, n]);
-  nodes = mp.SharedArray([n, 3]);
-  nodemap = mp.SharedArray([n, 1]);
-  nodes.Data(:,:) = data(2:4,:)';
-  nodemap.Data(:) = data(1,:)';
+  nodes = zeros(n, 3);
+  nodemap = zeros(n, 1);
+  nodes = data(2:4,:)';
+  nodemap = data(1,:)';
   fgetl(fid); % This call is to consume new line character
   mp_read_end_section(fid, '\$EndNodes');
   if needclose

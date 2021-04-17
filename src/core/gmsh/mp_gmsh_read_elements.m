@@ -10,7 +10,7 @@ function [elements] = mp_gmsh_read_elements(fid_or_name, version)
   elseif version == 2
     elements = local_read_elements_ver_2(fid_or_name);
   else
-    error('Invalid msh version %d', version)
+    error("Invalid msh version %d", version)
   end
 end
 
@@ -27,16 +27,16 @@ function [elements] = local_read_elements_ver_4(fid_or_name)
   elemId = 0;
   for i = 1:numEntityBlocks
       tline = fgetl(fid);
-      data = sscanf(tline, '%d');
+      data = sscanf(tline, '%d', [1, 4]);
       entityDim = data(1);
       entityTag = data(2);
-      elementType = data(3):
+      elementType = data(3);
       numElemsInBlock = data(4);
       for i = 1:numElemsInBlock
         tline = fgetl(fid);
-        edata = sscanf(tline '%d', [1, inf]);
+        edata = sscanf(tline, '%d', [1, inf]);
         elemId = elemId+1;
-        elements{elemId} = [edata(1), elementType, 2, -1, entityTag, edata(2:)' ]);
+        elements{elemId} = [edata(1), elementType, 2, -1, entityTag, edata(2:end) ];
       end
   end
   mp_read_end_section(fid, '\$EndElements');
@@ -51,7 +51,7 @@ function [elements] = local_read_elements_ver_2(fid_or_name)
   mp_read_until_section(fid, '\$Elements');
   tline = fgetl(fid);
   n = sscanf(tline, '%d');
-  elements = cell(1, n); %preallocate memory
+  elements = cell(1, numElements); %preallocate memory
   for i = 1:n
     tline = fgetl(fid);
     elements{i} = sscanf(tline,'%d', [1,inf]);

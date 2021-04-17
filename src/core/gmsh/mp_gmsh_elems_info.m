@@ -6,7 +6,7 @@ function [ info ] = mp_gmsh_elems_info(elements)
     return
   else
     info.nelems = length(elements);
-    for elrec = elements.Data
+     for elrec = elements.Data
       typetag = mp_gmsh_element_typetag(elrec{:});
       if isfield(info.ntypes, typetag)
         info.ntypes.(typetag) = info.ntypes.(typetag)+1;
