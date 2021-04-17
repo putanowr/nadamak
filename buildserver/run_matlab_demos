@@ -5,7 +5,7 @@ echo "--------------------------------------------"
 echo `pwd`
 echo `ls`
 publishdir=`pwd`/buildserver/demos
-python3 src/demos/run_demos.py --publishdir=$publishdir --rundir=build
+python src/demos/run_demos.py --publishdir=$publishdir --rundir=build
 if [ $? -ne 0 ]; then
   echo "------------------------------------------"
   echo "Running demos FAILED                      "
