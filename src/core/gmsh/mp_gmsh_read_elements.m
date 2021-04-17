@@ -10,7 +10,7 @@ function [elements] = mp_gmsh_read_elements(fid_or_name, version)
   elseif version == 2
     elements = local_read_elements_ver_2(fid_or_name);
   else
-    error("Invalid msh version %d", version)
+    error('Invalid msh version %d', version)
   end
 end
 

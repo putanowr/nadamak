@@ -1,9 +1,10 @@
 function [mesh] = readMesh(fid_or_name)
   %% Read given file and returns new Mesh object.
   [fid, needclose] = mp_get_fid(fid_or_name);
-  regions = mp_gmsh_read_regions(fid);
-  [nodes, nodemap] = mp.gmsh.read_nodes(fid);  
-  elements = mp.gmsh.read_elements(fid);
+  [major_version, ~, ~] = mp_gmsh_read_version(fid);
+  regions = mp_gmsh_read_regions(fid, major_version);
+  [nodes, nodemap] = mp.gmsh.read_nodes(fid, major_version);  
+  elements = mp.gmsh.read_elements(fid, major_version);
   if needclose
     fclose(fid);
   end

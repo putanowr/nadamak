@@ -8,9 +8,10 @@ function [nodes, elements, regions, nodemap] = mp_gmsh_generate(geoModel, meshin
   [status, meshpath, ~] = mp_gmsh(geoModel, meshingParams);
   if status
     fid = fopen(meshpath, 'r');
-    regions = mp_gmsh_read_regions(fid);
-    [nodes, nodemap] = mp_gmsh_read_nodes(fid);
-    elements = mp_gmsh_read_elements(fid);
+	[major_version, ~, ~] = mp_gmesh_read_version(fid);
+    regions = mp_gmsh_read_regions(fid, major_version);
+    [nodes, nodemap] = mp_gmsh_read_nodes(fid, major_version);
+    elements = mp_gmsh_read_elements(fid, major_version);
     fclose(fid);
   else
     error('Running gmsh has failed'); 
