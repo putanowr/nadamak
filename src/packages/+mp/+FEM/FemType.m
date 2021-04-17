@@ -4,6 +4,7 @@ classdef FemType
     % items: gmsh_elem_type, isLagrangian, dimension, order, num_of_dofs,
     % localCoordsCalback, dofTopoCallback
     Line2(    1,true,1,1, 2, 'Line2')
+    Line3(    8,true,1,2, 3, 'Line3')
     Triang3(  2,true,2,1, 3, 'Triang3')
     Triang6(  9,true,2,2, 6, 'Triang6')
     Triang10(21,true,2,3,10, 'Triang10')
