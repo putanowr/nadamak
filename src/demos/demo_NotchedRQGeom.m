@@ -20,7 +20,7 @@ geom.params.dH=1;
 %%
 
 %% Generate mesh
-mesh = mesher.generate(geom, struct('lc', 0.1));
+mesh = mesher.generate(geom, struct('lc', 0.1, 'showinfo', true));
 
 %% Visualize mesh
 % The simplest way to visualize mesh is to use Viewer class.
