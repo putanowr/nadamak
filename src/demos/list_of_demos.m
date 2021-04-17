@@ -30,6 +30,12 @@ mp_manage_demos('print')
 % </ul>
 % </html>
 %
+%% GMSH interface demos
+% <html>
+% <ul>
+% <li><a href="demo_low_level_gmesh.html">demo_low_level_gmsh</a> illustrate using gmsh interface low level functions</li>
+% </ul>
+% </html>
 %% Mesher demos
 % <html>
 % <ul>
