@@ -24,27 +24,29 @@ function [nodes, nodemap] = local_read_nodes_ver_4(fid_or_name)
   minNodeTag = data(3);
   maxNodeTag = data(4);
   nodemap = mp.SharedArray([numNodes, 1]);
-  nodes = mp.SharedArray([numNodes, 3])'
+  nodes = mp.SharedArray([numNodes, 3])';
   is = 0;
   ie = 0;
   for i = 1:numEntityBlocks
       tline = fgetl(fid);
-      data = sscanf(tline, '%d');
+      data = sscanf(tline, '%d', [4]);
       entityDim = data(1);
       entityTag = data(2);
       hasParamCoords = data(3);
       numNodesInBlock = data(4);
-      is=ie+1;
-      ie=is+numNodesInBlock-1;
-      data = fscanf(fid, '%d', [1, numNodesInBlock]);
-      nodemap.Data(is:ie,1) = data';
-      if hasParamCoords
-        data = fscanf(fid, '%f', [6, numNodesInBlock]);
-      else
-        data = fscanf(fid, '%f', [3, numNodesInBlock]);
-      end
+      if numNodesInBlock > 0
+        is=ie+1;
+        ie=is+numNodesInBlock-1;
+        data = fscanf(fid, '%d', [1, numNodesInBlock]);
+        nodemap.Data(is:ie,1) = data';
+        if hasParamCoords
+          data = fscanf(fid, '%f', [6, numNodesInBlock]);
+        else
+          data = fscanf(fid, '%f', [3, numNodesInBlock]);
+        end
         nodes.Data(is:ie,:) = data(1:3,:)';
-      fgetl(fid);
+        fgetl(fid);
+      end
   end
   mp_read_end_section(fid, '\$EndNodes');
   if needclose
