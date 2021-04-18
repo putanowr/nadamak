@@ -21,6 +21,7 @@ classdef Mesh < handle
     adjacencies;
     simplical = -1;
     dim2CellTypes;
+	elemType2geomTrans;
     geomTransArray; % Cell array of geometric transformations
   end
   properties (Constant)
@@ -40,7 +41,7 @@ classdef Mesh < handle
       obj.cells2elements = uint32.empty;
       obj.faces2elements = uint32.empty;
       obj.edges2elements = uint32.empty;
-      obj.f2eOrient = cell();
+      obj.f2eOrient = cell(0);
       obj.dim2CellTypes  = cell(1, obj.dim);
       obj.parent = [];
       obj.childrens = [];
@@ -67,7 +68,7 @@ classdef Mesh < handle
     function [gt] = elemGeomTrans(obj, elemId)
       % Maybe it would be faster to store geom trans indeks for each
       % element than to map it through element type and dimension.
-      ed = mp_gmsh_elem_dim(obj.elems{elemId});
+      ed = obj.elemType2geomTrans(obj.elementGmshType(elemId));
       gt = obj.geomTransArray{ed};
     end
     function setParent(obj, parent_, nodesMap, elemsMap)
@@ -592,9 +593,11 @@ classdef Mesh < handle
   %------------------------------------------------------------------------------
   methods(Access=private)
     function setupGeomTrans(obj)
-      obj.geomTransArray = cell(1,obj.dim);
-      for dimension=1:mesh.dim
-        obj.geomTransArray{dimension} = mp.GeomTrans(obj, dimension);
+	  k = 1;
+      for dimension=1:obj.dim
+		for ct = obj.cellTypes(dimension)
+        	obj.geomTransArray{k} = mp.GeomTrans(obj, ct);
+		end			
       end
     end
     function [entityId] = findEntitySpannedByNodes(obj, nodesId, entityTopoDim)

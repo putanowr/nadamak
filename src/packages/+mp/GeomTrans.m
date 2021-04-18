@@ -7,23 +7,11 @@ classdef GeomTrans < handle
     dim
   end
   methods
-    function [obj] = GeomTrans(mesh, targetDim)
-      if nargin < 2
-        obj.dim = mesh.dim;
-      else
-        obj.dim = targetDim;
-      end
-      if (obj.dim > mesh.dim || obj.dim < 1)
-        error('Invalid GeomTrans dimension %d, expected value in range [1, %d]', obj.dim, mesh.dim)
-      end
+    function [obj] = GeomTrans(mesh, cellType)
       obj.mesh = mesh;
-      obj.cellToNodes = mesh.getAdjacency(dim, 0);
-      ct = mesh.cellTypes(dim);
-      if (length(ct) > 1)
-        %error('GeomTrans not cannot handle mixed element type meshes yet')
-        return
-      end
-      obj.fem = mp.FEM.FemType.fromId(ct(1));
+      obj.fem = mp.FEM.FemType.fromId(cellType);
+	  obj.dim = obj.fem.dim
+      obj.cellToNodes = mesh.getAdjacency(obj.dim, 0); 
     end
     function [xyz] = transform(obj, refPoint, cellID)
       % Return real coordinates for point with reference coordinates in given element
